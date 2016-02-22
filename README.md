@@ -87,6 +87,7 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 **Objective:** Users can create reviews and they appear on their profile
 
 - [ ] create `Review` model
+- [ ] CRUD for Reviews
 - [ ] add flux model for Reviews
 - [ ] reviews will now show up on user profile and on subscription profile page
 
