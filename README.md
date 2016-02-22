@@ -38,37 +38,33 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 
 **Objective:** Functioning rails project with Authentication
 
-- [ ] create new project
+- [x] create new project
 - [ ] create `User` model
 - [ ] authentication
 - [ ] user signup/signin pages
 - [ ] blank landing page after signin
 
-### Phase 2: Notes Model, API, and basic APIUtil (1.5 days)
+### Phase 2: Users Model and User Profile Creation (1.5 days)
 
 **Objective:** Users can create profile
 
-- [ ] create `Note` model
 - [ ] seed the database with a small amount of test data
-- [ ] CRUD API for notes (`NotesController`)
-- [ ] jBuilder views for notes
-- [ ] setup Webpack & Flux scaffold
+- [ ] CRUD API for users
+- [ ] jBuilder views for users
 - [ ] setup `APIUtil` to interact with the API
 - [ ] test out API interaction in the console.
-
-### Phase 3: Flux Architecture and Router (1.5 days)
-
-**Objective:** Notes can be created, read, edited and destroyed with the
-user interface.
-
 - [ ] setup the flux loop with skeleton files
 - [ ] setup React Router
-- implement each note component, building out the flux loop as needed.
-  - [ ] `NotesIndex`
-  - [ ] `NoteIndexItem`
-  - [ ] `NoteForm`
-- [ ] save Notes to the DB when the form loses focus or is left idle
-  after editing.
+
+### Phase 3: Friend Model (0.5 days)
+
+**Objective:** Users can add friends and view their friend's profiles
+
+- [ ] users can add friends
+- [ ] users can accept or decline a friend request
+- [ ] users can see their friend's profiles
+- [ ] users can't see profiles of people they aren't friends with
+- [ ] users page should be styled and ready for reviews
 
 ### Phase 4: Start Styling (0.5 days)
 
@@ -78,42 +74,31 @@ user interface.
 - [ ] position elements on the page
 - [ ] add basic colors & styles
 
-### Phase 5: Notebooks (1 day)
+### Phase 5: Subscriptions (1 day)
 
-**Objective:** Notes belong to Notebooks, and can be viewed by notebook.
+**Objective:** Subscriptions will have their own page
 
-- [ ] create `Notebook` model
-- build out API, Flux loop, and components for:
-  - [ ] Notebook CRUD
-  - [ ] adding notes requires a notebook
-  - [ ] moving notes to a different notebook
-  - [ ] viewing notes by notebook
-- Use CSS to style new views
+- [ ] create `Subscription` model
+- [ ] add flux model for Subscriptions
+- [ ] Subscription page should be styled and ready for reviews
 
-Phase 3 adds organization to the Notes. Notes belong to a Notebook,
-which has its own `Index` view.
+### Phase 6: Reviews (1.5 days)
 
-### Phase 6: Tags (1.5 days)
+**Objective:** Users can create reviews and they appear on their profile
 
-**Objective:** Notes can be tagged with multiple tags, and tags are searchable.
+- [ ] create `Review` model
+- [ ] add flux model for Reviews
+- [ ] reviews will now show up on user profile and on subscription profile page
 
-- [ ] create `Tag` model and join table
-- build out API, Flux loop, and components for:
-  - [ ] fetching tags for notebook
-  - [ ] adding tags to notebook
-  - [ ] creating tags while adding to notebooks
-  - [ ] searching notebooks by tag
-- [ ] Style new elements
+### Phase 7: Search (1.5 days)
 
-### Phase 7: Allow Complex Styling in Notes (0.5 days)
+**objective:** Add a search functionality to the nav bar where users can search
+for subscriptions or their friends
 
-**objective:** Enable complex styling of notes.
+- [ ] auto-populates suggestions based on what the user has typed in so far
+- [ ] when user presses enter it redirects to a search results page
 
-- [ ] Integrate `react-quill` (based on Quill.js).
-- [ ] Use Rails helpers to sanitize HTML before rendering.
-- [ ] Style the new Quill elements.
-
-### Phase 8: Styling Cleanup and Seeding (1 day)
+### Phase 8: Styling Cleanup and Seeding (2 days)
 
 **objective:** Make the site feel more cohesive and awesome.
 
@@ -122,14 +107,4 @@ which has its own `Index` view.
 - [ ] Add modals, transitions, and other styling flourishes.
 
 ### Bonus Features (TBD)
-- [ ] Search through notes for blocks of text
-- [ ] Pagination / infinite scroll for Notes Index
-- [ ] Set reminders on notes
-- [ ] Changelogs for Notes
-- [ ] Multiple sessions
-
-[phase-one]: ./docs/phases/phase1.md
-[phase-two]: ./docs/phases/phase2.md
-[phase-three]: ./docs/phases/phase3.md
-[phase-four]: ./docs/phases/phase4.md
-[phase-five]: ./docs/phases/phase5.md
+- [ ] Add Facebook integration to validate friends
