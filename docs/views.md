@@ -13,7 +13,7 @@
 ![subscription]
 
 
-[new-user]: ./wireframes/LogInPage
+[new-user]: ./wireframes/LogInPage.png
 [new-session]: ./wireframes/HomePage.png
 [user]: ./wireframes/UserPage.png
 [subscription]: ./wireframes/SubscriptionPage.png
