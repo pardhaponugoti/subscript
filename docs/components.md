@@ -1,13 +1,14 @@
 ## Component Hierarchy
 
 * `App`
-  * `SearchIndex`
-  * `NotebooksIndex`
-    * `NotebookIndexItem`
-  * `NotebookForm`
-  * `NotesIndex`
-    * `NoteForm`
-    * `NoteIndexItem`
-  * `NoteDetail`
-    * `NoteTags`
-    * `NoteEditArea`
+  * `User Page`
+    * `User's own reviews table`
+     * `User Review`
+  * `Friend's Page`
+    * `Friend's reviews table`
+      * `Friend's Review`
+  * `Subscription Page`
+    * `Friend's Reviews`
+      * `Friend's Review`
+    * `Everyone's Reviews`
+      * `Review`
