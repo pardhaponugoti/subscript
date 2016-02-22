@@ -1,4 +1,4 @@
-# FresherNote
+# To Be Named
 
 [Heroku link][heroku] **NB:** This should be a link to your production site
 
@@ -6,18 +6,18 @@
 
 ## Minimum Viable Product
 
-FresherNote is a web application inspired by Evernote built using Ruby on Rails
-and React.js. FresherNote allows users to:
+My project is a website where you can rate the subscriptions and services that
+you pay for, and also see your friends' subscriptions.
 
 <!-- This is a Markdown checklist. Use it to keep track of your
 progress. Put an x between the brackets for a checkmark: [x] -->
 
 - [ ] Create an account
 - [ ] Log in / Log out
-- [ ] Create, read, edit, and delete notes
-- [ ] Organize notes within Notebooks
-- [ ] Tag notes with multiple tags
-- [ ] Apply complex styling to notes while editing
+- [ ] Create a profile
+- [ ] Add reviews of subscriptions
+- [ ] Be able to see your friends' subscriptions
+- [ ] Also see global reviews of the services
 
 ## Design Docs
 * [View Wireframes][views]
@@ -46,8 +46,7 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 
 ### Phase 2: Notes Model, API, and basic APIUtil (1.5 days)
 
-**Objective:** Notes can be created, read, edited and destroyed through
-the API.
+**Objective:** Users can create profile
 
 - [ ] create `Note` model
 - [ ] seed the database with a small amount of test data
