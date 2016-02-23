@@ -1,10 +1,9 @@
-class SessionsController < ApplicationController
-
+class Api::SessionsController < ApplicationController
   def new
     if current_user
-      redirect_to root_url
+      render json: current_user
     else
-      render :new
+      render json: "no current user"
     end
   end
 
@@ -15,17 +14,16 @@ class SessionsController < ApplicationController
     )
 
     if user.nil?
-      flash[:errors] = ["Incorrect email and/or password"]
-      redirect_to new_session_url
+      render status: 404
     else
       login_user!(user)
-      redirect_to root_url
+      render json: user
     end
   end
 
   def destroy
     logout_user!
-    redirect_to new_session_url
+    redirect_to root_url
   end
 
 end

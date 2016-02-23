@@ -85,27 +85,32 @@ var NewUserForm = React.createClass({
   },
   render: function() {
     var csrfToken = $('meta[name=csrf-token]').attr('content');
-    return <form action="/users" method="post" className="new-user-form">
-      <input name="authenticity_token" type="hidden" value={csrfToken} />
-      <label>Email
-        <input type="text" name="user[email]" value={this.state.email}
-            onChange={this.emailChange} />
-      </label>
-      <br/>
-      <label>Password
-        <input type="password" name="user[password]" value={this.state.password}
-            onChange={this.passwordChange} />
-      </label>
-        {this.passwordUl()}
-      <br/>
-      <label>Confirm Password
-        <input type="password" value={this.state.confirmPassword}
-            onChange={this.confirmPasswordChange} />
-      </label>
-      {this.matchedPassword()}
-      <br/>
-      <input type="submit"/>
-    </form>;
+    return <div>
+      <form action="/users" method="post" className="new-user-form">
+        <input name="authenticity_token" type="hidden" value={csrfToken} />
+        <label>Email
+          <input type="text" name="user[email]" value={this.state.email}
+              onChange={this.emailChange} />
+        </label>
+        <br/>
+        <label>Password
+          <input type="password" name="user[password]" value={this.state.password}
+              onChange={this.passwordChange} />
+        </label>
+          {this.passwordUl()}
+        <br/>
+        <label>Confirm Password
+          <input type="password" value={this.state.confirmPassword}
+              onChange={this.confirmPasswordChange} />
+        </label>
+        {this.matchedPassword()}
+        <br/>
+        <input type="submit"/>
+      </form>
+      <div> Already a user?
+        <a href="#/session/new">Sign In</a>
+      </div>
+    </div>;
   }
 });
 
