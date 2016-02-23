@@ -1,1 +1,6 @@
+<% if current_user %>
+  <p>Logged in as: <%= current_user.email %></p>
+  <%= button_to "Sign Out", session_url, method: :delete %>
+<% end %>
+
 <div id='root'></div>

@@ -1,5 +1,9 @@
 class StaticPagesController < ApplicationController
   def root
-    render :root
+    if current_user
+      render :root
+    else
+      redirect_to new_session_url
+    end
   end
 end
