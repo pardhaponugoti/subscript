@@ -28,3 +28,18 @@ author_id       | integer   | not null, foreign key (references users), indexed
 subscription_id | integer   | not null, foreign key (references subscriptions), indexed
 rating          | integer   | not null
 comment         | text      |
+
+## friend_requests
+column name     | data type | details
+----------------|-----------|-----------------------
+id              | integer   | not null, primary key
+requester_id    | integer   | not null, foreign key (references users), indexed
+requested_id    | integer   | not null, foreign key (references users), indexed
+status          | string    | not null
+
+## relationships
+column name     | data type | details
+----------------|-----------|-----------------------
+id              | integer   | not null, primary key
+user_id         | integer   | not null, foreign key (references users), indexed
+friend_id       | integer   | not null, foreign key (references users), indexed
