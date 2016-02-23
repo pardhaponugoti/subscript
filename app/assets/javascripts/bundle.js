@@ -24457,6 +24457,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	var SessionActions = __webpack_require__(237);
 	
 	function isNumeric(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);
@@ -24472,7 +24473,7 @@
 	}
 	
 	var NewUserForm = React.createClass({
-	  displayName: "NewUserForm",
+	  displayName: 'NewUserForm',
 	
 	  getInitialState: function () {
 	    return {
@@ -24500,51 +24501,51 @@
 	    var passwordErrors = [];
 	    if (this.state.password.length < 8 && this.state.password.length > 0) {
 	      passwordErrors.push(React.createElement(
-	        "li",
+	        'li',
 	        null,
 	        React.createElement(
-	          "strong",
+	          'strong',
 	          null,
 	          React.createElement(
-	            "font",
-	            { color: "red" },
-	            "Password must be at least 8 characters long"
+	            'font',
+	            { color: 'red' },
+	            'Password must be at least 8 characters long'
 	          )
 	        )
 	      ));
 	    } else if (this.state.password.length > 0) {
 	      passwordErrors.push(React.createElement(
-	        "li",
+	        'li',
 	        null,
 	        React.createElement(
-	          "font",
-	          { color: "green" },
-	          "Password must be at least 8 characters long"
+	          'font',
+	          { color: 'green' },
+	          'Password must be at least 8 characters long'
 	        )
 	      ));
 	    }
 	
 	    if (this.state.password.length > 0 && containsNumber(this.state.password)) {
 	      passwordErrors.push(React.createElement(
-	        "li",
+	        'li',
 	        null,
 	        React.createElement(
-	          "font",
-	          { color: "green" },
-	          "Password must contain a number"
+	          'font',
+	          { color: 'green' },
+	          'Password must contain a number'
 	        )
 	      ));
 	    } else if (this.state.password.length > 0) {
 	      passwordErrors.push(React.createElement(
-	        "li",
+	        'li',
 	        null,
 	        React.createElement(
-	          "strong",
+	          'strong',
 	          null,
 	          React.createElement(
-	            "font",
-	            { color: "red" },
-	            "Password must contain a number"
+	            'font',
+	            { color: 'red' },
+	            'Password must contain a number'
 	          )
 	        )
 	      ));
@@ -24554,7 +24555,7 @@
 	      return;
 	    } else {
 	      return React.createElement(
-	        "ul",
+	        'ul',
 	        null,
 	        passwordErrors.map(function (error) {
 	          return error;
@@ -24566,26 +24567,26 @@
 	    if (this.state.password !== "" && this.state.password.length > 7 && containsNumber(this.state.password)) {
 	      if (this.state.password !== this.state.confirmPassword && this.state.confirmPassword !== "") {
 	        return React.createElement(
-	          "div",
+	          'div',
 	          null,
 	          React.createElement(
-	            "strong",
+	            'strong',
 	            null,
 	            React.createElement(
-	              "font",
-	              { color: "red" },
-	              "Passwords do not match!"
+	              'font',
+	              { color: 'red' },
+	              'Passwords do not match!'
 	            )
 	          )
 	        );
 	      } else if (this.state.confirmPassword !== "" && this.state.confirmPassword === this.state.password) {
 	        return React.createElement(
-	          "div",
+	          'div',
 	          null,
 	          React.createElement(
-	            "font",
-	            { color: "green" },
-	            "Passwords match!"
+	            'font',
+	            { color: 'green' },
+	            'Passwords match!'
 	          )
 	        );
 	      }
@@ -24593,51 +24594,57 @@
 	      return;
 	    }
 	  },
+	  handleSubmit: function (e) {
+	    e.preventDefault();
+	    SessionActions.signUpUser({ user: { email: this.state.email,
+	        password: this.state.password }
+	    });
+	  },
 	  render: function () {
 	    var csrfToken = $('meta[name=csrf-token]').attr('content');
 	    return React.createElement(
-	      "div",
+	      'div',
 	      null,
 	      React.createElement(
-	        "form",
-	        { action: "/users", method: "post", className: "new-user-form" },
-	        React.createElement("input", { name: "authenticity_token", type: "hidden", value: csrfToken }),
+	        'form',
+	        { action: '/users', method: 'post', className: 'new-user-form', onSubmit: this.handleSubmit },
+	        React.createElement('input', { name: 'authenticity_token', type: 'hidden', value: csrfToken }),
 	        React.createElement(
-	          "label",
+	          'label',
 	          null,
-	          "Email",
-	          React.createElement("input", { type: "text", name: "user[email]", value: this.state.email,
+	          'Email',
+	          React.createElement('input', { type: 'text', name: 'user[email]', value: this.state.email,
 	            onChange: this.emailChange })
 	        ),
-	        React.createElement("br", null),
+	        React.createElement('br', null),
 	        React.createElement(
-	          "label",
+	          'label',
 	          null,
-	          "Password",
-	          React.createElement("input", { type: "password", name: "user[password]", value: this.state.password,
+	          'Password',
+	          React.createElement('input', { type: 'password', name: 'user[password]', value: this.state.password,
 	            onChange: this.passwordChange })
 	        ),
 	        this.passwordUl(),
-	        React.createElement("br", null),
+	        React.createElement('br', null),
 	        React.createElement(
-	          "label",
+	          'label',
 	          null,
-	          "Confirm Password",
-	          React.createElement("input", { type: "password", value: this.state.confirmPassword,
+	          'Confirm Password',
+	          React.createElement('input', { type: 'password', value: this.state.confirmPassword,
 	            onChange: this.confirmPasswordChange })
 	        ),
 	        this.matchedPassword(),
-	        React.createElement("br", null),
-	        React.createElement("input", { type: "submit" })
+	        React.createElement('br', null),
+	        React.createElement('input', { type: 'submit' })
 	      ),
 	      React.createElement(
-	        "div",
+	        'div',
 	        null,
-	        " Already a user?",
+	        ' Already a user?',
 	        React.createElement(
-	          "a",
-	          { href: "#/session/new" },
-	          "Sign In"
+	          'a',
+	          { href: '#/session/new' },
+	          'Sign In'
 	        )
 	      )
 	    );
@@ -24679,14 +24686,12 @@
 	    });
 	  },
 	  render: function () {
-	    var csrfToken = $('meta[name=csrf-token]').attr('content');
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(
 	        'form',
 	        { action: '/session', method: 'post', className: 'new-session-form', onSubmit: this.handleSubmit },
-	        React.createElement('input', { name: 'authenticity_token', type: 'hidden', value: csrfToken }),
 	        React.createElement(
 	          'label',
 	          null,
@@ -24729,28 +24734,41 @@
 	var History = __webpack_require__(159).History;
 	var SessionStore = __webpack_require__(214);
 	var SessionActions = __webpack_require__(237);
+	var Header = __webpack_require__(241);
 	
-	window.SessionStore = SessionStore;
+	// window.SessionStore = SessionStore;
+	// window.SessionActions = SessionActions;
 	
 	var App = React.createClass({
 	  displayName: 'App',
 	
 	  mixins: [History],
+	  componentWillMount: function () {
+	    SessionActions.checkForUser();
+	  },
 	  componentDidMount: function () {
-	    if (!SessionStore.loggedIn()) {
-	      this.history.pushState(null, 'session/new');
-	    }
 	    SessionStore.addListener(this.onSessionChange);
+	    if (!SessionStore.loggedIn()) {
+	      this.history.push('#/session/new');
+	    }
 	  },
 	  onSessionChange: function () {
-	    debugger;
-	    this.history.pushState(null, '/');
+	    this.history.push('#/');
 	  },
 	  render: function () {
 	    return React.createElement(
 	      'div',
 	      { id: 'App' },
-	      this.props.children
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(Header, null)
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.props.children
+	      )
 	    );
 	  }
 	});
@@ -24771,9 +24789,12 @@
 	var _currentUser = {};
 	
 	SessionStore.__onDispatch = function (payload) {
-	  console.log("session store");
 	  switch (payload.actionType) {
 	    case SessionConstants.USER_SIGN_IN:
+	      _currentUser = payload.data;
+	      SessionStore.__emitChange();
+	      break;
+	    case SessionConstants.USER_SIGN_UP:
 	      _currentUser = payload.data;
 	      SessionStore.__emitChange();
 	      break;
@@ -31557,17 +31578,28 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var SessionUtil = __webpack_require__(239);
-	var Dispatcher = __webpack_require__(215);
+	var AppDispatcher = __webpack_require__(215);
 	var SessionConstants = __webpack_require__(240);
 	
 	var SessionActions = {
 	  signInUser: function (userParams) {
 	    SessionUtil.signInUser(userParams);
 	  },
-	  receiveSignIn: function (userData) {
-	    console.log(userData);
-	    Dispatcher.dispatch({
+	  signUpUser: function (userParams) {
+	    SessionUtil.signUpUser(userParams);
+	  },
+	  checkForUser: function () {
+	    SessionUtil.checkForSignIn();
+	  },
+	  receiveUserSignIn: function (userData) {
+	    AppDispatcher.dispatch({
 	      actionType: SessionConstants.USER_SIGN_IN,
+	      data: userData
+	    });
+	  },
+	  receiveUserSignUp: function (userData) {
+	    AppDispatcher.dispatch({
+	      actionType: SessionConstants.USER_SIGN_UP,
 	      data: userData
 	    });
 	  }
@@ -31581,20 +31613,29 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var SessionActions = __webpack_require__(237);
-	var Dispatcher = __webpack_require__(215);
 	var SessionConstants = __webpack_require__(240);
 	
 	var SessionUtil = {
+	  signUpUser: function (userParams) {
+	    $.ajax({
+	      url: "/api/users",
+	      type: "POST",
+	      data: userParams,
+	      success: function (data) {
+	        SessionActions.receiveUserSignUp(data);
+	      },
+	      error: function (data) {
+	        console.log("Incorrect Details");
+	      }
+	    });
+	  },
 	  signInUser: function (userParams) {
 	    $.ajax({
 	      url: "/api/session",
 	      type: "POST",
 	      data: userParams,
 	      success: function (data) {
-	        Dispatcher.dispatch({
-	          actionType: SessionConstants.USER_SIGN_IN,
-	          data: data
-	        });
+	        SessionActions.receiveUserSignIn(data);
 	      },
 	      error: function (data) {
 	        console.log("Incorrect Details");
@@ -31606,10 +31647,8 @@
 	      url: "/api/session/new",
 	      type: "GET",
 	      success: function (data) {
-	        Dispatcher.dispatch({
-	          actionType: SessionConstants.USER_SIGN_IN,
-	          data: data
-	        });
+	        debugger;
+	        SessionActions.receiveUserSignIn(data);
 	      },
 	      error: function (data) {
 	        console.log("Incorrect Details");
@@ -31626,10 +31665,94 @@
 /***/ function(module, exports) {
 
 	var SessionConstants = {
-	  USER_SIGN_IN: "USER_SIGN_IN"
+	  USER_SIGN_IN: "USER_SIGN_IN",
+	  USER_SIGN_UP: "USER_SIGN_UP"
 	};
 	
 	module.exports = SessionConstants;
+
+/***/ },
+/* 241 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SessionStore = __webpack_require__(214);
+	
+	var Header = React.createClass({
+	  displayName: 'Header',
+	
+	  getInitialState: function () {
+	    return {
+	      currentUser: SessionStore.currentUser()
+	    };
+	  },
+	  onSessionChange: function () {
+	    this.setState({ currentUser: SessionStore.currentUser() });
+	  },
+	  componentDidMount: function () {
+	    SessionStore.addListener(this.onSessionChange);
+	  },
+	  userDropdown: function () {
+	    if (SessionStore.loggedIn()) {
+	      return React.createElement(
+	        'div',
+	        { className: 'btn-group nav navbar-nav navbar-right' },
+	        React.createElement(
+	          'button',
+	          { className: 'btn btn-default btn-sm dropdown-toggle', type: 'button', 'data-toggle': 'dropdown', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
+	          'Sign Out ',
+	          React.createElement('span', { className: 'caret' })
+	        ),
+	        React.createElement('ul', { className: 'dropdown-menu' })
+	      );
+	    }
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'nav',
+	      { className: 'navbar navbar-default navbar-fixed-top' },
+	      React.createElement(
+	        'div',
+	        { className: 'navbar-header' },
+	        React.createElement(
+	          'a',
+	          { className: 'navbar-brand', href: '#' },
+	          'WebSiteName'
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { id: 'navbarCollapse', className: 'collapse navbar-collapse' },
+	        React.createElement(
+	          'form',
+	          { role: 'search', className: 'navbar-form navbar-left' },
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement('input', { type: 'text', placeholder: 'Search', className: 'form-control' })
+	          )
+	        ),
+	        this.userDropdown()
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = Header;
+	
+	// <div className="container">
+	//   <div className="navbar-header">
+	//     <a className="navbar-brand" href="#">WebSiteName</a>
+	//   </div>
+	//   <div class="col-lg-6">
+	//     <div class="input-group">
+	//       <input type="text" class="form-control" placeholder="Search for..."/>
+	//       <span class="input-group-btn">
+	//         <button class="btn btn-default" type="button">Go!</button>
+	//       </span>
+	//     </div>
+	//   </div>
+	// </div>
 
 /***/ }
 /******/ ]);

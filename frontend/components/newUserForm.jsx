@@ -1,4 +1,5 @@
 var React = require('react');
+var SessionActions = require('../actions/sessionActions.js');
 
 function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
 function containsNumber(str) {
@@ -83,10 +84,17 @@ var NewUserForm = React.createClass({
     }
 
   },
+  handleSubmit: function(e) {
+    e.preventDefault();
+    SessionActions.signUpUser({user:
+      {email: this.state.email,
+       password: this.state.password}
+    });
+  },
   render: function() {
     var csrfToken = $('meta[name=csrf-token]').attr('content');
     return <div>
-      <form action="/users" method="post" className="new-user-form">
+      <form action="/users" method="post" className="new-user-form" onSubmit={this.handleSubmit}>
         <input name="authenticity_token" type="hidden" value={csrfToken} />
         <label>Email
           <input type="text" name="user[email]" value={this.state.email}

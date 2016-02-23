@@ -27,10 +27,8 @@ var NewSessionForm = React.createClass({
     });
   },
   render: function() {
-    var csrfToken = $('meta[name=csrf-token]').attr('content');
     return <div>
       <form action="/session" method="post" className="new-session-form" onSubmit={this.handleSubmit} >
-        <input name="authenticity_token" type="hidden" value={csrfToken} />
         <label>Email
           <input type="text" name="user[email]" value={this.state.email}
               onChange={this.emailChange} />

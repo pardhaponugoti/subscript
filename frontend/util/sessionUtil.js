@@ -1,18 +1,27 @@
 var SessionActions = require('../actions/sessionActions.js');
-var Dispatcher = require('../dispatcher.js');
 var SessionConstants = require('../constants/sessionConstants.js');
 
 var SessionUtil = {
+  signUpUser : function(userParams) {
+    $.ajax({
+      url : "/api/users",
+      type: "POST",
+      data: userParams,
+      success: function(data) {
+        SessionActions.receiveUserSignUp(data);
+      },
+      error: function(data) {
+        console.log("Incorrect Details");
+      }
+    });
+  },
   signInUser : function(userParams) {
     $.ajax({
       url : "/api/session",
       type: "POST",
       data: userParams,
       success: function(data) {
-        Dispatcher.dispatch({
-          actionType: SessionConstants.USER_SIGN_IN,
-          data: data
-        });
+        SessionActions.receiveUserSignIn(data);
       },
       error: function(data) {
         console.log("Incorrect Details");
@@ -24,10 +33,8 @@ var SessionUtil = {
       url : "/api/session/new",
       type: "GET",
       success: function(data) {
-        Dispatcher.dispatch({
-          actionType: SessionConstants.USER_SIGN_IN,
-          data: data
-        });
+        debugger;
+        SessionActions.receiveUserSignIn(data);
       },
       error: function(data) {
         console.log("Incorrect Details");

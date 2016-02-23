@@ -1,6 +1,8 @@
 <% if current_user %>
   <p>Logged in as: <%= current_user.email %></p>
   <%= button_to "Sign Out", api_session_url, method: :delete %>
-<% end %>
+<% else %>
+  <%= link_to "Log In", "/#/session/new"%>
+<% end  %>
 
 <div id='root'></div>
