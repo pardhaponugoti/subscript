@@ -12,10 +12,17 @@ var App = React.createClass({
     SessionBackendActions.checkForUser();
   },
   componentDidMount: function() {
-    SessionStore.addListener(this.onSessionChange);
+    this.listenerToken = SessionStore.addListener(this.onSessionChange);
   },
   onSessionChange: function() {
-    this.history.push('/');
+    if (SessionStore.loggedIn()) {
+      this.history.push("users/" + SessionStore.currentUser().id);
+    } else {
+      this.history.push("/");
+    }
+  },
+  componentWillUnmount: function() {
+    this.listenerToken.remove();
   },
   render: function() {
     return <div id='App'>

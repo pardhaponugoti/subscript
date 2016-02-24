@@ -6,7 +6,7 @@ class Api::UsersController < ApplicationController
       login_user!(user)
       render json: user
     else
-      render json: {status: 404}
+      render json: { status: 404 }
     end
   end
 

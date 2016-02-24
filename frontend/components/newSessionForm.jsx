@@ -1,8 +1,11 @@
 var React = require('react');
 var SessionBackendActions = require('../actions/sessionBackendActions.js');
+var SessionStore = require('../stores/session.js');
+var History = require('react-router').History;
 
 
 var NewSessionForm = React.createClass({
+  mixins: [History],
   getInitialState: function() {
     return {
       email : "" ,
@@ -25,6 +28,11 @@ var NewSessionForm = React.createClass({
       {email: this.state.email,
        password: this.state.password}
     });
+  },
+  componentDidMount: function() {
+    if (SessionStore.loggedIn()) {
+      this.history.push("/");
+    }
   },
   render: function() {
     return <div>

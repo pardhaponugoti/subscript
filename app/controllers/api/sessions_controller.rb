@@ -14,7 +14,7 @@ class Api::SessionsController < ApplicationController
     )
 
     if user.nil?
-      render status: 404
+      render json: { status: 404 }
     else
       login_user!(user)
       render json: user
@@ -24,9 +24,9 @@ class Api::SessionsController < ApplicationController
   def destroy
     logout_user!
     if current_user.nil?
-      render json: {message: "successful sign out"}
+      render json: { message: "successful sign out" }
     else
-      render status: 404
+      render json: { status: 404 }
     end
   end
 

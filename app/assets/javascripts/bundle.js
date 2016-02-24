@@ -24459,10 +24459,17 @@
 	    SessionBackendActions.checkForUser();
 	  },
 	  componentDidMount: function () {
-	    SessionStore.addListener(this.onSessionChange);
+	    this.listenerToken = SessionStore.addListener(this.onSessionChange);
 	  },
 	  onSessionChange: function () {
-	    this.history.push('/');
+	    if (SessionStore.loggedIn()) {
+	      this.history.push("users/" + SessionStore.currentUser().id);
+	    } else {
+	      this.history.push("/");
+	    }
+	  },
+	  componentWillUnmount: function () {
+	    this.listenerToken.remove();
 	  },
 	  render: function () {
 	    return React.createElement(
@@ -24499,17 +24506,14 @@
 	SessionStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case SessionConstants.USER_SIGN_IN:
-	      console.log("signing in user");
 	      _currentUser = payload.data;
 	      SessionStore.__emitChange();
 	      break;
 	    case SessionConstants.USER_SIGN_UP:
-	      console.log("signing up user");
 	      _currentUser = payload.data;
 	      SessionStore.__emitChange();
 	      break;
 	    case SessionConstants.USER_SIGN_OUT:
-	      console.log("signing out user");
 	      _currentUser = {};
 	      SessionStore.__emitChange();
 	      break;
@@ -31731,10 +31735,13 @@
 
 	var React = __webpack_require__(1);
 	var SessionBackendActions = __webpack_require__(234);
+	var SessionStore = __webpack_require__(211);
+	var History = __webpack_require__(159).History;
 	
 	var NewSessionForm = React.createClass({
 	  displayName: 'NewSessionForm',
 	
+	  mixins: [History],
 	  getInitialState: function () {
 	    return {
 	      email: "",
@@ -31756,6 +31763,11 @@
 	    SessionBackendActions.signInUser({ user: { email: this.state.email,
 	        password: this.state.password }
 	    });
+	  },
+	  componentDidMount: function () {
+	    if (SessionStore.loggedIn()) {
+	      this.history.push("/");
+	    }
 	  },
 	  render: function () {
 	    return React.createElement(
@@ -31816,7 +31828,22 @@
 	    };
 	  },
 	
-	  render: function () {}
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        { className: 'col-md-4' },
+	        'LEFT 1/3'
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'col-md-8' },
+	        'RIGHT 2/3'
+	      )
+	    );
+	  }
 	
 	});
 	
