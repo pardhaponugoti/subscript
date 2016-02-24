@@ -1,17 +1,26 @@
-var SessionActions = require('../actions/sessionActions.js');
+var SessionFrontendActions = require('../actions/sessionFrontendActions.js');
 var SessionConstants = require('../constants/sessionConstants.js');
 
 var SessionUtil = {
+  // on page load
+  checkForSignIn : function() {
+    $.ajax({
+      url : "/api/session/new",
+      type: "GET",
+      success: function(data) {
+        SessionFrontendActions.receiveUserSignIn(data);
+      }
+    });
+  },
+
+  // session create and users create
   signUpUser : function(userParams) {
     $.ajax({
       url : "/api/users",
       type: "POST",
       data: userParams,
       success: function(data) {
-        SessionActions.receiveUserSignUp(data);
-      },
-      error: function(data) {
-        console.log("Incorrect Details");
+        SessionFrontendActions.receiveUserSignUp(data);
       }
     });
   },
@@ -21,26 +30,22 @@ var SessionUtil = {
       type: "POST",
       data: userParams,
       success: function(data) {
-        SessionActions.receiveUserSignIn(data);
-      },
-      error: function(data) {
-        console.log("Incorrect Details");
+        SessionFrontendActions.receiveUserSignIn(data);
       }
     });
   },
-  checkForSignIn : function() {
+
+  // session destroy
+  signOutUser : function() {
     $.ajax({
-      url : "/api/session/new",
-      type: "GET",
+      url : "/api/session",
+      type: "DELETE",
       success: function(data) {
-        debugger;
-        SessionActions.receiveUserSignIn(data);
-      },
-      error: function(data) {
-        console.log("Incorrect Details");
+        console.log(data.message);
+        SessionFrontendActions.signOutUser();
       }
     });
-  }
+  },
 
 };
 

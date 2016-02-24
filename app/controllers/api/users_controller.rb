@@ -1,12 +1,12 @@
 class Api::UsersController < ApplicationController
 
   def create
-    @user = User.new(user_params)
-    if @user.save
-      login_user!(@user)
+    user = User.new(user_params)
+    if user.save
+      login_user!(user)
       render json: user
     else
-      render status: 404
+      render json: {status: 404}
     end
   end
 

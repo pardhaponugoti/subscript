@@ -1,5 +1,5 @@
 var React = require('react');
-var SessionActions = require('../actions/sessionActions.js');
+var SessionBackendActions = require('../actions/sessionBackendActions.js');
 
 function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
 function containsNumber(str) {
@@ -86,7 +86,7 @@ var NewUserForm = React.createClass({
   },
   handleSubmit: function(e) {
     e.preventDefault();
-    SessionActions.signUpUser({user:
+    SessionBackendActions.signUpUser({user:
       {email: this.state.email,
        password: this.state.password}
     });

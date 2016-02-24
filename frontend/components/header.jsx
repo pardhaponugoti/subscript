@@ -1,7 +1,12 @@
 var React = require('react');
+var History = require('react-router').History;
+
+var SessionBackendActions = require('../actions/sessionBackendActions.js');
 var SessionStore = require('../stores/session.js');
 
+
 var Header = React.createClass({
+  mixins: [History],
   getInitialState: function() {
     return {
       currentUser: SessionStore.currentUser()
@@ -13,17 +18,30 @@ var Header = React.createClass({
   componentDidMount: function() {
     SessionStore.addListener(this.onSessionChange);
   },
+  signOut: function() {
+    SessionBackendActions.signOutUser();
+  },
+  signIn: function() {
+    this.history.push('session/new');
+  },
   userDropdown: function() {
     if (SessionStore.loggedIn()) {
       return <div className="btn-group nav navbar-nav navbar-right">
-        <button className="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Sign Out <span className="caret"></span>
+        <button className="btn btn-default btn-sm dropdown-toggle" type="button" onClick={this.signOut}>
+          {SessionStore.currentUser().email} <span className="caret"></span>
+        </button>
+        <ul className="dropdown-menu">
+        </ul>
+      </div>;
+    } else {
+      return <div className="btn-group nav navbar-nav navbar-right">
+        <button className="btn btn-default btn-sm" type="button" onClick={this.signIn}>
+          Sign In <span className="caret"></span>
         </button>
         <ul className="dropdown-menu">
         </ul>
       </div>;
     }
-
   },
   render: function() {
     return <nav className="navbar navbar-default navbar-fixed-top">

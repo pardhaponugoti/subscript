@@ -1,5 +1,5 @@
 var React = require('react');
-var SessionActions = require('../actions/sessionActions.js');
+var SessionBackendActions = require('../actions/sessionBackendActions.js');
 
 
 var NewSessionForm = React.createClass({
@@ -21,7 +21,7 @@ var NewSessionForm = React.createClass({
   },
   handleSubmit: function(e) {
     e.preventDefault();
-    SessionActions.signInUser({user:
+    SessionBackendActions.signInUser({user:
       {email: this.state.email,
        password: this.state.password}
     });

@@ -1,25 +1,21 @@
 var React = require('react');
 var History = require('react-router').History;
 var SessionStore = require('../stores/session.js');
-var SessionActions = require('../actions/sessionActions.js');
+var SessionBackendActions = require('../actions/sessionBackendActions.js');
 var Header = require('./header.jsx');
 
-// window.SessionStore = SessionStore;
-// window.SessionActions = SessionActions;
+window.SessionStore = SessionStore;
 
 var App = React.createClass({
   mixins: [History],
   componentWillMount: function() {
-    SessionActions.checkForUser();
+    SessionBackendActions.checkForUser();
   },
   componentDidMount: function() {
     SessionStore.addListener(this.onSessionChange);
-    if (!SessionStore.loggedIn()) {
-      this.history.push('#/session/new');
-    }
   },
   onSessionChange: function() {
-    this.history.push('#/');
+    this.history.push('/');
   },
   render: function() {
     return <div id='App'>

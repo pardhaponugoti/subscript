@@ -50,17 +50,18 @@
 	var Route = __webpack_require__(159).Route;
 	var IndexRoute = __webpack_require__(159).IndexRoute;
 	
-	var App = __webpack_require__(212);
-	// var CurrentUserPage = require('./components/currentUserPage.jsx');
-	var NewUserForm = __webpack_require__(210);
-	var NewSessionForm = __webpack_require__(211);
+	var App = __webpack_require__(210);
+	var UserShowPage = __webpack_require__(241);
+	var NewUserForm = __webpack_require__(238);
+	var NewSessionForm = __webpack_require__(239);
 	
-	// <IndexRoute component={CurrentUserPage}/>
 	var routes = React.createElement(
 	  Route,
 	  { path: '/', component: App },
+	  'ß',
 	  React.createElement(Route, { path: 'session/new', component: NewSessionForm }),
-	  React.createElement(Route, { path: 'users/new', component: NewUserForm })
+	  React.createElement(Route, { path: 'users/new', component: NewUserForm }),
+	  React.createElement(Route, { path: 'users/:userId', component: UserShowPage })
 	);
 	
 	document.addEventListener("DOMContentLoaded", function () {
@@ -70,20 +71,6 @@
 	    routes
 	  ), document.getElementById('root'));
 	});
-	
-	// New User Form
-
-	// document.addEventListener("DOMContentLoaded", function() {
-	//   ReactDOM.render(<NewUserForm/>, document.getElementById('new_user_form'));
-	// });
-
-	// New Session Form
-
-	// document.addEventListener("DOMContentLoaded", function() {
-	//   ReactDOM.render(<NewSessionForm/>, document.getElementById('new_session_form'));
-	// });
-
-	// App
 
 /***/ },
 /* 1 */
@@ -24457,303 +24444,25 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var SessionActions = __webpack_require__(237);
-	
-	function isNumeric(n) {
-	  return !isNaN(parseFloat(n)) && isFinite(n);
-	}
-	function containsNumber(str) {
-	  var containsNum = false;
-	  for (var i = 0; i < str.length; i++) {
-	    if (isNumeric(str[i])) {
-	      containsNum = true;
-	    }
-	  }
-	  return containsNum;
-	}
-	
-	var NewUserForm = React.createClass({
-	  displayName: 'NewUserForm',
-	
-	  getInitialState: function () {
-	    return {
-	      email: "",
-	      password: "",
-	      confirmPassword: ""
-	    };
-	  },
-	  emailChange: function (e) {
-	    this.setState({
-	      email: e.target.value
-	    });
-	  },
-	  passwordChange: function (e) {
-	    this.setState({
-	      password: e.target.value
-	    });
-	  },
-	  confirmPasswordChange: function (e) {
-	    this.setState({
-	      confirmPassword: e.target.value
-	    });
-	  },
-	  passwordUl: function () {
-	    var passwordErrors = [];
-	    if (this.state.password.length < 8 && this.state.password.length > 0) {
-	      passwordErrors.push(React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'strong',
-	          null,
-	          React.createElement(
-	            'font',
-	            { color: 'red' },
-	            'Password must be at least 8 characters long'
-	          )
-	        )
-	      ));
-	    } else if (this.state.password.length > 0) {
-	      passwordErrors.push(React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'font',
-	          { color: 'green' },
-	          'Password must be at least 8 characters long'
-	        )
-	      ));
-	    }
-	
-	    if (this.state.password.length > 0 && containsNumber(this.state.password)) {
-	      passwordErrors.push(React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'font',
-	          { color: 'green' },
-	          'Password must contain a number'
-	        )
-	      ));
-	    } else if (this.state.password.length > 0) {
-	      passwordErrors.push(React.createElement(
-	        'li',
-	        null,
-	        React.createElement(
-	          'strong',
-	          null,
-	          React.createElement(
-	            'font',
-	            { color: 'red' },
-	            'Password must contain a number'
-	          )
-	        )
-	      ));
-	    }
-	
-	    if (passwordErrors.length === 0) {
-	      return;
-	    } else {
-	      return React.createElement(
-	        'ul',
-	        null,
-	        passwordErrors.map(function (error) {
-	          return error;
-	        })
-	      );
-	    }
-	  },
-	  matchedPassword: function () {
-	    if (this.state.password !== "" && this.state.password.length > 7 && containsNumber(this.state.password)) {
-	      if (this.state.password !== this.state.confirmPassword && this.state.confirmPassword !== "") {
-	        return React.createElement(
-	          'div',
-	          null,
-	          React.createElement(
-	            'strong',
-	            null,
-	            React.createElement(
-	              'font',
-	              { color: 'red' },
-	              'Passwords do not match!'
-	            )
-	          )
-	        );
-	      } else if (this.state.confirmPassword !== "" && this.state.confirmPassword === this.state.password) {
-	        return React.createElement(
-	          'div',
-	          null,
-	          React.createElement(
-	            'font',
-	            { color: 'green' },
-	            'Passwords match!'
-	          )
-	        );
-	      }
-	    } else {
-	      return;
-	    }
-	  },
-	  handleSubmit: function (e) {
-	    e.preventDefault();
-	    SessionActions.signUpUser({ user: { email: this.state.email,
-	        password: this.state.password }
-	    });
-	  },
-	  render: function () {
-	    var csrfToken = $('meta[name=csrf-token]').attr('content');
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'form',
-	        { action: '/users', method: 'post', className: 'new-user-form', onSubmit: this.handleSubmit },
-	        React.createElement('input', { name: 'authenticity_token', type: 'hidden', value: csrfToken }),
-	        React.createElement(
-	          'label',
-	          null,
-	          'Email',
-	          React.createElement('input', { type: 'text', name: 'user[email]', value: this.state.email,
-	            onChange: this.emailChange })
-	        ),
-	        React.createElement('br', null),
-	        React.createElement(
-	          'label',
-	          null,
-	          'Password',
-	          React.createElement('input', { type: 'password', name: 'user[password]', value: this.state.password,
-	            onChange: this.passwordChange })
-	        ),
-	        this.passwordUl(),
-	        React.createElement('br', null),
-	        React.createElement(
-	          'label',
-	          null,
-	          'Confirm Password',
-	          React.createElement('input', { type: 'password', value: this.state.confirmPassword,
-	            onChange: this.confirmPasswordChange })
-	        ),
-	        this.matchedPassword(),
-	        React.createElement('br', null),
-	        React.createElement('input', { type: 'submit' })
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        ' Already a user?',
-	        React.createElement(
-	          'a',
-	          { href: '#/session/new' },
-	          'Sign In'
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = NewUserForm;
-
-/***/ },
-/* 211 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var SessionActions = __webpack_require__(237);
-	
-	var NewSessionForm = React.createClass({
-	  displayName: 'NewSessionForm',
-	
-	  getInitialState: function () {
-	    return {
-	      email: "",
-	      password: ""
-	    };
-	  },
-	  emailChange: function (e) {
-	    this.setState({
-	      email: e.target.value
-	    });
-	  },
-	  passwordChange: function (e) {
-	    this.setState({
-	      password: e.target.value
-	    });
-	  },
-	  handleSubmit: function (e) {
-	    e.preventDefault();
-	    SessionActions.signInUser({ user: { email: this.state.email,
-	        password: this.state.password }
-	    });
-	  },
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'form',
-	        { action: '/session', method: 'post', className: 'new-session-form', onSubmit: this.handleSubmit },
-	        React.createElement(
-	          'label',
-	          null,
-	          'Email',
-	          React.createElement('input', { type: 'text', name: 'user[email]', value: this.state.email,
-	            onChange: this.emailChange })
-	        ),
-	        React.createElement('br', null),
-	        React.createElement(
-	          'label',
-	          null,
-	          'Password',
-	          React.createElement('input', { type: 'password', name: 'user[password]', value: this.state.password,
-	            onChange: this.passwordChange })
-	        ),
-	        React.createElement('br', null),
-	        React.createElement('input', { type: 'submit' })
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        ' New User?',
-	        React.createElement(
-	          'a',
-	          { href: '#/users/new' },
-	          'Sign Up'
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = NewSessionForm;
-
-/***/ },
-/* 212 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
 	var History = __webpack_require__(159).History;
-	var SessionStore = __webpack_require__(214);
-	var SessionActions = __webpack_require__(237);
-	var Header = __webpack_require__(241);
+	var SessionStore = __webpack_require__(211);
+	var SessionBackendActions = __webpack_require__(234);
+	var Header = __webpack_require__(237);
 	
-	// window.SessionStore = SessionStore;
-	// window.SessionActions = SessionActions;
+	window.SessionStore = SessionStore;
 	
 	var App = React.createClass({
 	  displayName: 'App',
 	
 	  mixins: [History],
 	  componentWillMount: function () {
-	    SessionActions.checkForUser();
+	    SessionBackendActions.checkForUser();
 	  },
 	  componentDidMount: function () {
 	    SessionStore.addListener(this.onSessionChange);
-	    if (!SessionStore.loggedIn()) {
-	      this.history.push('#/session/new');
-	    }
 	  },
 	  onSessionChange: function () {
-	    this.history.push('#/');
+	    this.history.push('/');
 	  },
 	  render: function () {
 	    return React.createElement(
@@ -24776,26 +24485,32 @@
 	module.exports = App;
 
 /***/ },
-/* 213 */,
-/* 214 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(217).Store;
-	var AppDispatcher = __webpack_require__(215);
+	var Store = __webpack_require__(212).Store;
+	var AppDispatcher = __webpack_require__(230);
 	var SessionStore = new Store(AppDispatcher);
 	
-	var SessionConstants = __webpack_require__(240);
+	var SessionConstants = __webpack_require__(233);
 	
 	var _currentUser = {};
 	
 	SessionStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case SessionConstants.USER_SIGN_IN:
+	      console.log("signing in user");
 	      _currentUser = payload.data;
 	      SessionStore.__emitChange();
 	      break;
 	    case SessionConstants.USER_SIGN_UP:
+	      console.log("signing up user");
 	      _currentUser = payload.data;
+	      SessionStore.__emitChange();
+	      break;
+	    case SessionConstants.USER_SIGN_OUT:
+	      console.log("signing out user");
+	      _currentUser = {};
 	      SessionStore.__emitChange();
 	      break;
 	  }
@@ -24812,15 +24527,7 @@
 	module.exports = SessionStore;
 
 /***/ },
-/* 215 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Dispatcher = __webpack_require__(235).Dispatcher;
-	module.exports = new Dispatcher();
-
-/***/ },
-/* 216 */,
-/* 217 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -24832,15 +24539,15 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 	
-	module.exports.Container = __webpack_require__(218);
-	module.exports.MapStore = __webpack_require__(222);
-	module.exports.Mixin = __webpack_require__(234);
-	module.exports.ReduceStore = __webpack_require__(223);
-	module.exports.Store = __webpack_require__(224);
+	module.exports.Container = __webpack_require__(213);
+	module.exports.MapStore = __webpack_require__(217);
+	module.exports.Mixin = __webpack_require__(229);
+	module.exports.ReduceStore = __webpack_require__(218);
+	module.exports.Store = __webpack_require__(219);
 
 
 /***/ },
-/* 218 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -24862,10 +24569,10 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxStoreGroup = __webpack_require__(219);
+	var FluxStoreGroup = __webpack_require__(214);
 	
-	var invariant = __webpack_require__(220);
-	var shallowEqual = __webpack_require__(221);
+	var invariant = __webpack_require__(215);
+	var shallowEqual = __webpack_require__(216);
 	
 	var DEFAULT_OPTIONS = {
 	  pure: true,
@@ -25023,7 +24730,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 219 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25042,7 +24749,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var invariant = __webpack_require__(220);
+	var invariant = __webpack_require__(215);
 	
 	/**
 	 * FluxStoreGroup allows you to execute a callback on every dispatch after
@@ -25104,7 +24811,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 220 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25159,7 +24866,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 221 */
+/* 216 */
 /***/ function(module, exports) {
 
 	/**
@@ -25214,7 +24921,7 @@
 	module.exports = shallowEqual;
 
 /***/ },
-/* 222 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25235,10 +24942,10 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxReduceStore = __webpack_require__(223);
-	var Immutable = __webpack_require__(233);
+	var FluxReduceStore = __webpack_require__(218);
+	var Immutable = __webpack_require__(228);
 	
-	var invariant = __webpack_require__(220);
+	var invariant = __webpack_require__(215);
 	
 	/**
 	 * This is a simple store. It allows caching key value pairs. An implementation
@@ -25364,7 +25071,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 223 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25385,10 +25092,10 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxStore = __webpack_require__(224);
+	var FluxStore = __webpack_require__(219);
 	
-	var abstractMethod = __webpack_require__(232);
-	var invariant = __webpack_require__(220);
+	var abstractMethod = __webpack_require__(227);
+	var invariant = __webpack_require__(215);
 	
 	var FluxReduceStore = (function (_FluxStore) {
 	  _inherits(FluxReduceStore, _FluxStore);
@@ -25471,7 +25178,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 224 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25490,11 +25197,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _require = __webpack_require__(225);
+	var _require = __webpack_require__(220);
 	
 	var EventEmitter = _require.EventEmitter;
 	
-	var invariant = __webpack_require__(220);
+	var invariant = __webpack_require__(215);
 	
 	/**
 	 * This class should be extended by the stores in your application, like so:
@@ -25654,7 +25361,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 225 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -25667,14 +25374,14 @@
 	 */
 	
 	var fbemitter = {
-	  EventEmitter: __webpack_require__(226)
+	  EventEmitter: __webpack_require__(221)
 	};
 	
 	module.exports = fbemitter;
 
 
 /***/ },
-/* 226 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25693,11 +25400,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var EmitterSubscription = __webpack_require__(227);
-	var EventSubscriptionVendor = __webpack_require__(229);
+	var EmitterSubscription = __webpack_require__(222);
+	var EventSubscriptionVendor = __webpack_require__(224);
 	
-	var emptyFunction = __webpack_require__(231);
-	var invariant = __webpack_require__(230);
+	var emptyFunction = __webpack_require__(226);
+	var invariant = __webpack_require__(225);
 	
 	/**
 	 * @class BaseEventEmitter
@@ -25871,7 +25578,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 227 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -25892,7 +25599,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var EventSubscription = __webpack_require__(228);
+	var EventSubscription = __webpack_require__(223);
 	
 	/**
 	 * EmitterSubscription represents a subscription with listener and context data.
@@ -25924,7 +25631,7 @@
 	module.exports = EmitterSubscription;
 
 /***/ },
-/* 228 */
+/* 223 */
 /***/ function(module, exports) {
 
 	/**
@@ -25978,7 +25685,7 @@
 	module.exports = EventSubscription;
 
 /***/ },
-/* 229 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25997,7 +25704,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var invariant = __webpack_require__(230);
+	var invariant = __webpack_require__(225);
 	
 	/**
 	 * EventSubscriptionVendor stores a set of EventSubscriptions that are
@@ -26087,7 +25794,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 230 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26142,7 +25849,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 231 */
+/* 226 */
 /***/ function(module, exports) {
 
 	/**
@@ -26184,7 +25891,7 @@
 	module.exports = emptyFunction;
 
 /***/ },
-/* 232 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26201,7 +25908,7 @@
 	
 	'use strict';
 	
-	var invariant = __webpack_require__(220);
+	var invariant = __webpack_require__(215);
 	
 	function abstractMethod(className, methodName) {
 	   true ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Subclasses of %s must override %s() with their own implementation.', className, methodName) : invariant(false) : undefined;
@@ -26211,7 +25918,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 233 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31198,7 +30905,7 @@
 	}));
 
 /***/ },
-/* 234 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -31215,9 +30922,9 @@
 	
 	'use strict';
 	
-	var FluxStoreGroup = __webpack_require__(219);
+	var FluxStoreGroup = __webpack_require__(214);
 	
-	var invariant = __webpack_require__(220);
+	var invariant = __webpack_require__(215);
 	
 	/**
 	 * `FluxContainer` should be preferred over this mixin, but it requires using
@@ -31321,7 +31028,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 235 */
+/* 230 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Dispatcher = __webpack_require__(231).Dispatcher;
+	module.exports = new Dispatcher();
+
+/***/ },
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31333,11 +31047,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 	
-	module.exports.Dispatcher = __webpack_require__(236);
+	module.exports.Dispatcher = __webpack_require__(232);
 
 
 /***/ },
-/* 236 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -31359,7 +31073,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var invariant = __webpack_require__(220);
+	var invariant = __webpack_require__(215);
 	
 	var _prefix = 'ID_';
 	
@@ -31574,58 +31288,73 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 237 */
+/* 233 */
+/***/ function(module, exports) {
+
+	var SessionConstants = {
+	  USER_SIGN_IN: "USER_SIGN_IN",
+	  USER_SIGN_UP: "USER_SIGN_UP",
+	  USER_SIGN_OUT: "USER_SIGN_OUT"
+	};
+	
+	module.exports = SessionConstants;
+
+/***/ },
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SessionUtil = __webpack_require__(239);
-	var AppDispatcher = __webpack_require__(215);
-	var SessionConstants = __webpack_require__(240);
+	var SessionUtil = __webpack_require__(235);
 	
-	var SessionActions = {
+	var SessionBackendActions = {
+	  // on site load
+	  checkForUser: function () {
+	    SessionUtil.checkForSignIn();
+	  },
+	
+	  // session create, users create
 	  signInUser: function (userParams) {
 	    SessionUtil.signInUser(userParams);
 	  },
 	  signUpUser: function (userParams) {
 	    SessionUtil.signUpUser(userParams);
 	  },
-	  checkForUser: function () {
-	    SessionUtil.checkForSignIn();
-	  },
-	  receiveUserSignIn: function (userData) {
-	    AppDispatcher.dispatch({
-	      actionType: SessionConstants.USER_SIGN_IN,
-	      data: userData
-	    });
-	  },
-	  receiveUserSignUp: function (userData) {
-	    AppDispatcher.dispatch({
-	      actionType: SessionConstants.USER_SIGN_UP,
-	      data: userData
-	    });
+	
+	  //session destroy
+	  signOutUser: function () {
+	    SessionUtil.signOutUser();
 	  }
+	
 	};
 	
-	module.exports = SessionActions;
+	module.exports = SessionBackendActions;
 
 /***/ },
-/* 238 */,
-/* 239 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SessionActions = __webpack_require__(237);
-	var SessionConstants = __webpack_require__(240);
+	var SessionFrontendActions = __webpack_require__(236);
+	var SessionConstants = __webpack_require__(233);
 	
 	var SessionUtil = {
+	  // on page load
+	  checkForSignIn: function () {
+	    $.ajax({
+	      url: "/api/session/new",
+	      type: "GET",
+	      success: function (data) {
+	        SessionFrontendActions.receiveUserSignIn(data);
+	      }
+	    });
+	  },
+	
+	  // session create and users create
 	  signUpUser: function (userParams) {
 	    $.ajax({
 	      url: "/api/users",
 	      type: "POST",
 	      data: userParams,
 	      success: function (data) {
-	        SessionActions.receiveUserSignUp(data);
-	      },
-	      error: function (data) {
-	        console.log("Incorrect Details");
+	        SessionFrontendActions.receiveUserSignUp(data);
 	      }
 	    });
 	  },
@@ -31635,23 +31364,19 @@
 	      type: "POST",
 	      data: userParams,
 	      success: function (data) {
-	        SessionActions.receiveUserSignIn(data);
-	      },
-	      error: function (data) {
-	        console.log("Incorrect Details");
+	        SessionFrontendActions.receiveUserSignIn(data);
 	      }
 	    });
 	  },
-	  checkForSignIn: function () {
+	
+	  // session destroy
+	  signOutUser: function () {
 	    $.ajax({
-	      url: "/api/session/new",
-	      type: "GET",
+	      url: "/api/session",
+	      type: "DELETE",
 	      success: function (data) {
-	        debugger;
-	        SessionActions.receiveUserSignIn(data);
-	      },
-	      error: function (data) {
-	        console.log("Incorrect Details");
+	        console.log(data.message);
+	        SessionFrontendActions.signOutUser();
 	      }
 	    });
 	  }
@@ -31661,26 +31386,52 @@
 	module.exports = SessionUtil;
 
 /***/ },
-/* 240 */
-/***/ function(module, exports) {
+/* 236 */
+/***/ function(module, exports, __webpack_require__) {
 
-	var SessionConstants = {
-	  USER_SIGN_IN: "USER_SIGN_IN",
-	  USER_SIGN_UP: "USER_SIGN_UP"
+	var AppDispatcher = __webpack_require__(230);
+	var SessionConstants = __webpack_require__(233);
+	
+	var sessionFrontendActions = {
+	  // session create, users create
+	  receiveUserSignUp: function (userData) {
+	    AppDispatcher.dispatch({
+	      actionType: SessionConstants.USER_SIGN_UP,
+	      data: userData
+	    });
+	  },
+	  receiveUserSignIn: function (userParams) {
+	    AppDispatcher.dispatch({
+	      actionType: SessionConstants.USER_SIGN_IN,
+	      data: userParams
+	    });
+	  },
+	
+	  // session destroy
+	  signOutUser: function () {
+	    console.log("Actions");
+	    AppDispatcher.dispatch({
+	      actionType: SessionConstants.USER_SIGN_OUT
+	    });
+	  }
 	};
 	
-	module.exports = SessionConstants;
+	module.exports = sessionFrontendActions;
 
 /***/ },
-/* 241 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var SessionStore = __webpack_require__(214);
+	var History = __webpack_require__(159).History;
+	
+	var SessionBackendActions = __webpack_require__(234);
+	var SessionStore = __webpack_require__(211);
 	
 	var Header = React.createClass({
 	  displayName: 'Header',
 	
+	  mixins: [History],
 	  getInitialState: function () {
 	    return {
 	      currentUser: SessionStore.currentUser()
@@ -31692,6 +31443,12 @@
 	  componentDidMount: function () {
 	    SessionStore.addListener(this.onSessionChange);
 	  },
+	  signOut: function () {
+	    SessionBackendActions.signOutUser();
+	  },
+	  signIn: function () {
+	    this.history.push('session/new');
+	  },
 	  userDropdown: function () {
 	    if (SessionStore.loggedIn()) {
 	      return React.createElement(
@@ -31699,8 +31456,21 @@
 	        { className: 'btn-group nav navbar-nav navbar-right' },
 	        React.createElement(
 	          'button',
-	          { className: 'btn btn-default btn-sm dropdown-toggle', type: 'button', 'data-toggle': 'dropdown', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
-	          'Sign Out ',
+	          { className: 'btn btn-default btn-sm dropdown-toggle', type: 'button', onClick: this.signOut },
+	          SessionStore.currentUser().email,
+	          ' ',
+	          React.createElement('span', { className: 'caret' })
+	        ),
+	        React.createElement('ul', { className: 'dropdown-menu' })
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        { className: 'btn-group nav navbar-nav navbar-right' },
+	        React.createElement(
+	          'button',
+	          { className: 'btn btn-default btn-sm', type: 'button', onClick: this.signIn },
+	          'Sign In ',
 	          React.createElement('span', { className: 'caret' })
 	        ),
 	        React.createElement('ul', { className: 'dropdown-menu' })
@@ -31753,6 +31523,304 @@
 	//     </div>
 	//   </div>
 	// </div>
+
+/***/ },
+/* 238 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SessionBackendActions = __webpack_require__(234);
+	
+	function isNumeric(n) {
+	  return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+	function containsNumber(str) {
+	  var containsNum = false;
+	  for (var i = 0; i < str.length; i++) {
+	    if (isNumeric(str[i])) {
+	      containsNum = true;
+	    }
+	  }
+	  return containsNum;
+	}
+	
+	var NewUserForm = React.createClass({
+	  displayName: 'NewUserForm',
+	
+	  getInitialState: function () {
+	    return {
+	      email: "",
+	      password: "",
+	      confirmPassword: ""
+	    };
+	  },
+	  emailChange: function (e) {
+	    this.setState({
+	      email: e.target.value
+	    });
+	  },
+	  passwordChange: function (e) {
+	    this.setState({
+	      password: e.target.value
+	    });
+	  },
+	  confirmPasswordChange: function (e) {
+	    this.setState({
+	      confirmPassword: e.target.value
+	    });
+	  },
+	  passwordUl: function () {
+	    var passwordErrors = [];
+	    if (this.state.password.length < 8 && this.state.password.length > 0) {
+	      passwordErrors.push(React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'strong',
+	          null,
+	          React.createElement(
+	            'font',
+	            { color: 'red' },
+	            'Password must be at least 8 characters long'
+	          )
+	        )
+	      ));
+	    } else if (this.state.password.length > 0) {
+	      passwordErrors.push(React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'font',
+	          { color: 'green' },
+	          'Password must be at least 8 characters long'
+	        )
+	      ));
+	    }
+	
+	    if (this.state.password.length > 0 && containsNumber(this.state.password)) {
+	      passwordErrors.push(React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'font',
+	          { color: 'green' },
+	          'Password must contain a number'
+	        )
+	      ));
+	    } else if (this.state.password.length > 0) {
+	      passwordErrors.push(React.createElement(
+	        'li',
+	        null,
+	        React.createElement(
+	          'strong',
+	          null,
+	          React.createElement(
+	            'font',
+	            { color: 'red' },
+	            'Password must contain a number'
+	          )
+	        )
+	      ));
+	    }
+	
+	    if (passwordErrors.length === 0) {
+	      return;
+	    } else {
+	      return React.createElement(
+	        'ul',
+	        null,
+	        passwordErrors.map(function (error) {
+	          return error;
+	        })
+	      );
+	    }
+	  },
+	  matchedPassword: function () {
+	    if (this.state.password !== "" && this.state.password.length > 7 && containsNumber(this.state.password)) {
+	      if (this.state.password !== this.state.confirmPassword && this.state.confirmPassword !== "") {
+	        return React.createElement(
+	          'div',
+	          null,
+	          React.createElement(
+	            'strong',
+	            null,
+	            React.createElement(
+	              'font',
+	              { color: 'red' },
+	              'Passwords do not match!'
+	            )
+	          )
+	        );
+	      } else if (this.state.confirmPassword !== "" && this.state.confirmPassword === this.state.password) {
+	        return React.createElement(
+	          'div',
+	          null,
+	          React.createElement(
+	            'font',
+	            { color: 'green' },
+	            'Passwords match!'
+	          )
+	        );
+	      }
+	    } else {
+	      return;
+	    }
+	  },
+	  handleSubmit: function (e) {
+	    e.preventDefault();
+	    SessionBackendActions.signUpUser({ user: { email: this.state.email,
+	        password: this.state.password }
+	    });
+	  },
+	  render: function () {
+	    var csrfToken = $('meta[name=csrf-token]').attr('content');
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        { action: '/users', method: 'post', className: 'new-user-form', onSubmit: this.handleSubmit },
+	        React.createElement('input', { name: 'authenticity_token', type: 'hidden', value: csrfToken }),
+	        React.createElement(
+	          'label',
+	          null,
+	          'Email',
+	          React.createElement('input', { type: 'text', name: 'user[email]', value: this.state.email,
+	            onChange: this.emailChange })
+	        ),
+	        React.createElement('br', null),
+	        React.createElement(
+	          'label',
+	          null,
+	          'Password',
+	          React.createElement('input', { type: 'password', name: 'user[password]', value: this.state.password,
+	            onChange: this.passwordChange })
+	        ),
+	        this.passwordUl(),
+	        React.createElement('br', null),
+	        React.createElement(
+	          'label',
+	          null,
+	          'Confirm Password',
+	          React.createElement('input', { type: 'password', value: this.state.confirmPassword,
+	            onChange: this.confirmPasswordChange })
+	        ),
+	        this.matchedPassword(),
+	        React.createElement('br', null),
+	        React.createElement('input', { type: 'submit' })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        ' Already a user?',
+	        React.createElement(
+	          'a',
+	          { href: '#/session/new' },
+	          'Sign In'
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewUserForm;
+
+/***/ },
+/* 239 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SessionBackendActions = __webpack_require__(234);
+	
+	var NewSessionForm = React.createClass({
+	  displayName: 'NewSessionForm',
+	
+	  getInitialState: function () {
+	    return {
+	      email: "",
+	      password: ""
+	    };
+	  },
+	  emailChange: function (e) {
+	    this.setState({
+	      email: e.target.value
+	    });
+	  },
+	  passwordChange: function (e) {
+	    this.setState({
+	      password: e.target.value
+	    });
+	  },
+	  handleSubmit: function (e) {
+	    e.preventDefault();
+	    SessionBackendActions.signInUser({ user: { email: this.state.email,
+	        password: this.state.password }
+	    });
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        { action: '/session', method: 'post', className: 'new-session-form', onSubmit: this.handleSubmit },
+	        React.createElement(
+	          'label',
+	          null,
+	          'Email',
+	          React.createElement('input', { type: 'text', name: 'user[email]', value: this.state.email,
+	            onChange: this.emailChange })
+	        ),
+	        React.createElement('br', null),
+	        React.createElement(
+	          'label',
+	          null,
+	          'Password',
+	          React.createElement('input', { type: 'password', name: 'user[password]', value: this.state.password,
+	            onChange: this.passwordChange })
+	        ),
+	        React.createElement('br', null),
+	        React.createElement('input', { type: 'submit' })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        ' New User?',
+	        React.createElement(
+	          'a',
+	          { href: '#/users/new' },
+	          'Sign Up'
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewSessionForm;
+
+/***/ },
+/* 240 */,
+/* 241 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SessionStore = __webpack_require__(211);
+	
+	var UserShowPage = React.createClass({
+	  displayName: 'UserShowPage',
+	
+	  getInitialState: function () {
+	    return {
+	      currentUser: SessionStore.currentUser()
+	    };
+	  },
+	
+	  render: function () {}
+	
+	});
+	
+	module.exports = UserShowPage;
 
 /***/ }
 /******/ ]);
