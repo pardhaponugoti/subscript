@@ -24474,6 +24474,7 @@
 	    this.listenerToken.remove();
 	  },
 	  onSessionChange: function () {
+	    debugger;
 	    console.log(SessionStore.loggedIn());
 	    if (SessionStore.loggedIn()) {
 	      // this.history.push("users/" + SessionStore.currentUser().id);
@@ -24516,15 +24517,18 @@
 	var SessionConstants = __webpack_require__(233);
 	
 	var _currentUser = {};
+	// var _newUser = false;
 	
 	SessionStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case SessionConstants.USER_SIGN_IN:
 	      _currentUser = payload.data;
+	      // _newUser = false;
 	      SessionStore.__emitChange();
 	      break;
 	    case SessionConstants.USER_SIGN_UP:
 	      _currentUser = payload.data;
+	      // _newUser = true;
 	      SessionStore.__emitChange();
 	      break;
 	    case SessionConstants.USER_SIGN_OUT:
@@ -24537,6 +24541,10 @@
 	SessionStore.currentUser = function () {
 	  return _currentUser;
 	};
+	
+	// SessionStore.newUser = function() {
+	//   return _newUser;
+	// };
 	
 	SessionStore.loggedIn = function () {
 	  return _currentUser.email !== undefined;
@@ -31368,8 +31376,6 @@
 	
 	  // session create and users create
 	  signUpUser: function (userParams) {
-	    console.log("signupuser");
-	    console.log(userParams);
 	    $.ajax({
 	      url: "/api/users",
 	      type: "POST",
@@ -31716,14 +31722,12 @@
 	    });
 	  },
 	  render: function () {
-	    var csrfToken = $('meta[name=csrf-token]').attr('content');
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(
 	        'form',
 	        { action: '/users', method: 'post', className: 'new-user-form', onSubmit: this.handleSubmit },
-	        React.createElement('input', { name: 'authenticity_token', type: 'hidden', value: csrfToken }),
 	        React.createElement(
 	          'label',
 	          null,

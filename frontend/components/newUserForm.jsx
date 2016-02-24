@@ -96,10 +96,8 @@ var NewUserForm = React.createClass({
     });
   },
   render: function() {
-    var csrfToken = $('meta[name=csrf-token]').attr('content');
     return <div>
       <form action="/users" method="post" className="new-user-form" onSubmit={this.handleSubmit}>
-        <input name="authenticity_token" type="hidden" value={csrfToken} />
         <label>First Name
           <input type="string" name="user[first_name]" value={this.state.firstName}
               onChange={this.firstNameChange}/>

@@ -28,6 +28,7 @@ var App = React.createClass({
     this.listenerToken.remove();
   },
   onSessionChange: function() {
+    debugger;
     console.log(SessionStore.loggedIn());
     if (SessionStore.loggedIn()) {
       // this.history.push("users/" + SessionStore.currentUser().id);

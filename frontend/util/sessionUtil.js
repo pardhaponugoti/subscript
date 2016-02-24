@@ -15,8 +15,6 @@ var SessionUtil = {
 
   // session create and users create
   signUpUser : function(userParams) {
-    console.log("signupuser");
-    console.log(userParams);
     $.ajax({
       url : "/api/users",
       type: "POST",

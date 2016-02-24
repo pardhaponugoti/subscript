@@ -10,7 +10,7 @@ class CreateReviewsTable < ActiveRecord::Migration
     add_index :reviews, :author_id, unique: true
     add_index :reviews, :subscription_id, unique: true
 
-    change_column :users, :first_name, :string, null: false
-    change_column :users, :last_name, :string, null: false
+    change_column :users, :first_name, :string, null: false, default: "Michael"
+    change_column :users, :last_name, :string, null: false, default: "Park"
   end
 end
