@@ -38,7 +38,7 @@ var NewSessionForm = React.createClass({
     return <div>
       <form action="/session" method="post" className="new-session-form" onSubmit={this.handleSubmit} >
         <label>Email
-          <input type="text" name="user[email]" value={this.state.email}
+          <input type="string" name="user[email]" value={this.state.email}
               onChange={this.emailChange} />
         </label>
         <br/>

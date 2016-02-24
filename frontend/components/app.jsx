@@ -28,15 +28,12 @@ var App = React.createClass({
     this.listenerToken.remove();
   },
   onSessionChange: function() {
-    debugger;
     console.log(SessionStore.loggedIn());
     if (SessionStore.loggedIn()) {
-      // this.history.push("users/" + SessionStore.currentUser().id);
-      var location = "/#/users/" + SessionStore.currentUser().id;
-      window.location = location;
+      this.history.push("users/" + SessionStore.currentUser().id);
+      this.setState({loggedIn: SessionStore.loggedIn()});
     } else {
-      // this.history.push("/");
-      window.location = "/";
+      this.history.push("/");
       this.setState({loggedIn: SessionStore.loggedIn()});
     }
   },

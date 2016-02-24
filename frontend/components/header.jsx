@@ -22,10 +22,13 @@ var Header = React.createClass({
     SessionBackendActions.signOutUser();
   },
   signIn: function() {
-    this.history.push('session/new');
+    this.history.push('/session/new');
   },
   currentUserUrl: function() {
     return "#/users/" + this.state.currentUser.id;
+  },
+  editUserUrl: function() {
+    return this.currentUserUrl() + "/edit";
   },
   userDropdown: function() {
     if (SessionStore.loggedIn()) {
@@ -35,7 +38,7 @@ var Header = React.createClass({
         </button>
         <ul className="dropdown-menu">
           <li><a href={this.currentUserUrl()}>My Page</a></li>
-          <li><a href={this.currentUserUrl()}>Edit Profile</a></li>
+          <li><a href={this.editUserUrl()}>Edit Profile</a></li>
           <li><a href="/" onClick={this.signOut}> Sign Out</a></li>
         </ul>
       </div>;
@@ -46,6 +49,24 @@ var Header = React.createClass({
         </button>
       </div>;
     }
+  },
+  signInModal: function() {
+    return <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+              <p>Some text in the modal.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>;
   },
   render: function() {
     return <nav className="navbar navbar-default navbar-fixed-top">

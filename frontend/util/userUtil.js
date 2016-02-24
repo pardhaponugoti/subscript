@@ -11,6 +11,17 @@ var UserUtil = {
         UserFrontendActions.receiveAllUsers(data);
       }
     });
+  },
+  updateUser: function(userData) {
+    console.log("ajaxupdatinguser");
+    $.ajax({
+      url: "/api/users/" + userData.id,
+      type: 'PATCH',
+      data: userData,
+      success: function(data) {
+        UserFrontendActions.updateCurrentUser(data);
+      }
+    });
   }
 
 };

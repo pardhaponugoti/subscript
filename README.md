@@ -49,14 +49,14 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 **Objective:** Users can create profile
 
 - [x] seed the database with a small amount of test data
-- [x] CRUD API for users
+- [ ] CRUD API for users
 - [x] jBuilder views for users
 - [x] setup `APIUtil` to interact with the API
 - [x] test out API interaction in the console.
 - [x] setup the flux loop with skeleton files
 - [x] setup React Router
 
-### Phase 3: Start Styling (0.5 days)
+### Phase 3: Start Styling (1 days)
 
 **Objective:** Existing pages (including signup/signin) will look good.
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160224071517) do
+ActiveRecord::Schema.define(version: 20160224175239) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,16 +37,16 @@ ActiveRecord::Schema.define(version: 20160224071517) do
   add_index "subscriptions", ["url"], name: "index_subscriptions_on_url", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                               null: false
-    t.string   "password_digest",                     null: false
-    t.string   "session_token",                       null: false
+    t.string   "email",                                                                                 null: false
+    t.string   "password_digest",                                                                       null: false
+    t.string   "session_token",                                                                         null: false
     t.string   "location"
     t.date     "date_of_birth"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
-    t.string   "first_name",      default: "Michael", null: false
-    t.string   "last_name",       default: "Park",    null: false
-    t.string   "image"
+    t.datetime "created_at",                                                                            null: false
+    t.datetime "updated_at",                                                                            null: false
+    t.string   "first_name",                                                                            null: false
+    t.string   "last_name",                                                                             null: false
+    t.string   "image",           default: "http://www.clipartbest.com/cliparts/McL/G6G/McLG6G9ki.png", null: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

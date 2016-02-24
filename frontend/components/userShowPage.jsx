@@ -22,6 +22,7 @@ var UserShowPage = React.createClass({
   },
   componentDidMount: function() {
     this.listenerToken = UserStore.addListener(this.userChange);
+    this.setState({currentUser: UserStore.findById(this.props.params.userId)});
   },
   componentWillUnmount: function() {
     this.listenerToken.remove();
@@ -29,16 +30,15 @@ var UserShowPage = React.createClass({
   componentWillReceiveProps: function(newProps) {
     if(!isNumeric(this.props.params.userId)) {
       debugger;
-      // this.history.push("/");
-      window.location = "/";
+      this.history.push("/");
     } else {
       this.onChange(newProps);
     }
   },
   render: function() {
     if (this.state.currentUser === undefined) {
-      // Insert Loading Symbol Here
-      return <div></div>;
+      // Insert Loading Symbol Here -- waiting for the userstore to update
+      return <div id="WAITING-FOR-LOAD"></div>;
     } else {
       return <div>
         <div className="col-md-4">

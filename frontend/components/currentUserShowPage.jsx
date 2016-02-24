@@ -29,8 +29,7 @@ var CurrentUserShowPage = React.createClass({
   componentWillReceiveProps: function(newProps) {
     if(!isNumeric(this.props.params.userId)) {
       debugger;
-      // this.history.push("/");
-      window.location = "/";
+      this.history.push("/");
     } else {
       this.onChange(newProps);
     }

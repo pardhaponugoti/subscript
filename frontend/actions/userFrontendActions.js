@@ -8,6 +8,15 @@ var UserFrontendActions = {
       actionType: UserConstants.RECEIVE_ALL_USERS,
       data: usersData
     });
+  },
+
+  // User update
+  updateCurrentUser: function(userData) {
+    console.log("updatecurrentuser");
+    AppDispatcher.dispatch({
+      actionType: UserConstants.UPDATE_USER,
+      data: userData
+    });
   }
 
 };

@@ -109,7 +109,7 @@ var NewUserForm = React.createClass({
         </label>
         <br/>
         <label>Email
-          <input type="text" name="user[email]" value={this.state.email}
+          <input type="string" name="user[email]" value={this.state.email}
               onChange={this.emailChange} />
         </label>
         <br/>

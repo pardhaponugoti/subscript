@@ -14,9 +14,8 @@ var routes = (
   <Route path="/" component={App}>
     <Route path="session/new" component={NewSessionForm}></Route>
     <Route path="users/new" component={NewUserForm}></Route>
-    <Route path="users/:userId" component={UserShowPage}>
-      <Route path="users/:userId/edit" component={UserEditPage}></Route>
-    </Route>
+    <Route path="users/:userId" component={UserShowPage}></Route>
+    <Route path="users/:userId/edit" component={UserEditPage}></Route>
   </Route>
 );
 
