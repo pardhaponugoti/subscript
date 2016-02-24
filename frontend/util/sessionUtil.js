@@ -4,6 +4,7 @@ var SessionConstants = require('../constants/sessionConstants.js');
 var SessionUtil = {
   // on page load
   checkForSignIn : function() {
+    console.log("checkforsignin");
     $.ajax({
       url : "/api/session/new",
       type: "GET",
@@ -15,6 +16,7 @@ var SessionUtil = {
 
   // session create and users create
   signUpUser : function(userParams) {
+    console.log("signupuser");
     $.ajax({
       url : "/api/users",
       type: "POST",
@@ -25,6 +27,7 @@ var SessionUtil = {
     });
   },
   signInUser : function(userParams) {
+    console.log("signinuser");
     $.ajax({
       url : "/api/session",
       type: "POST",
@@ -37,6 +40,7 @@ var SessionUtil = {
 
   // session destroy
   signOutUser : function() {
+    console.log("signoutuser");
     $.ajax({
       url : "/api/session",
       type: "DELETE",

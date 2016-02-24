@@ -31342,6 +31342,7 @@
 	var SessionUtil = {
 	  // on page load
 	  checkForSignIn: function () {
+	    console.log("checkforsignin");
 	    $.ajax({
 	      url: "/api/session/new",
 	      type: "GET",
@@ -31353,6 +31354,7 @@
 	
 	  // session create and users create
 	  signUpUser: function (userParams) {
+	    console.log("signupuser");
 	    $.ajax({
 	      url: "/api/users",
 	      type: "POST",
@@ -31363,6 +31365,7 @@
 	    });
 	  },
 	  signInUser: function (userParams) {
+	    console.log("signinuser");
 	    $.ajax({
 	      url: "/api/session",
 	      type: "POST",
@@ -31375,6 +31378,7 @@
 	
 	  // session destroy
 	  signOutUser: function () {
+	    console.log("signoutuser");
 	    $.ajax({
 	      url: "/api/session",
 	      type: "DELETE",
@@ -31827,7 +31831,14 @@
 	      currentUser: SessionStore.currentUser()
 	    };
 	  },
-	
+	  sessionChange: function () {
+	    this.setState({
+	      currentUser: SessionStore.currentUser()
+	    });
+	  },
+	  componentDidMount: function () {
+	    this.listenerToken = SessionStore.addListener(this.sessionChange);
+	  },
 	  render: function () {
 	    return React.createElement(
 	      'div',
@@ -31835,12 +31846,32 @@
 	      React.createElement(
 	        'div',
 	        { className: 'col-md-4' },
-	        'LEFT 1/3'
+	        React.createElement('img', { src: this.state.currentUser.image, className: 'img-center' }),
+	        React.createElement(
+	          'div',
+	          null,
+	          'LEFT 1/3'
+	        )
 	      ),
 	      React.createElement(
 	        'div',
 	        { className: 'col-md-8' },
-	        'RIGHT 2/3'
+	        React.createElement(
+	          'div',
+	          null,
+	          this.state.currentUser.first_name + " " + this.state.currentUser.last_name
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          'Location: ',
+	          this.state.currentUser.location
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          'RIGHT 2/3'
+	        )
 	      )
 	    );
 	  }
