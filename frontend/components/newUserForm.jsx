@@ -1,18 +1,6 @@
 var React = require('react');
 var SessionBackendActions = require('../actions/sessionBackendActions.js');
 
-function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
-function containsNumber(str) {
-  var containsNum = false;
-  for(var i = 0; i < str.length; i++) {
-    if (isNumeric(str[i])) {
-      containsNum = true;
-    }
-  }
-  return containsNum;
-}
-
-
 var NewUserForm = React.createClass({
   getInitialState: function() {
     return {
@@ -38,21 +26,23 @@ var NewUserForm = React.createClass({
   },
   passwordUl: function() {
     var passwordErrors = [];
-    if (this.state.password.length < 8 && this.state.password.length > 0) {
+    var length = this.state.password.length;
+
+    if (length < 8 && length > 0) {
       passwordErrors.push(<li><strong><font color="red">
         Password must be at least 8 characters long
       </font></strong></li>);
-    } else if (this.state.password.length > 0){
+    } else if (length > 0){
       passwordErrors.push(<li><font color="green">
         Password must be at least 8 characters long
       </font></li>);
     }
 
-    if (this.state.password.length > 0 && containsNumber(this.state.password)) {
+    if (length > 0 && containsNumber(this.state.password)) {
       passwordErrors.push(<li><font color="green">
         Password must contain a number
       </font></li>);
-    } else if (this.state.password.length > 0){
+    } else if (length > 0){
       passwordErrors.push(<li><strong><font color="red">
         Password must contain a number
       </font></strong></li>);
@@ -123,3 +113,16 @@ var NewUserForm = React.createClass({
 });
 
 module.exports = NewUserForm;
+
+
+function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
+
+function containsNumber(str) {
+  var containsNum = false;
+  for(var i = 0; i < str.length; i++) {
+    if (isNumeric(str[i])) {
+      containsNum = true;
+    }
+  }
+  return containsNum;
+}

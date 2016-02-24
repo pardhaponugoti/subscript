@@ -24445,11 +24445,15 @@
 
 	var React = __webpack_require__(1);
 	var History = __webpack_require__(159).History;
-	var SessionStore = __webpack_require__(211);
-	var SessionBackendActions = __webpack_require__(234);
+	
 	var Header = __webpack_require__(237);
+	var SessionStore = __webpack_require__(211);
+	var UserStore = __webpack_require__(242);
+	var SessionBackendActions = __webpack_require__(234);
+	var UserBackendActions = __webpack_require__(244);
 	
 	window.SessionStore = SessionStore;
+	window.UserStore = UserStore;
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -24457,9 +24461,13 @@
 	  mixins: [History],
 	  componentWillMount: function () {
 	    SessionBackendActions.checkForUser();
+	    UserBackendActions.fetchAllUsers();
 	  },
 	  componentDidMount: function () {
 	    this.listenerToken = SessionStore.addListener(this.onSessionChange);
+	  },
+	  componentWillUnmount: function () {
+	    this.listenerToken.remove();
 	  },
 	  onSessionChange: function () {
 	    if (SessionStore.loggedIn()) {
@@ -24467,9 +24475,6 @@
 	    } else {
 	      this.history.push("/");
 	    }
-	  },
-	  componentWillUnmount: function () {
-	    this.listenerToken.remove();
 	  },
 	  render: function () {
 	    return React.createElement(
@@ -31571,19 +31576,6 @@
 	var React = __webpack_require__(1);
 	var SessionBackendActions = __webpack_require__(234);
 	
-	function isNumeric(n) {
-	  return !isNaN(parseFloat(n)) && isFinite(n);
-	}
-	function containsNumber(str) {
-	  var containsNum = false;
-	  for (var i = 0; i < str.length; i++) {
-	    if (isNumeric(str[i])) {
-	      containsNum = true;
-	    }
-	  }
-	  return containsNum;
-	}
-	
 	var NewUserForm = React.createClass({
 	  displayName: 'NewUserForm',
 	
@@ -31611,7 +31603,9 @@
 	  },
 	  passwordUl: function () {
 	    var passwordErrors = [];
-	    if (this.state.password.length < 8 && this.state.password.length > 0) {
+	    var length = this.state.password.length;
+	
+	    if (length < 8 && length > 0) {
 	      passwordErrors.push(React.createElement(
 	        'li',
 	        null,
@@ -31625,7 +31619,7 @@
 	          )
 	        )
 	      ));
-	    } else if (this.state.password.length > 0) {
+	    } else if (length > 0) {
 	      passwordErrors.push(React.createElement(
 	        'li',
 	        null,
@@ -31637,7 +31631,7 @@
 	      ));
 	    }
 	
-	    if (this.state.password.length > 0 && containsNumber(this.state.password)) {
+	    if (length > 0 && containsNumber(this.state.password)) {
 	      passwordErrors.push(React.createElement(
 	        'li',
 	        null,
@@ -31647,7 +31641,7 @@
 	          'Password must contain a number'
 	        )
 	      ));
-	    } else if (this.state.password.length > 0) {
+	    } else if (length > 0) {
 	      passwordErrors.push(React.createElement(
 	        'li',
 	        null,
@@ -31764,6 +31758,20 @@
 	});
 	
 	module.exports = NewUserForm;
+	
+	function isNumeric(n) {
+	  return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+	
+	function containsNumber(str) {
+	  var containsNum = false;
+	  for (var i = 0; i < str.length; i++) {
+	    if (isNumeric(str[i])) {
+	      containsNum = true;
+	    }
+	  }
+	  return containsNum;
+	}
 
 /***/ },
 /* 239 */
@@ -31852,66 +31860,205 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	
 	var SessionStore = __webpack_require__(211);
+	var UserStore = __webpack_require__(242);
+	var History = __webpack_require__(159).History;
 	
 	var UserShowPage = React.createClass({
 	  displayName: 'UserShowPage',
 	
+	  mixins: [History],
 	  getInitialState: function () {
-	    // this.props.params.userId << Use this after building user store
 	    return {
-	      currentUser: SessionStore.currentUser()
+	      currentUser: UserStore.findById(this.props.params.userId)
 	    };
 	  },
-	  sessionChange: function () {
+	  onChange: function (newProps) {
 	    this.setState({
-	      currentUser: SessionStore.currentUser()
+	      currentUser: UserStore.findById(newProps.params.userId)
+	    });
+	  },
+	  userChange: function () {
+	    this.setState({
+	      currentUser: UserStore.findById(this.props.params.userId)
 	    });
 	  },
 	  componentDidMount: function () {
-	    this.listenerToken = SessionStore.addListener(this.sessionChange);
+	    this.listenerToken = UserStore.addListener(this.userChange);
+	  },
+	  componentWillUnmount: function () {
+	    this.listenerToken.remove();
+	  },
+	  componentWillReceiveProps: function (newProps) {
+	    if (!isNumeric(this.props.params.userId)) {
+	      this.history.push("/");
+	    } else {
+	      this.onChange(newProps);
+	    }
 	  },
 	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
+	    if (this.state.currentUser === undefined) {
+	      // Insert Loading Symbol Here
+	      return React.createElement('div', null);
+	    } else {
+	      return React.createElement(
 	        'div',
-	        { className: 'col-md-4' },
-	        React.createElement('img', { src: this.state.currentUser.image, className: 'img-center' }),
+	        null,
 	        React.createElement(
 	          'div',
-	          null,
-	          'LEFT 1/3'
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'col-md-8' },
-	        React.createElement(
-	          'div',
-	          null,
-	          this.state.currentUser.first_name + " " + this.state.currentUser.last_name
+	          { className: 'col-md-4' },
+	          React.createElement('img', { src: this.state.currentUser.image, className: 'img-center' }),
+	          React.createElement(
+	            'div',
+	            null,
+	            'LEFT 1/3'
+	          )
 	        ),
 	        React.createElement(
 	          'div',
-	          null,
-	          'Location: ',
-	          this.state.currentUser.location
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          'RIGHT 2/3'
+	          { className: 'col-md-8' },
+	          React.createElement(
+	            'div',
+	            null,
+	            this.state.currentUser.first_name + " " + this.state.currentUser.last_name
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            'Location: ',
+	            this.state.currentUser.location
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            'Email: ',
+	            this.state.currentUser.email
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            'RIGHT 2/3'
+	          )
 	        )
-	      )
-	    );
+	      );
+	    }
 	  }
 	
 	});
 	
 	module.exports = UserShowPage;
+	
+	function isNumeric(n) {
+	  return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+
+/***/ },
+/* 242 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(212).Store;
+	var AppDispatcher = __webpack_require__(230);
+	var UserStore = new Store(AppDispatcher);
+	var UserConstants = __webpack_require__(243);
+	
+	var _users = {};
+	
+	UserStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case UserConstants.RECEIVE_ALL_USERS:
+	      UserStore.updateUsers(payload.data);
+	      UserStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	UserStore.updateUsers = function (usersData) {
+	  _users = {};
+	  usersData.forEach(function (user) {
+	    _users[user.id] = user;
+	  });
+	};
+	
+	UserStore.all = function () {
+	  var users = [];
+	  for (var id in _users) {
+	    users.push(_users[id]);
+	  }
+	  return users;
+	};
+	
+	UserStore.findById = function (id) {
+	  return _users[id];
+	};
+	
+	module.exports = UserStore;
+
+/***/ },
+/* 243 */
+/***/ function(module, exports) {
+
+	var UserConstants = {
+	  RECEIVE_ALL_USERS: "RECEIVE_ALL_USERS"
+	};
+	
+	module.exports = UserConstants;
+
+/***/ },
+/* 244 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var UserUtil = __webpack_require__(245);
+	
+	var UserBackendActions = {
+	  fetchAllUsers: function () {
+	    UserUtil.fetchAllUsers();
+	  }
+	};
+	
+	module.exports = UserBackendActions;
+
+/***/ },
+/* 245 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var UserFrontendActions = __webpack_require__(246);
+	
+	var UserUtil = {
+	  // on page load
+	  fetchAllUsers: function () {
+	    console.log("fetchingusers");
+	    $.ajax({
+	      url: "/api/users",
+	      type: "GET",
+	      success: function (data) {
+	        UserFrontendActions.receiveAllUsers(data);
+	      }
+	    });
+	  }
+	
+	};
+	
+	module.exports = UserUtil;
+
+/***/ },
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(230);
+	var UserConstants = __webpack_require__(243);
+	
+	var UserFrontendActions = {
+	  // User create, users create
+	  receiveAllUsers: function (usersData) {
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.RECEIVE_ALL_USERS,
+	      data: usersData
+	    });
+	  }
+	
+	};
+	
+	module.exports = UserFrontendActions;
 
 /***/ }
 /******/ ]);
