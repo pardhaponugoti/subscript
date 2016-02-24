@@ -12,6 +12,11 @@ window.UserStore = UserStore;
 
 var App = React.createClass({
   mixins: [History],
+  getInitialState: function() {
+    return {
+      loggedIn: SessionStore.loggedIn()
+    };
+  },
   componentWillMount: function() {
     SessionBackendActions.checkForUser();
     UserBackendActions.fetchAllUsers();
@@ -23,10 +28,15 @@ var App = React.createClass({
     this.listenerToken.remove();
   },
   onSessionChange: function() {
+    console.log(SessionStore.loggedIn());
     if (SessionStore.loggedIn()) {
-      this.history.push("users/" + SessionStore.currentUser().id);
+      // this.history.push("users/" + SessionStore.currentUser().id);
+      var location = "/#/users/" + SessionStore.currentUser().id;
+      window.location = location;
     } else {
-      this.history.push("/");
+      // this.history.push("/");
+      window.location = "/";
+      this.setState({loggedIn: SessionStore.loggedIn()});
     }
   },
   render: function() {

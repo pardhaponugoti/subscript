@@ -42,10 +42,8 @@ var Header = React.createClass({
     } else {
       return <div className="btn-group nav navbar-nav navbar-right">
         <button className="btn btn-default btn-sm" type="button" onClick={this.signIn}>
-          Sign In <span className="caret"></span>
+          Sign In
         </button>
-        <ul className="dropdown-menu">
-        </ul>
       </div>;
     }
   },
@@ -67,19 +65,3 @@ var Header = React.createClass({
 });
 
 module.exports = Header;
-
-
-
-// <div className="container">
-//   <div className="navbar-header">
-//     <a className="navbar-brand" href="#">WebSiteName</a>
-//   </div>
-//   <div class="col-lg-6">
-//     <div class="input-group">
-//       <input type="text" class="form-control" placeholder="Search for..."/>
-//       <span class="input-group-btn">
-//         <button class="btn btn-default" type="button">Go!</button>
-//       </span>
-//     </div>
-//   </div>
-// </div>

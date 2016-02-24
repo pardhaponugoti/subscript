@@ -10,7 +10,7 @@ var NewUserForm = require('./components/newUserForm');
 var NewSessionForm = require('./components/newSessionForm.jsx');
 
 var routes = (
-  <Route path="/" component={App}>ß
+  <Route path="/" component={App}>
     <Route path="session/new" component={NewSessionForm}></Route>
     <Route path="users/new" component={NewUserForm}></Route>
     <Route path="users/:userId" component={UserShowPage}></Route>

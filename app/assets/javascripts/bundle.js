@@ -58,7 +58,6 @@
 	var routes = React.createElement(
 	  Route,
 	  { path: '/', component: App },
-	  'ß',
 	  React.createElement(Route, { path: 'session/new', component: NewSessionForm }),
 	  React.createElement(Route, { path: 'users/new', component: NewUserForm }),
 	  React.createElement(Route, { path: 'users/:userId', component: UserShowPage })
@@ -24459,6 +24458,11 @@
 	  displayName: 'App',
 	
 	  mixins: [History],
+	  getInitialState: function () {
+	    return {
+	      loggedIn: SessionStore.loggedIn()
+	    };
+	  },
 	  componentWillMount: function () {
 	    SessionBackendActions.checkForUser();
 	    UserBackendActions.fetchAllUsers();
@@ -24470,10 +24474,15 @@
 	    this.listenerToken.remove();
 	  },
 	  onSessionChange: function () {
+	    console.log(SessionStore.loggedIn());
 	    if (SessionStore.loggedIn()) {
-	      this.history.push("users/" + SessionStore.currentUser().id);
+	      // this.history.push("users/" + SessionStore.currentUser().id);
+	      var location = "/#/users/" + SessionStore.currentUser().id;
+	      window.location = location;
 	    } else {
-	      this.history.push("/");
+	      // this.history.push("/");
+	      window.location = "/";
+	      this.setState({ loggedIn: SessionStore.loggedIn() });
 	    }
 	  },
 	  render: function () {
@@ -31325,6 +31334,7 @@
 	    SessionUtil.signInUser(userParams);
 	  },
 	  signUpUser: function (userParams) {
+	    console.log("sessionbackendsignup");
 	    SessionUtil.signUpUser(userParams);
 	  },
 	
@@ -31359,6 +31369,7 @@
 	  // session create and users create
 	  signUpUser: function (userParams) {
 	    console.log("signupuser");
+	    console.log(userParams);
 	    $.ajax({
 	      url: "/api/users",
 	      type: "POST",
@@ -31515,10 +31526,8 @@
 	        React.createElement(
 	          'button',
 	          { className: 'btn btn-default btn-sm', type: 'button', onClick: this.signIn },
-	          'Sign In ',
-	          React.createElement('span', { className: 'caret' })
-	        ),
-	        React.createElement('ul', { className: 'dropdown-menu' })
+	          'Sign In'
+	        )
 	      );
 	    }
 	  },
@@ -31554,20 +31563,6 @@
 	});
 	
 	module.exports = Header;
-	
-	// <div className="container">
-	//   <div className="navbar-header">
-	//     <a className="navbar-brand" href="#">WebSiteName</a>
-	//   </div>
-	//   <div class="col-lg-6">
-	//     <div class="input-group">
-	//       <input type="text" class="form-control" placeholder="Search for..."/>
-	//       <span class="input-group-btn">
-	//         <button class="btn btn-default" type="button">Go!</button>
-	//       </span>
-	//     </div>
-	//   </div>
-	// </div>
 
 /***/ },
 /* 238 */
@@ -31583,8 +31578,20 @@
 	    return {
 	      email: "",
 	      password: "",
-	      confirmPassword: ""
+	      confirmPassword: "",
+	      firstName: "",
+	      lastName: ""
 	    };
+	  },
+	  firstNameChange: function (e) {
+	    this.setState({
+	      firstName: e.target.value
+	    });
+	  },
+	  lastNameChange: function (e) {
+	    this.setState({
+	      lastName: e.target.value
+	    });
 	  },
 	  emailChange: function (e) {
 	    this.setState({
@@ -31703,7 +31710,9 @@
 	  handleSubmit: function (e) {
 	    e.preventDefault();
 	    SessionBackendActions.signUpUser({ user: { email: this.state.email,
-	        password: this.state.password }
+	        password: this.state.password,
+	        first_name: this.state.firstName,
+	        last_name: this.state.lastName }
 	    });
 	  },
 	  render: function () {
@@ -31715,6 +31724,22 @@
 	        'form',
 	        { action: '/users', method: 'post', className: 'new-user-form', onSubmit: this.handleSubmit },
 	        React.createElement('input', { name: 'authenticity_token', type: 'hidden', value: csrfToken }),
+	        React.createElement(
+	          'label',
+	          null,
+	          'First Name',
+	          React.createElement('input', { type: 'string', name: 'user[first_name]', value: this.state.firstName,
+	            onChange: this.firstNameChange })
+	        ),
+	        React.createElement('br', null),
+	        React.createElement(
+	          'label',
+	          null,
+	          'Last Name',
+	          React.createElement('input', { type: 'string', name: 'user[last_name]', value: this.state.lastName,
+	            onChange: this.lastNameChange })
+	        ),
+	        React.createElement('br', null),
 	        React.createElement(
 	          'label',
 	          null,
@@ -31891,7 +31916,9 @@
 	  },
 	  componentWillReceiveProps: function (newProps) {
 	    if (!isNumeric(this.props.params.userId)) {
-	      this.history.push("/");
+	      debugger;
+	      // this.history.push("/");
+	      window.location = "/";
 	    } else {
 	      this.onChange(newProps);
 	    }
@@ -31919,7 +31946,7 @@
 	          { className: 'col-md-8' },
 	          React.createElement(
 	            'div',
-	            null,
+	            { className: 'lead' },
 	            this.state.currentUser.first_name + " " + this.state.currentUser.last_name
 	          ),
 	          React.createElement(
@@ -31933,6 +31960,12 @@
 	            null,
 	            'Email: ',
 	            this.state.currentUser.email
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            'Date of Birth: ',
+	            this.state.currentUser.date_of_birth
 	          ),
 	          React.createElement(
 	            'div',

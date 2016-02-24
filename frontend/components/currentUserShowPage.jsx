@@ -3,7 +3,7 @@ var SessionStore = require('../stores/session.js');
 var UserStore = require('../stores/user.js');
 var History = require('react-router').History;
 
-var UserShowPage = React.createClass({
+var CurrentUserShowPage = React.createClass({
   mixins: [History],
   getInitialState: function() {
     return {
@@ -58,6 +58,6 @@ var UserShowPage = React.createClass({
 
 });
 
-module.exports = UserShowPage;
+module.exports = CurrentUserShowPage;
 
 function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }

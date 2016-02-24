@@ -6,8 +6,20 @@ var NewUserForm = React.createClass({
     return {
       email : "" ,
       password : "" ,
-      confirmPassword : ""
+      confirmPassword : "",
+      firstName: "",
+      lastName: ""
     };
+  },
+  firstNameChange: function(e) {
+    this.setState({
+      firstName: e.target.value
+    });
+  },
+  lastNameChange: function(e) {
+    this.setState({
+      lastName: e.target.value
+    });
   },
   emailChange: function(e) {
     this.setState({
@@ -78,7 +90,9 @@ var NewUserForm = React.createClass({
     e.preventDefault();
     SessionBackendActions.signUpUser({user:
       {email: this.state.email,
-       password: this.state.password}
+       password: this.state.password,
+       first_name: this.state.firstName,
+       last_name: this.state.lastName}
     });
   },
   render: function() {
@@ -86,6 +100,16 @@ var NewUserForm = React.createClass({
     return <div>
       <form action="/users" method="post" className="new-user-form" onSubmit={this.handleSubmit}>
         <input name="authenticity_token" type="hidden" value={csrfToken} />
+        <label>First Name
+          <input type="string" name="user[first_name]" value={this.state.firstName}
+              onChange={this.firstNameChange}/>
+        </label>
+        <br/>
+        <label>Last Name
+          <input type="string" name="user[last_name]" value={this.state.lastName}
+              onChange={this.lastNameChange}/>
+        </label>
+        <br/>
         <label>Email
           <input type="text" name="user[email]" value={this.state.email}
               onChange={this.emailChange} />

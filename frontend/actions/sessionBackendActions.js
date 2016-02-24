@@ -11,6 +11,7 @@ var SessionBackendActions = {
     SessionUtil.signInUser(userParams);
   },
   signUpUser: function(userParams) {
+    console.log("sessionbackendsignup");
     SessionUtil.signUpUser(userParams);
   },
 
