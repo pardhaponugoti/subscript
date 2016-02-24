@@ -1,7 +1,7 @@
 var AppDispatcher = require('../dispatcher.js');
 var SessionConstants = require('../constants/sessionConstants.js');
 
-var sessionFrontendActions = {
+var SessionFrontendActions = {
   // session create, users create
   receiveUserSignUp: function(userData) {
     AppDispatcher.dispatch({
@@ -25,4 +25,4 @@ var sessionFrontendActions = {
   }
 };
 
-module.exports = sessionFrontendActions;
+module.exports = SessionFrontendActions;

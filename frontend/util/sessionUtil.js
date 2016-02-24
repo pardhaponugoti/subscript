@@ -1,5 +1,4 @@
 var SessionFrontendActions = require('../actions/sessionFrontendActions.js');
-var SessionConstants = require('../constants/sessionConstants.js');
 
 var SessionUtil = {
   // on page load

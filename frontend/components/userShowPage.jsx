@@ -4,6 +4,7 @@ var SessionStore = require('../stores/session.js');
 
 var UserShowPage = React.createClass({
   getInitialState: function() {
+    // this.props.params.userId << Use this after building user store
     return {
       currentUser: SessionStore.currentUser()
     };

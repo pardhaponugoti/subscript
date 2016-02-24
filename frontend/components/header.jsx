@@ -24,13 +24,19 @@ var Header = React.createClass({
   signIn: function() {
     this.history.push('session/new');
   },
+  currentUserUrl: function() {
+    return "#/users/" + this.state.currentUser.id;
+  },
   userDropdown: function() {
     if (SessionStore.loggedIn()) {
       return <div className="btn-group nav navbar-nav navbar-right">
-        <button className="btn btn-default btn-sm dropdown-toggle" type="button" onClick={this.signOut}>
+        <button className="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
           {SessionStore.currentUser().email} <span className="caret"></span>
         </button>
         <ul className="dropdown-menu">
+          <li><a href={this.currentUserUrl()}>My Page</a></li>
+          <li><a href={this.currentUserUrl()}>Edit Profile</a></li>
+          <li><a href="/" onClick={this.signOut}> Sign Out</a></li>
         </ul>
       </div>;
     } else {
@@ -61,6 +67,8 @@ var Header = React.createClass({
 });
 
 module.exports = Header;
+
+
 
 // <div className="container">
 //   <div className="navbar-header">

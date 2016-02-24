@@ -31337,7 +31337,6 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var SessionFrontendActions = __webpack_require__(236);
-	var SessionConstants = __webpack_require__(233);
 	
 	var SessionUtil = {
 	  // on page load
@@ -31400,7 +31399,7 @@
 	var AppDispatcher = __webpack_require__(230);
 	var SessionConstants = __webpack_require__(233);
 	
-	var sessionFrontendActions = {
+	var SessionFrontendActions = {
 	  // session create, users create
 	  receiveUserSignUp: function (userData) {
 	    AppDispatcher.dispatch({
@@ -31424,7 +31423,7 @@
 	  }
 	};
 	
-	module.exports = sessionFrontendActions;
+	module.exports = SessionFrontendActions;
 
 /***/ },
 /* 237 */
@@ -31457,6 +31456,9 @@
 	  signIn: function () {
 	    this.history.push('session/new');
 	  },
+	  currentUserUrl: function () {
+	    return "#/users/" + this.state.currentUser.id;
+	  },
 	  userDropdown: function () {
 	    if (SessionStore.loggedIn()) {
 	      return React.createElement(
@@ -31464,12 +31466,42 @@
 	        { className: 'btn-group nav navbar-nav navbar-right' },
 	        React.createElement(
 	          'button',
-	          { className: 'btn btn-default btn-sm dropdown-toggle', type: 'button', onClick: this.signOut },
+	          { className: 'btn btn-default btn-sm dropdown-toggle', type: 'button', 'data-toggle': 'dropdown' },
 	          SessionStore.currentUser().email,
 	          ' ',
 	          React.createElement('span', { className: 'caret' })
 	        ),
-	        React.createElement('ul', { className: 'dropdown-menu' })
+	        React.createElement(
+	          'ul',
+	          { className: 'dropdown-menu' },
+	          React.createElement(
+	            'li',
+	            null,
+	            React.createElement(
+	              'a',
+	              { href: this.currentUserUrl() },
+	              'My Page'
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            null,
+	            React.createElement(
+	              'a',
+	              { href: this.currentUserUrl() },
+	              'Edit Profile'
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            null,
+	            React.createElement(
+	              'a',
+	              { href: '/', onClick: this.signOut },
+	              ' Sign Out'
+	            )
+	          )
+	        )
 	      );
 	    } else {
 	      return React.createElement(
@@ -31827,6 +31859,7 @@
 	  displayName: 'UserShowPage',
 	
 	  getInitialState: function () {
+	    // this.props.params.userId << Use this after building user store
 	    return {
 	      currentUser: SessionStore.currentUser()
 	    };
