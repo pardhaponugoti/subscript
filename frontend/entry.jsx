@@ -5,15 +5,18 @@ var Route = require('react-router').Route;
 var IndexRoute = require('react-router').IndexRoute;
 
 var App = require('./components/app.jsx');
-var UserShowPage = require('./components/userShowPage.jsx');
 var NewUserForm = require('./components/newUserForm');
 var NewSessionForm = require('./components/newSessionForm.jsx');
+var UserShowPage = require('./components/userShowPage.jsx');
+var UserEditPage = require('./components/userEditPage.jsx');
 
 var routes = (
   <Route path="/" component={App}>
     <Route path="session/new" component={NewSessionForm}></Route>
     <Route path="users/new" component={NewUserForm}></Route>
-    <Route path="users/:userId" component={UserShowPage}></Route>
+    <Route path="users/:userId" component={UserShowPage}>
+      <Route path="users/:userId/edit" component={UserEditPage}></Route>
+    </Route>
   </Route>
 );
 

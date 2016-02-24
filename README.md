@@ -12,8 +12,8 @@ you pay for, and also see your friends' subscriptions.
 <!-- This is a Markdown checklist. Use it to keep track of your
 progress. Put an x between the brackets for a checkmark: [x] -->
 
-- [ ] Create an account
-- [ ] Log in / Log out
+- [x] Create an account
+- [x] Log in / Log out
 - [ ] Create a profile
 - [ ] Add reviews of subscriptions
 - [ ] Be able to see your friends' subscriptions
@@ -39,24 +39,49 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 **Objective:** Functioning rails project with Authentication
 
 - [x] create new project
-- [ ] create `User` model
-- [ ] authentication
-- [ ] user signup/signin pages
-- [ ] blank landing page after signin
+- [x] create `User` model
+- [x] authentication
+- [x] user signup/signin pages
+- [x] blank landing page after signin
 
 ### Phase 2: Users Model and User Profile Creation (1.5 days)
 
 **Objective:** Users can create profile
 
-- [ ] seed the database with a small amount of test data
-- [ ] CRUD API for users
-- [ ] jBuilder views for users
-- [ ] setup `APIUtil` to interact with the API
-- [ ] test out API interaction in the console.
-- [ ] setup the flux loop with skeleton files
-- [ ] setup React Router
+- [x] seed the database with a small amount of test data
+- [x] CRUD API for users
+- [x] jBuilder views for users
+- [x] setup `APIUtil` to interact with the API
+- [x] test out API interaction in the console.
+- [x] setup the flux loop with skeleton files
+- [x] setup React Router
 
-### Phase 3: Friend Model (0.5 days)
+### Phase 3: Start Styling (0.5 days)
+
+**Objective:** Existing pages (including signup/signin) will look good.
+
+- [ ] create a basic style guide
+- [ ] position elements on the page
+- [ ] add basic colors & styles
+
+### Phase 4: Subscriptions (0.5 days)
+
+**Objective:** Subscriptions will have their own page
+
+- [x] create `Subscription` model
+- [ ] add flux model for Subscriptions
+- [ ] Subscription page should be styled and ready for reviews
+
+### Phase 5: Reviews (0.5 days)
+
+**Objective:** Users can create reviews and they appear on their profile
+
+- [x] create `Review` model
+- [ ] CRUD for Reviews
+- [ ] add flux model for Reviews
+- [ ] reviews will now show up on user profile and on subscription profile page
+
+### Phase 6: Friend Model (1 day)
 
 **Objective:** Users can add friends and view their friend's profiles
 
@@ -65,31 +90,6 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 - [ ] users can see their friend's profiles
 - [ ] users can't see profiles of people they aren't friends with
 - [ ] users page should be styled and ready for reviews
-
-### Phase 4: Start Styling (0.5 days)
-
-**Objective:** Existing pages (including singup/signin) will look good.
-
-- [ ] create a basic style guide
-- [ ] position elements on the page
-- [ ] add basic colors & styles
-
-### Phase 5: Subscriptions (1 day)
-
-**Objective:** Subscriptions will have their own page
-
-- [ ] create `Subscription` model
-- [ ] add flux model for Subscriptions
-- [ ] Subscription page should be styled and ready for reviews
-
-### Phase 6: Reviews (1.5 days)
-
-**Objective:** Users can create reviews and they appear on their profile
-
-- [ ] create `Review` model
-- [ ] CRUD for Reviews
-- [ ] add flux model for Reviews
-- [ ] reviews will now show up on user profile and on subscription profile page
 
 ### Phase 7: Search (1.5 days)
 
@@ -108,4 +108,6 @@ for subscriptions or their friends
 - [ ] Add modals, transitions, and other styling flourishes.
 
 ### Bonus Features (TBD)
+- [ ] Add charts to show patterns for the ratings
+- [ ] Add multiple session capability
 - [ ] Add Facebook integration to validate friends
