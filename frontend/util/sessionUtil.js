@@ -7,10 +7,10 @@ var SessionUtil = {
       url : "/api/session/new",
       type: "GET",
       success: function(data) {
+        SessionFrontendActions.receiveUserSignIn(data);
         if (callback) {
           callback();
         }
-        SessionFrontendActions.receiveUserSignIn(data);
       }
     });
   },
@@ -22,10 +22,10 @@ var SessionUtil = {
       type: "POST",
       data: userParams,
       success: function(data) {
+        SessionFrontendActions.receiveUserSignUp(data);
         if (callback) {
           callback(data.id);
         }
-        SessionFrontendActions.receiveUserSignUp(data);
       }
     });
   },
@@ -35,10 +35,10 @@ var SessionUtil = {
       type: "POST",
       data: userParams,
       success: function(data) {
+        SessionFrontendActions.receiveUserSignIn(data);
         if (callback) {
           callback(data.id);
         }
-        SessionFrontendActions.receiveUserSignIn(data);
       }
     });
   },

@@ -7,18 +7,15 @@ var SessionConstants = require('../constants/sessionConstants.js');
 var UserConstants = require('../constants/userConstants.js');
 
 var _currentUser = {};
-// var _newUser = false;
 
 SessionStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
     case (SessionConstants.USER_SIGN_IN):
       _currentUser = payload.data;
-      // _newUser = false;
       SessionStore.__emitChange();
       break;
     case (SessionConstants.USER_SIGN_UP):
       _currentUser = payload.data;
-      // _newUser = true;
       SessionStore.__emitChange();
       break;
     case (SessionConstants.USER_SIGN_OUT):
@@ -26,7 +23,6 @@ SessionStore.__onDispatch = function(payload) {
       SessionStore.__emitChange();
       break;
     case (UserConstants.UPDATE_USER):
-      // this.waitFor(UserStore);
       _currentUser = payload.data;
       SessionStore.__emitChange();
       break;

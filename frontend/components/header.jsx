@@ -26,6 +26,7 @@ var Header = React.createClass({
     this.listenerToken.remove();
   },
   onSessionChange: function() {
+    console.log("sessionChangeInHeader");
     this.setState({
       currentUser: SessionStore.currentUser(),
       loggedIn: SessionStore.loggedIn(),
@@ -101,7 +102,7 @@ var Header = React.createClass({
       } else {
         inputs.header = "Sign Up";
         inputs.form = <NewUserForm />;
-        inputs.string = "Already a user?  ";
+        inputs.string = "Already a user?";
         inputs.button = <Button onClick={this.openSignInForm}>Sign In</Button>;
       }
       return <div className="nav navbar-nav navbar-right btn-group">

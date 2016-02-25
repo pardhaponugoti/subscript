@@ -1,8 +1,8 @@
 var React = require('react');
-var SessionBackendActions = require('../actions/sessionBackendActions.js');
-var SessionStore = require('../stores/session.js');
 var BrowserHistory = require('react-router').browserHistory;
 
+var SessionStore = require('../stores/session.js');
+var SessionBackendActions = require('../actions/sessionBackendActions.js');
 
 var NewSessionForm = React.createClass({
   getInitialState: function() {
@@ -37,17 +37,15 @@ var NewSessionForm = React.createClass({
   // },
   render: function() {
     return <div>
-      <form action="/session" method="post" className="new-session-form" onSubmit={this.handleSubmit} >
-        <label>Email
-          <input type="string" name="user[email]" value={this.state.email}
-              onChange={this.emailChange} />
-        </label>
-        <br/>
-        <label>Password
-          <input type="password" name="user[password]" value={this.state.password}
-              onChange={this.passwordChange} />
-        </label>
-        <br/>
+      <form action="/session" method="post" className="form" onSubmit={this.handleSubmit} >
+        <div className="form-group">
+        <input type="string" name="user[email]" placeholder="Email" value={this.state.email}
+            onChange={this.emailChange} />
+        </div>
+        <div className="form-group">
+        <input type="password" name="user[password]" placeholder="Password" value={this.state.password}
+            onChange={this.passwordChange} />
+        </div>
         <input className = "btn btn-default" type="submit" value="Sign In"/>
       </form>
     </div>;

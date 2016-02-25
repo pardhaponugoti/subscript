@@ -101,31 +101,21 @@ var NewUserForm = React.createClass({
   render: function() {
     return <div>
       <form action="/users" method="post" className="new-user-form" onSubmit={this.handleSubmit}>
-        <label>First Name
-          <input type="string" name="user[first_name]" value={this.state.firstName}
-              onChange={this.firstNameChange}/>
-        </label>
+        <input className="session-user-form-input" type="string" name="user[first_name]"
+          value={this.state.firstName} placeholder="First Name*" onChange={this.firstNameChange}/>
         <br/>
-        <label>Last Name
-          <input type="string" name="user[last_name]" value={this.state.lastName}
-              onChange={this.lastNameChange}/>
-        </label>
+        <input className="session-user-form-input" type="string" name="user[last_name]"
+          value={this.state.lastName} placeholder="Last Name*" onChange={this.lastNameChange}/>
         <br/>
-        <label>Email
-          <input type="string" name="user[email]" value={this.state.email}
-              onChange={this.emailChange} />
-        </label>
+        <input className="session-user-form-input" type="string" name="user[email]"
+          value={this.state.email} placeholder="Email*" onChange={this.emailChange} />
         <br/>
-        <label>Password
-          <input type="password" name="user[password]" value={this.state.password}
-              onChange={this.passwordChange} />
-        </label>
-          {this.passwordUl()}
+        <input className="session-user-form-input" type="password" name="user[password]"
+          value={this.state.password} placeholder="Password*" onChange={this.passwordChange} />
+        {this.passwordUl()}
         <br/>
-        <label>Confirm Password
-          <input type="password" value={this.state.confirmPassword}
-              onChange={this.confirmPasswordChange} />
-        </label>
+        <input className="session-user-form-input" type="password" value={this.state.confirmPassword}
+            placeholder="Confirm Password*" onChange={this.confirmPasswordChange} />
         {this.matchedPassword()}
         <br/>
         <input className = "btn btn-default" type="submit" value="Sign Up"/>
