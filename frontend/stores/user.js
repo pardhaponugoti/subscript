@@ -41,7 +41,6 @@ UserStore.updateUsers = function(usersData) {
 UserStore.deleteUser = function(data) {
   var id = data.id;
   delete _users[id];
-  console.log(_users);
 };
 
 UserStore.all = function() {

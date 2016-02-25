@@ -7,17 +7,16 @@ var SessionBackendActions = {
   },
 
   // session create, users create
-  signInUser: function(userParams) {
-    SessionUtil.signInUser(userParams);
+  signInUser: function(userParams, callback) {
+    SessionUtil.signInUser(userParams, callback);
   },
-  signUpUser: function(userParams) {
-    console.log("sessionbackendsignup");
-    SessionUtil.signUpUser(userParams);
+  signUpUser: function(userParams, callback) {
+    SessionUtil.signUpUser(userParams, callback);
   },
 
   //session destroy
-  signOutUser: function() {
-    SessionUtil.signOutUser();
+  signOutUser: function(callback) {
+    SessionUtil.signOutUser(callback);
   }
 
 };

@@ -2,48 +2,56 @@ var SessionFrontendActions = require('../actions/sessionFrontendActions.js');
 
 var SessionUtil = {
   // on page load
-  checkForSignIn : function() {
-    console.log("checkforsignin");
+  checkForSignIn : function(callback) {
     $.ajax({
       url : "/api/session/new",
       type: "GET",
       success: function(data) {
+        if (callback) {
+          callback();
+        }
         SessionFrontendActions.receiveUserSignIn(data);
       }
     });
   },
 
   // session create and users create
-  signUpUser : function(userParams) {
+  signUpUser : function(userParams, callback) {
     $.ajax({
       url : "/api/users",
       type: "POST",
       data: userParams,
       success: function(data) {
+        if (callback) {
+          callback(data.id);
+        }
         SessionFrontendActions.receiveUserSignUp(data);
       }
     });
   },
-  signInUser : function(userParams) {
-    console.log("signinuser");
+  signInUser : function(userParams, callback) {
     $.ajax({
       url : "/api/session",
       type: "POST",
       data: userParams,
       success: function(data) {
+        if (callback) {
+          callback(data.id);
+        }
         SessionFrontendActions.receiveUserSignIn(data);
       }
     });
   },
 
   // session destroy
-  signOutUser : function() {
-    console.log("signoutuser");
+  signOutUser : function(callback) {
     $.ajax({
       url : "/api/session",
       type: "DELETE",
       success: function(data) {
-        console.log(data.message);
+        if(callback) {
+          callback();
+        }
         SessionFrontendActions.signOutUser();
       }
     });

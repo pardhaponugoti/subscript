@@ -2,7 +2,7 @@ var AppDispatcher = require('../dispatcher.js');
 var UserConstants = require('../constants/userConstants.js');
 
 var UserFrontendActions = {
-  // User create, users create
+  // On Load, User Create
   receiveAllUsers: function(usersData) {
     AppDispatcher.dispatch({
       actionType: UserConstants.RECEIVE_ALL_USERS,
@@ -12,7 +12,6 @@ var UserFrontendActions = {
 
   // User update
   updateCurrentUser: function(userData) {
-    console.log("updatecurrentuser");
     AppDispatcher.dispatch({
       actionType: UserConstants.UPDATE_USER,
       data: userData
@@ -21,7 +20,6 @@ var UserFrontendActions = {
 
   // User delete
   deleteCurrentUser: function(data) {
-    console.log("frontendactionsdeleteuser");
     AppDispatcher.dispatch({
       actionType: UserConstants.DELETE_USER,
       data: data

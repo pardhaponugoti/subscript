@@ -1,5 +1,6 @@
 var React = require('react');
 var SessionBackendActions = require('../actions/sessionBackendActions.js');
+var BrowserHistory = require('react-router').browserHistory;
 
 var NewUserForm = React.createClass({
   getInitialState: function() {
@@ -41,21 +42,21 @@ var NewUserForm = React.createClass({
     var length = this.state.password.length;
 
     if (length < 8 && length > 0) {
-      passwordErrors.push(<li><strong><font color="red">
+      passwordErrors.push(<li key="1"><strong><font color="red">
         Password must be at least 8 characters long
       </font></strong></li>);
     } else if (length > 0){
-      passwordErrors.push(<li><font color="green">
+      passwordErrors.push(<li key="2"><font color="green">
         Password must be at least 8 characters long
       </font></li>);
     }
 
     if (length > 0 && containsNumber(this.state.password)) {
-      passwordErrors.push(<li><font color="green">
+      passwordErrors.push(<li key="3"><font color="green">
         Password must contain a number
       </font></li>);
     } else if (length > 0){
-      passwordErrors.push(<li><strong><font color="red">
+      passwordErrors.push(<li key="4"><strong><font color="red">
         Password must contain a number
       </font></strong></li>);
     }
@@ -88,12 +89,14 @@ var NewUserForm = React.createClass({
   },
   handleSubmit: function(e) {
     e.preventDefault();
-    SessionBackendActions.signUpUser({user:
-      {email: this.state.email,
-       password: this.state.password,
-       first_name: this.state.firstName,
-       last_name: this.state.lastName}
-    });
+    SessionBackendActions.signUpUser(
+      {user:
+        {email: this.state.email,
+         password: this.state.password,
+         first_name: this.state.firstName,
+         last_name: this.state.lastName}},
+       function(id) { BrowserHistory.push("/users/" +id + "/edit"); }
+     );
   },
   render: function() {
     return <div>

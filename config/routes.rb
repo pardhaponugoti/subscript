@@ -6,4 +6,5 @@ Rails.application.routes.draw do
     resources :reviews, only: [:index, :create, :update]
     resources :subscriptions, only: [:index, :create, :update]
   end
+  get '*unmatched_route', to: 'static_pages#root'
 end

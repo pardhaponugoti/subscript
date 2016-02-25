@@ -1,10 +1,9 @@
 var React = require('react');
 var SessionStore = require('../stores/session.js');
 var UserStore = require('../stores/user.js');
-var History = require('react-router').History;
+var BrowserHistory = require('react-router').browserHistory;
 
 var CurrentUserShowPage = React.createClass({
-  mixins: [History],
   getInitialState: function() {
     return {
       currentUser: UserStore.findById(this.props.params.userId)
@@ -28,8 +27,7 @@ var CurrentUserShowPage = React.createClass({
   },
   componentWillReceiveProps: function(newProps) {
     if(!isNumeric(this.props.params.userId)) {
-      debugger;
-      this.history.push("/");
+      BrowserHistory.push("/");
     } else {
       this.onChange(newProps);
     }
