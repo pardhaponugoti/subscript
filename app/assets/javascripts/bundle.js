@@ -24761,11 +24761,6 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        'HOMEPAGE'
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
 	        this.props.children
 	      )
 	    );
@@ -42537,35 +42532,33 @@
 	var SessionConstants = __webpack_require__(469);
 	var UserConstants = __webpack_require__(489);
 	
-	var _currentUser = {};
-	
 	SessionStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case SessionConstants.USER_SIGN_IN:
-	      _currentUser = payload.data;
+	      window.localStorage.setItem('pardhauser', JSON.stringify(payload.data));
 	      SessionStore.__emitChange();
 	      break;
 	    case SessionConstants.USER_SIGN_UP:
-	      _currentUser = payload.data;
+	      window.localStorage.setItem('pardhauser', JSON.stringify(payload.data));
 	      SessionStore.__emitChange();
 	      break;
 	    case SessionConstants.USER_SIGN_OUT:
-	      _currentUser = {};
+	      window.localStorage.setItem('pardhauser', JSON.stringify({}));
 	      SessionStore.__emitChange();
 	      break;
 	    case UserConstants.UPDATE_USER:
-	      _currentUser = payload.data;
+	      window.localStorage.setItem('pardhauser', JSON.stringify(payload.data));
 	      SessionStore.__emitChange();
 	      break;
 	    case UserConstants.DELETE_USER:
-	      _currentUser = {};
+	      window.localStorage.setItem('pardhauser', JSON.stringify({}));
 	      SessionStore.__emitChange();
 	      break;
 	  }
 	};
 	
 	SessionStore.currentUser = function () {
-	  return _currentUser;
+	  return JSON.parse(window.localStorage.getItem('pardhauser'));
 	};
 	
 	// SessionStore.newUser = function() {
@@ -42573,7 +42566,7 @@
 	// };
 	
 	SessionStore.loggedIn = function () {
-	  return _currentUser.email !== undefined;
+	  return SessionStore.currentUser().email !== undefined;
 	};
 	
 	module.exports = SessionStore;
@@ -50143,6 +50136,7 @@
 	
 	  getInitialState: function () {
 	    return {
+	      selected: false,
 	      searchString: '',
 	      subscriptions: SubscriptionStore.all()
 	    };
@@ -50162,7 +50156,10 @@
 	
 	  handleChange: function (e) {
 	    e.preventDefault();
-	    this.setState({ searchString: e.target.value });
+	    this.setState({
+	      searchString: e.target.value,
+	      selected: false
+	    });
 	  },
 	
 	  updateForm: function (id, name) {
@@ -50181,24 +50178,24 @@
 	    }
 	
 	    var subUl;
-	    subUl = React.createElement(
-	      'ul',
-	      null,
-	      subs.map(function (sub) {
-	        return React.createElement(
-	          'li',
-	          { key: sub.id, onClick: self.updateForm.bind(self, sub.id, sub.name) },
-	          sub.name
-	        );
-	      })
-	    );
 	
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange,
 	        name: this.props.searchName, placeholder: 'Subscription' }),
-	      subUl
+	      React.createElement(
+	        'ul',
+	        null,
+	        subs.map(function (sub) {
+	          return React.createElement(
+	            'li',
+	            { key: sub.id, onClick: self.updateForm.bind(self, sub.id, sub.name) },
+	            sub.name
+	          );
+	        })
+	      ),
+	      ';'
 	    );
 	  }
 	});
@@ -50253,7 +50250,7 @@
 	      React.createElement(
 	        'div',
 	        { className: 'col-md-8' },
-	        'Rating: Input a number from 1 to 5',
+	        'Rating: Input a number from 0 to 5, decimals ok!',
 	        React.createElement('br', null),
 	        React.createElement('input', { className: 'form-group', type: 'string', valueLink: this.linkState("rating") }),
 	        React.createElement('br', null),

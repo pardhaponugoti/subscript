@@ -5,6 +5,7 @@ var SubscriptionStore = require('../stores/subscription.js');
 var SubscriptionSearch = React.createClass({
     getInitialState: function(){
         return {
+          selected: false,
           searchString: '',
           subscriptions: SubscriptionStore.all()
          };
@@ -24,7 +25,10 @@ var SubscriptionSearch = React.createClass({
 
     handleChange: function(e){
       e.preventDefault();
-      this.setState({searchString: e.target.value});
+      this.setState({
+        searchString: e.target.value,
+        selected: false
+      });
     },
 
     updateForm: function(id, name){
@@ -43,16 +47,15 @@ var SubscriptionSearch = React.createClass({
       }
 
       var subUl;
-      subUl = <ul>
-          { subs.map(function(sub){
-              return <li key={sub.id} onClick={self.updateForm.bind(self, sub.id, sub.name)}>{sub.name}</li>;
-          }) }
-      </ul>;
-      
+
       return <div>
         <input type="text" value={this.state.searchString} onChange={this.handleChange}
           name={this.props.searchName} placeholder="Subscription" />
-        {subUl}
+            <ul>
+            { subs.map(function(sub){
+              return <li key={sub.id} onClick={self.updateForm.bind(self, sub.id, sub.name)}>{sub.name}</li>;
+              }) }
+          </ul>;
       </div>;
     }
 });

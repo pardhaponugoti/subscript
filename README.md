@@ -49,7 +49,7 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 **Objective:** Users can create profile
 
 - [x] seed the database with a small amount of test data
-- [ ] CRUD API for users
+- [x] CRUD API for users
 - [x] jBuilder views for users
 - [x] setup `APIUtil` to interact with the API
 - [x] test out API interaction in the console.
@@ -106,6 +106,12 @@ for subscriptions or their friends
 - [ ] Get feedback on my UI from others
 - [ ] Refactor HTML classes & CSS rules
 - [ ] Add modals, transitions, and other styling flourishes.
+
+### Random Todos
+
+**objective** Make site better for production
+
+- [ ] add a backend query to subscriptionSearch
 
 ### Bonus Features (TBD)
 - [ ] Add charts to show patterns for the ratings

@@ -34,7 +34,7 @@ var NewReviewForm = React.createClass({
         <SubscriptionSearch updateFormCallback={this.updateFormCallback} />
       </div>
       <div className="col-md-8">
-        Rating: Input a number from 1 to 5
+        Rating: Input a number from 0 to 5, decimals ok!
         <br/>
         <input className="form-group" type="string" valueLink={this.linkState("rating")}></input>
         <br/>

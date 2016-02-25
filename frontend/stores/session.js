@@ -6,35 +6,33 @@ var UserStore = require('./user.js');
 var SessionConstants = require('../constants/sessionConstants.js');
 var UserConstants = require('../constants/userConstants.js');
 
-var _currentUser = {};
-
 SessionStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
     case (SessionConstants.USER_SIGN_IN):
-      _currentUser = payload.data;
+      window.localStorage.setItem('pardhauser', JSON.stringify(payload.data));
       SessionStore.__emitChange();
       break;
     case (SessionConstants.USER_SIGN_UP):
-      _currentUser = payload.data;
+      window.localStorage.setItem('pardhauser', JSON.stringify(payload.data));
       SessionStore.__emitChange();
       break;
     case (SessionConstants.USER_SIGN_OUT):
-      _currentUser = {};
+      window.localStorage.setItem('pardhauser', JSON.stringify({}));
       SessionStore.__emitChange();
       break;
     case (UserConstants.UPDATE_USER):
-      _currentUser = payload.data;
+      window.localStorage.setItem('pardhauser', JSON.stringify(payload.data));
       SessionStore.__emitChange();
       break;
     case (UserConstants.DELETE_USER):
-      _currentUser = {};
+      window.localStorage.setItem('pardhauser', JSON.stringify({}));
       SessionStore.__emitChange();
       break;
   }
 };
 
 SessionStore.currentUser = function() {
-  return _currentUser;
+  return JSON.parse(window.localStorage.getItem('pardhauser'));
 };
 
 // SessionStore.newUser = function() {
@@ -42,7 +40,7 @@ SessionStore.currentUser = function() {
 // };
 
 SessionStore.loggedIn = function() {
-  return _currentUser.email !== undefined;
+  return SessionStore.currentUser().email !== undefined;
 };
 
 module.exports = SessionStore;

@@ -37,7 +37,6 @@ var App = React.createClass({
     return <div id='App'>
       <div><Header /></div>
       <button onClick={this.linkToTest}>test</button>
-      <div>HOMEPAGE</div>
       <div>{this.props.children}</div>
     </div>;
   }
