@@ -1,4 +1,5 @@
 var React = require('react');
+var BrowserHistory = require('react-router').browserHistory;
 
 var Header = require('./header.jsx');
 
@@ -14,6 +15,7 @@ window.SessionStore = SessionStore;
 window.UserStore = UserStore;
 window.SubscriptionStore = SubscriptionStore;
 
+
 var App = React.createClass({
   componentWillMount: function() {
     console.log("appwillmount");
@@ -26,9 +28,15 @@ var App = React.createClass({
   // componentWillUnmount: function() {
   //   console.log("AppUnmounting");
   // },
+  linkToTest: function(e) {
+    e.preventDefault();
+    BrowserHistory.push("test");
+  },
+
   render: function() {
     return <div id='App'>
       <div><Header /></div>
+      <button onClick={this.linkToTest}>test</button>
       <div>HOMEPAGE</div>
       <div>{this.props.children}</div>
     </div>;
