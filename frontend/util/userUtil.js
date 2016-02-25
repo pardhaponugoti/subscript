@@ -22,6 +22,17 @@ var UserUtil = {
         UserFrontendActions.updateCurrentUser(data);
       }
     });
+  },
+  deleteUser: function(userId) {
+    console.log("ajaxdeletinguser");
+    $.ajax({
+      url: "/api/users/" + userId,
+      type: 'DELETE',
+      data: {id: userId},
+      success: function(data) {
+        UserFrontendActions.deleteCurrentUser(data);
+      }
+    });
   }
 
 };

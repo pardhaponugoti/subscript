@@ -24478,28 +24478,118 @@
 	  onSessionChange: function () {
 	    console.log(SessionStore.loggedIn());
 	    if (SessionStore.loggedIn()) {
+	      this.setState({ loggedIn: SessionStore.loggedIn() });
 	      this.history.push("users/" + SessionStore.currentUser().id);
-	      this.setState({ loggedIn: SessionStore.loggedIn() });
 	    } else {
-	      this.history.push("/");
 	      this.setState({ loggedIn: SessionStore.loggedIn() });
+	      this.history.push("/");
 	    }
 	  },
 	  render: function () {
-	    return React.createElement(
-	      'div',
-	      { id: 'App' },
-	      React.createElement(
+	    if (this.state.loggedIn) {
+	      return React.createElement(
 	        'div',
-	        null,
-	        React.createElement(Header, null)
-	      ),
-	      React.createElement(
+	        { id: 'App' },
+	        React.createElement(
+	          'div',
+	          null,
+	          React.createElement(Header, { currentUser: SessionStore.currentUser() })
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.children
+	        )
+	      );
+	    } else {
+	      return React.createElement(
 	        'div',
-	        null,
-	        this.props.children
-	      )
-	    );
+	        { id: 'App' },
+	        React.createElement(
+	          'div',
+	          null,
+	          React.createElement(Header, { currentUser: SessionStore.currentUser() })
+	        ),
+	        React.createElement(
+	          'div',
+	          { 'class': 'modal fade', id: 'sign-in-modal' },
+	          React.createElement(
+	            'div',
+	            { 'class': 'modal-dialog' },
+	            React.createElement(
+	              'div',
+	              { 'class': 'modal-content' },
+	              React.createElement(
+	                'div',
+	                { 'class': 'modal-header' },
+	                React.createElement(
+	                  'button',
+	                  { type: 'button', 'class': 'close', 'data-dismiss': 'modal', 'aria-hidden': 'true' },
+	                  '×'
+	                ),
+	                React.createElement(
+	                  'h4',
+	                  { 'class': 'modal-title' },
+	                  'Log-in'
+	                )
+	              ),
+	              React.createElement(
+	                'div',
+	                { 'class': 'modal-body' },
+	                React.createElement(
+	                  'div',
+	                  { 'class': 'form-group' },
+	                  React.createElement(
+	                    'label',
+	                    { 'for': 'exampleInputEmail1' },
+	                    'Email address'
+	                  ),
+	                  React.createElement('input', { 'class': 'form-control', id: 'exampleInputEmail1', placeholder: 'Enter email', type: 'email' })
+	                ),
+	                React.createElement(
+	                  'div',
+	                  { 'class': 'form-group' },
+	                  React.createElement(
+	                    'label',
+	                    { 'for': 'exampleInputPassword1' },
+	                    'Password'
+	                  ),
+	                  React.createElement('input', { 'class': 'form-control', id: 'exampleInputPassword1', placeholder: 'Password', type: 'password' })
+	                ),
+	                React.createElement(
+	                  'p',
+	                  { 'class': 'text-right' },
+	                  React.createElement(
+	                    'a',
+	                    { href: '#' },
+	                    'Forgot password?'
+	                  )
+	                )
+	              ),
+	              React.createElement(
+	                'div',
+	                { 'class': 'modal-footer' },
+	                React.createElement(
+	                  'a',
+	                  { href: '#', 'data-dismiss': 'modal', 'class': 'btn' },
+	                  'Close'
+	                ),
+	                React.createElement(
+	                  'a',
+	                  { href: '#', 'class': 'btn btn-primary' },
+	                  'Log-in'
+	                )
+	              )
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.children
+	        )
+	      );
+	    }
 	  }
 	});
 	
@@ -24513,7 +24603,6 @@
 	var History = __webpack_require__(159).History;
 	
 	var SessionBackendActions = __webpack_require__(212);
-	var SessionStore = __webpack_require__(220);
 	
 	var Header = React.createClass({
 	  displayName: 'Header',
@@ -24521,14 +24610,8 @@
 	  mixins: [History],
 	  getInitialState: function () {
 	    return {
-	      currentUser: SessionStore.currentUser()
+	      modalIsOpen: false
 	    };
-	  },
-	  onSessionChange: function () {
-	    this.setState({ currentUser: SessionStore.currentUser() });
-	  },
-	  componentDidMount: function () {
-	    SessionStore.addListener(this.onSessionChange);
 	  },
 	  signOut: function () {
 	    SessionBackendActions.signOutUser();
@@ -24537,20 +24620,25 @@
 	    this.history.push('/session/new');
 	  },
 	  currentUserUrl: function () {
-	    return "#/users/" + this.state.currentUser.id;
+	    return "#/users/" + this.props.currentUser.id;
 	  },
 	  editUserUrl: function () {
 	    return this.currentUserUrl() + "/edit";
 	  },
+	  toggleModal: function () {
+	    this.setState({
+	      modalIsOpen: !this.state.modalIsOpen
+	    });
+	  },
 	  userDropdown: function () {
-	    if (SessionStore.loggedIn()) {
+	    if (this.props.currentUser.id !== undefined) {
 	      return React.createElement(
 	        'div',
 	        { className: 'btn-group nav navbar-nav navbar-right' },
 	        React.createElement(
 	          'button',
 	          { className: 'btn btn-default btn-sm dropdown-toggle', type: 'button', 'data-toggle': 'dropdown' },
-	          SessionStore.currentUser().email,
+	          this.props.currentUser.email,
 	          ' ',
 	          React.createElement('span', { className: 'caret' })
 	        ),
@@ -24587,62 +24675,17 @@
 	        )
 	      );
 	    } else {
+	      // <button className="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#sign-in-modal">Sign In</button>
 	      return React.createElement(
 	        'div',
 	        { className: 'btn-group nav navbar-nav navbar-right' },
 	        React.createElement(
 	          'button',
-	          { className: 'btn btn-default btn-sm', type: 'button', onClick: this.signIn },
+	          { className: 'btn btn-default btn-sm', onClick: this.toggleModal },
 	          'Sign In'
 	        )
 	      );
 	    }
-	  },
-	  signInModal: function () {
-	    return React.createElement(
-	      'div',
-	      { 'class': 'modal fade', id: 'myModal', role: 'dialog' },
-	      React.createElement(
-	        'div',
-	        { 'class': 'modal-dialog' },
-	        React.createElement(
-	          'div',
-	          { 'class': 'modal-content' },
-	          React.createElement(
-	            'div',
-	            { 'class': 'modal-header' },
-	            React.createElement(
-	              'button',
-	              { type: 'button', 'class': 'close', 'data-dismiss': 'modal' },
-	              '×'
-	            ),
-	            React.createElement(
-	              'h4',
-	              { 'class': 'modal-title' },
-	              'Modal Header'
-	            )
-	          ),
-	          React.createElement(
-	            'div',
-	            { 'class': 'modal-body' },
-	            React.createElement(
-	              'p',
-	              null,
-	              'Some text in the modal.'
-	            )
-	          ),
-	          React.createElement(
-	            'div',
-	            { 'class': 'modal-footer' },
-	            React.createElement(
-	              'button',
-	              { type: 'button', 'class': 'btn btn-default', 'data-dismiss': 'modal' },
-	              'Close'
-	            )
-	          )
-	        )
-	      )
-	    );
 	  },
 	  render: function () {
 	    return React.createElement(
@@ -25131,8 +25174,8 @@
 
 	var Store = __webpack_require__(221).Store;
 	var AppDispatcher = __webpack_require__(215);
-	var SessionStore = new Store(AppDispatcher);
 	
+	var SessionStore = new Store(AppDispatcher);
 	var SessionConstants = __webpack_require__(219);
 	var UserConstants = __webpack_require__(239);
 	
@@ -25157,6 +25200,10 @@
 	      break;
 	    case UserConstants.UPDATE_USER:
 	      _currentUser = payload.data;
+	      SessionStore.__emitChange();
+	      break;
+	    case UserConstants.DELETE_USER:
+	      _currentUser = {};
 	      SessionStore.__emitChange();
 	      break;
 	  }
@@ -31648,6 +31695,10 @@
 	      UserStore.addUser(payload.data);
 	      UserStore.__emitChange();
 	      break;
+	    case UserConstants.DELETE_USER:
+	      UserStore.deleteUser(payload.data);
+	      UserStore.__emitChange();
+	      break;
 	  }
 	};
 	
@@ -31660,6 +31711,12 @@
 	  usersData.forEach(function (user) {
 	    _users[user.id] = user;
 	  });
+	};
+	
+	UserStore.deleteUser = function (data) {
+	  var id = data.id;
+	  delete _users[id];
+	  console.log(_users);
 	};
 	
 	UserStore.all = function () {
@@ -31682,7 +31739,8 @@
 
 	var UserConstants = {
 	  RECEIVE_ALL_USERS: "RECEIVE_ALL_USERS",
-	  UPDATE_USER: "UPDATE_USER"
+	  UPDATE_USER: "UPDATE_USER",
+	  DELETE_USER: "DELETE_USER"
 	};
 	
 	module.exports = UserConstants;
@@ -31699,6 +31757,9 @@
 	  },
 	  updateUser: function (userData) {
 	    UserUtil.updateUser(userData);
+	  },
+	  deleteUser: function (userId) {
+	    UserUtil.deleteUser(userId);
 	  }
 	};
 	
@@ -31732,6 +31793,17 @@
 	        UserFrontendActions.updateCurrentUser(data);
 	      }
 	    });
+	  },
+	  deleteUser: function (userId) {
+	    console.log("ajaxdeletinguser");
+	    $.ajax({
+	      url: "/api/users/" + userId,
+	      type: 'DELETE',
+	      data: { id: userId },
+	      success: function (data) {
+	        UserFrontendActions.deleteCurrentUser(data);
+	      }
+	    });
 	  }
 	
 	};
@@ -31760,6 +31832,15 @@
 	    AppDispatcher.dispatch({
 	      actionType: UserConstants.UPDATE_USER,
 	      data: userData
+	    });
+	  },
+	
+	  // User delete
+	  deleteCurrentUser: function (data) {
+	    console.log("frontendactionsdeleteuser");
+	    AppDispatcher.dispatch({
+	      actionType: UserConstants.DELETE_USER,
+	      data: data
 	    });
 	  }
 	
@@ -32196,11 +32277,14 @@
 	var UserStore = __webpack_require__(238);
 	var UserBackendActions = __webpack_require__(240);
 	
+	var _oldImage = "";
+	
 	var UserEditPage = React.createClass({
 	  displayName: 'UserEditPage',
 	
 	  mixins: [History],
 	  getInitialState: function () {
+	    var inputImage = "";
 	    return {
 	      currentUser: SessionStore.currentUser(),
 	      firstName: SessionStore.currentUser().first_name,
@@ -32212,6 +32296,9 @@
 	    };
 	  },
 	  componentWillMount: function () {
+	    console.log("editpagewillmount");
+	    console.log(SessionStore.currentUser());
+	    console.log(this.props.params.userId);
 	    if (SessionStore.currentUser() !== undefined && SessionStore.currentUser().id !== parseInt(this.props.params.userId)) {
 	      this.history.push("/");
 	    }
@@ -32220,24 +32307,26 @@
 	    this.listenerToken = SessionStore.addListener(this.onSessionChange);
 	  },
 	  onSessionChange: function () {
-	    if (SessionStore.currentUser().id !== parseInt(this.props.params.userId)) {
-	      this.history.push("/");
-	    }
-	    this.setState({
-	      currentUser: SessionStore.currentUser(),
-	      firstName: SessionStore.currentUser().first_name,
-	      lastName: SessionStore.currentUser().last_name,
-	      email: SessionStore.currentUser().email,
-	      location: SessionStore.currentUser().location,
-	      dateOfBirth: SessionStore.currentUser().date_of_birth,
-	      image: SessionStore.currentUser().image
+	    this.history.push("/");
+	  },
+	
+	  openCloudinaryWidget: function (e) {
+	    e.preventDefault();
+	    var self = this;
+	    cloudinary.openUploadWidget({
+	      cloud_name: 'pardha',
+	      upload_preset: 'pardha',
+	      multiple: false,
+	      cropping: "server",
+	      cropping_aspect_ratio: 1,
+	      cropping_default_selection_ratio: 0.9,
+	      cropping_show_dimensions: true,
+	      theme: "minimal"
+	    }, function (error, result) {
+	      self.setState({ image: result[0].url });
 	    });
 	  },
-	  openCloudinaryWidget: function () {
-	    cloudinary.openUploadWidget({ cloud_name: 'pardha', upload_preset: 'pardha' }, function (error, result) {
-	      console.log(result);
-	    });
-	  },
+	
 	  firstNameChange: function (e) {
 	    this.setState({
 	      firstName: e.target.value
@@ -32263,6 +32352,16 @@
 	      dateOfBirth: e.target.value
 	    });
 	  },
+	
+	  cancelUpdate: function (e) {
+	    e.preventDefault();
+	    this.history.push("users/" + this.state.currentUser.id);
+	  },
+	  deleteUser: function (e) {
+	    e.preventDefault();
+	    UserBackendActions.deleteUser(this.state.currentUser.id);
+	  },
+	
 	  handleSubmit: function (e) {
 	    e.preventDefault();
 	    UserBackendActions.updateUser({
@@ -32332,17 +32431,30 @@
 	            null,
 	            ' Current Profile Picture:',
 	            React.createElement('br', null),
-	            React.createElement('img', { src: this.state.image, height: '256', width: '256' }),
+	            React.createElement('img', { src: this.state.image }),
 	            React.createElement('br', null),
 	            React.createElement('br', null),
 	            React.createElement(
-	              'a',
-	              { href: '#', id: 'upload_widget_opener', onClick: this.openCloudinaryWidget },
+	              'button',
+	              { onClick: this.openCloudinaryWidget },
 	              'Update Profile Picture'
-	            )
+	            ),
+	            React.createElement('div', { id: 'my-widget-container' })
 	          ),
 	          React.createElement('br', null),
-	          React.createElement('input', { type: 'submit', className: 'btn' })
+	          React.createElement('input', { type: 'submit', className: 'btn' }),
+	          React.createElement(
+	            'button',
+	            { className: 'btn', onClick: this.cancelUpdate },
+	            'Cancel'
+	          ),
+	          React.createElement('br', null),
+	          React.createElement('br', null),
+	          React.createElement(
+	            'button',
+	            { className: 'btn', onClick: this.deleteUser },
+	            'Delete My Account'
+	          )
 	        )
 	      );
 	    }

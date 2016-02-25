@@ -1,7 +1,7 @@
 var Store = require('flux/utils').Store;
 var AppDispatcher = require('../dispatcher.js');
-var SessionStore = new Store(AppDispatcher);
 
+var SessionStore = new Store(AppDispatcher);
 var SessionConstants = require('../constants/sessionConstants.js');
 var UserConstants = require('../constants/userConstants.js');
 
@@ -26,6 +26,10 @@ SessionStore.__onDispatch = function(payload) {
       break;
     case (UserConstants.UPDATE_USER):
       _currentUser = payload.data;
+      SessionStore.__emitChange();
+      break;
+    case (UserConstants.DELETE_USER):
+      _currentUser = {};
       SessionStore.__emitChange();
       break;
   }

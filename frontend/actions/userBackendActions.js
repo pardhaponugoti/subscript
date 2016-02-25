@@ -6,6 +6,9 @@ var UserBackendActions = {
   },
   updateUser: function(userData) {
     UserUtil.updateUser(userData);
+  },
+  deleteUser: function(userId) {
+    UserUtil.deleteUser(userId);
   }
 };
 

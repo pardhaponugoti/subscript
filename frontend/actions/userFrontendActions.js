@@ -17,6 +17,15 @@ var UserFrontendActions = {
       actionType: UserConstants.UPDATE_USER,
       data: userData
     });
+  },
+
+  // User delete
+  deleteCurrentUser: function(data) {
+    console.log("frontendactionsdeleteuser");
+    AppDispatcher.dispatch({
+      actionType: UserConstants.DELETE_USER,
+      data: data
+    });
   }
 
 };

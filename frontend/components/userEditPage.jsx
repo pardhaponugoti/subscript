@@ -6,9 +6,12 @@ var UserStore = require('../stores/user.js');
 var UserBackendActions = require('../actions/userBackendActions');
 
 
+var _oldImage = "";
+
 var UserEditPage = React.createClass({
   mixins: [History],
   getInitialState: function() {
+    var inputImage = "";
     return {
       currentUser: SessionStore.currentUser(),
       firstName: SessionStore.currentUser().first_name,
@@ -20,6 +23,9 @@ var UserEditPage = React.createClass({
     };
   },
   componentWillMount: function() {
+    console.log("editpagewillmount");
+    console.log(SessionStore.currentUser());
+    console.log(this.props.params.userId);
     if (SessionStore.currentUser() !== undefined && SessionStore.currentUser().id !== parseInt(this.props.params.userId)) {
       this.history.push("/");
     }
@@ -28,23 +34,27 @@ var UserEditPage = React.createClass({
     this.listenerToken = SessionStore.addListener(this.onSessionChange);
   },
   onSessionChange: function() {
-    if (SessionStore.currentUser().id !== parseInt(this.props.params.userId)) {
-      this.history.push("/");
-    }
-    this.setState({
-      currentUser: SessionStore.currentUser(),
-      firstName: SessionStore.currentUser().first_name,
-      lastName: SessionStore.currentUser().last_name,
-      email: SessionStore.currentUser().email,
-      location: SessionStore.currentUser().location,
-      dateOfBirth: SessionStore.currentUser().date_of_birth,
-      image: SessionStore.currentUser().image
+    this.history.push("/");
+  },
+
+  openCloudinaryWidget: function(e) {
+    e.preventDefault();
+    var self = this;
+    cloudinary.openUploadWidget({
+      cloud_name: 'pardha',
+      upload_preset: 'pardha',
+      multiple: false,
+      cropping: "server",
+      cropping_aspect_ratio: 1,
+      cropping_default_selection_ratio: 0.9,
+      cropping_show_dimensions: true,
+      theme: "minimal"
+    },
+      function(error, result) {
+        self.setState({image: result[0].url});
     });
   },
-  openCloudinaryWidget: function() {
-    cloudinary.openUploadWidget({ cloud_name: 'pardha', upload_preset: 'pardha'},
-      function(error, result) { console.log(result) });
-  },
+
   firstNameChange: function(e) {
     this.setState({
       firstName: e.target.value
@@ -70,6 +80,16 @@ var UserEditPage = React.createClass({
       dateOfBirth: e.target.value
     });
   },
+
+  cancelUpdate: function(e) {
+    e.preventDefault();
+    this.history.push("users/"+this.state.currentUser.id);
+  },
+  deleteUser: function(e) {
+    e.preventDefault();
+    UserBackendActions.deleteUser(this.state.currentUser.id);
+  },
+
   handleSubmit: function(e) {
     e.preventDefault();
     UserBackendActions.updateUser({
@@ -117,13 +137,18 @@ var UserEditPage = React.createClass({
           <br/>
           <label> Current Profile Picture:
             <br/>
-            <img src={this.state.image} height="256" width="256"/>
+            <img src={this.state.image}/>
             <br/>
             <br/>
-            <a href="#" id="upload_widget_opener" onClick={this.openCloudinaryWidget}>Update Profile Picture</a>
+            <button onClick={this.openCloudinaryWidget}>Update Profile Picture</button>
+            <div id="my-widget-container"></div>
           </label>
           <br/>
           <input type="submit" className="btn"/>
+          <button className="btn" onClick={this.cancelUpdate}>Cancel</button>
+          <br/>
+          <br/>
+          <button className="btn" onClick={this.deleteUser}>Delete My Account</button>
         </form>
       </div>;
     }

@@ -20,6 +20,10 @@ UserStore.__onDispatch = function(payload) {
       UserStore.addUser(payload.data);
       UserStore.__emitChange();
       break;
+    case (UserConstants.DELETE_USER):
+      UserStore.deleteUser(payload.data);
+      UserStore.__emitChange();
+      break;
   }
 };
 
@@ -32,6 +36,12 @@ UserStore.updateUsers = function(usersData) {
   usersData.forEach(function(user) {
     _users[user.id] = user;
   });
+};
+
+UserStore.deleteUser = function(data) {
+  var id = data.id;
+  delete _users[id];
+  console.log(_users);
 };
 
 UserStore.all = function() {
