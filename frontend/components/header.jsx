@@ -1,20 +1,29 @@
 var React = require('react');
 var History = require('react-router').History;
+var Alert = require('react-bootstrap').Alert;
+var Modal = require('react-bootstrap').Modal;
+var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
+var Button = require('react-bootstrap').Button;
 
 var SessionBackendActions = require('../actions/sessionBackendActions.js');
+var NewSessionForm = require('../components/newSessionForm.jsx');
+var NewUserForm = require('../components/newUserForm.jsx');
 
 var Header = React.createClass({
   mixins: [History],
   getInitialState: function() {
     return {
       modalIsOpen: false,
+      signInOpen: true
     };
+  },
+  componentWillReceiveProps: function() {
+    this.setState({
+      modalIsOpen: false
+    });
   },
   signOut: function() {
     SessionBackendActions.signOutUser();
-  },
-  signIn: function() {
-    this.history.push('/session/new');
   },
   currentUserUrl: function() {
     return "#/users/" + this.props.currentUser.id;
@@ -27,8 +36,23 @@ var Header = React.createClass({
       modalIsOpen: !this.state.modalIsOpen
     });
   },
+  openSignInForm: function() {
+    this.setState({
+      signInOpen: true
+    });
+  },
+  openSignUpForm: function() {
+    this.setState({
+      signInOpen: false
+    });
+  },
+  close: function() {
+    this.setState({
+      modalIsOpen: false
+    });
+  },
   userDropdown: function() {
-    if (this.props.currentUser.id !== undefined) {
+    if (this.props.loggedIn) {
       return <div className="btn-group nav navbar-nav navbar-right">
         <button className="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
           {this.props.currentUser.email} <span className="caret"></span>
@@ -40,9 +64,30 @@ var Header = React.createClass({
         </ul>
       </div>;
     } else {
-      // <button className="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#sign-in-modal">Sign In</button>
+      var inputs = {};
+      if (this.state.signInOpen) {
+        inputs.header = "Sign In";
+        inputs.form = <NewSessionForm />;
+      } else {
+        inputs.header = "Sign Up";
+        inputs.form = <NewUserForm />;
+      }
+
       return <div className="btn-group nav navbar-nav navbar-right">
         <button className="btn btn-default btn-sm" onClick={this.toggleModal}>Sign In</button>
+        <Modal show={this.state.modalIsOpen} onHide={this.close}>
+          <Modal.Header closeButton>
+            <Modal.Title>{inputs.header}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {inputs.form}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.openSignInForm}>Sign In</Button>
+            <Button onClick={this.openSignUpForm}>Sign Up</Button>
+            <Button onClick={this.close}>Close</Button>
+          </Modal.Footer>
+        </Modal>
       </div>;
     }
   },

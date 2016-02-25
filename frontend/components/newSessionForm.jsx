@@ -47,11 +47,8 @@ var NewSessionForm = React.createClass({
               onChange={this.passwordChange} />
         </label>
         <br/>
-        <input type="submit"/>
+        <input className = "btn btn-default" type="submit" value="Sign In"/>
       </form>
-      <div> New User?
-        <a href="#/users/new">Sign Up</a>
-      </div>
     </div>;
   }
 });

@@ -125,11 +125,8 @@ var NewUserForm = React.createClass({
         </label>
         {this.matchedPassword()}
         <br/>
-        <input type="submit"/>
+        <input className = "btn btn-default" type="submit" value="Sign Up"/>
       </form>
-      <div> Already a user?
-        <a href="#/session/new">Sign In</a>
-      </div>
     </div>;
   }
 });
