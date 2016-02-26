@@ -11,17 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160226011844) do
+ActiveRecord::Schema.define(version: 20160226213803) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "reviews", force: :cascade do |t|
-    t.integer "author_id",       null: false
-    t.integer "subscription_id", null: false
-    t.float   "rating",          null: false
-    t.text    "comment"
-    t.integer "frequency"
+    t.integer  "author_id",       null: false
+    t.integer  "subscription_id", null: false
+    t.float    "rating",          null: false
+    t.text     "comment"
+    t.integer  "frequency"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -30,6 +32,7 @@ ActiveRecord::Schema.define(version: 20160226011844) do
     t.text     "description", null: false
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.string   "logo"
   end
 
   add_index "subscriptions", ["url"], name: "index_subscriptions_on_url", unique: true, using: :btree

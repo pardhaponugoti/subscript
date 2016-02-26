@@ -14,10 +14,6 @@ var SubscriptionShowPage = require('./components/subscriptionShowPage.jsx');
 var ReviewFeed = require('./components/reviewFeed.jsx');
 
 //test components
-var SubscriptionSearch = require('./components/subscriptionSearch.jsx');
-var NewReviewForm = require('./components/newReviewForm.jsx');
-
-window.NewReviewForm = NewReviewForm;
 
 var routes = (
   <Route path="/" component={App}>

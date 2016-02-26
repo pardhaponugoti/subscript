@@ -1,5 +1,6 @@
 var React = require('react');
 var BrowserHistory = require('react-router').browserHistory;
+var Link = require('react-router').Link;
 var Alert = require('react-bootstrap').Alert;
 var Modal = require('react-bootstrap').Modal;
 var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
@@ -106,14 +107,17 @@ var UserShowPage = React.createClass({
           <br/>
           <ul>Subscriptions
             {this.state.currentShowUserReviews.map(function(review) {
-              return <li><a onClick={self.openSubscriptionPage.bind(self, review.subscription_id)}>
-                {SubscriptionStore.findById(review.subscription_id).name}</a></li>;
+              return <li><Link to={"/subscriptions/" + review.subscription_id}>
+                {SubscriptionStore.findById(review.subscription_id).name}</Link></li>;
             })}
           </ul>
           <div>LEFT 1/3</div>
         </div>
         <div className="col-md-8">
-          <div className="lead">{this.state.currentShowUser.first_name + " " + this.state.currentShowUser.last_name}</div>
+          <div className="lead">{this.state.currentShowUser.first_name + " " + this.state.currentShowUser.last_name}
+            { parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ?
+              <span className="small"><Link to={"/users/" + this.props.params.userId + "/edit"}>                   Edit</Link></span> : "" }
+          </div>
           <div>Location: {this.state.currentShowUser.location}</div>
           <div>Email: {this.state.currentShowUser.email}</div>
           <div>Date of Birth: {this.state.currentShowUser.date_of_birth}</div>
@@ -139,7 +143,8 @@ var UserShowPage = React.createClass({
             { this.state.currentShowUserReviews.map(function(userReview) {
               return <div>
                 <ReviewShowComponent review={userReview} key={userReview.id}/>
-                <button className="btn btn-default btn-sm" onClick={self.toggleEditReviewModal}>Edit Review</button>
+                { parseInt(self.props.params.userId) === parseInt(self.props.currentUser.id) ?
+                  <button className="btn btn-default btn-sm" onClick={self.toggleEditReviewModal}>Edit Review</button> : "" }
                   <Modal show={self.state.editReviewModalIsOpen} onHide={self.closeEditReviewModal}>
                     <Modal.Header closeButton>
                       <Modal.Title>Edit Review</Modal.Title>

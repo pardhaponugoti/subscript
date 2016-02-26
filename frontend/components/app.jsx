@@ -13,6 +13,7 @@ var UserBackendActions = require('../actions/userBackendActions.js');
 var SubscriptionBackendActions = require('../actions/subscriptionBackendActions.js');
 var ReviewBackendActions = require('../actions/reviewBackendActions.js');
 
+//Test stuff obv
 window.SessionStore = SessionStore;
 window.UserStore = UserStore;
 window.SubscriptionStore = SubscriptionStore;

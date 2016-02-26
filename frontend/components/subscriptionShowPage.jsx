@@ -38,6 +38,7 @@ var SubscriptionShowPage = React.createClass({
       return <div>WAITING-FOR-LOAD</div>;
     } else {
       return <div>
+        <h1><img src={this.state.currentSubscription.logo}/>     {this.state.currentSubscription.name}</h1>
         <ul>Reviews for {this.state.currentSubscription.name}
           {this.state.reviews.map(function(review) {
             return <li><ReviewShowComponent review={review} /></li>;

@@ -4,7 +4,8 @@ var AppDispatcher = require('../dispatcher.js');
 var ReviewStore = new Store(AppDispatcher);
 var ReviewConstants = require('../constants/reviewConstants.js');
 
-var _reviews = [];
+var _reviews = {};
+var _reviewsArray = [];
 var _reviewsByUserId = {};
 var _reviewsBySubscriptionId = {};
 
@@ -47,27 +48,14 @@ ReviewStore.updateReview = function(review) {
 };
 
 ReviewStore.updateReviews = function(reviewsData) {
+  _reviewsArray = reviewsData;
   _reviews = {};
   _reviewsByUserId = {};
   _reviewsBySubscriptionId = {};
 
   reviewsData.forEach(function(review) {
-    _reviews[review.id] = review;
-
-    if (_reviewsByUserId[review.author_id] === undefined) {
-      _reviewsByUserId[review.author_id] = [review];
-    } else {
-      _reviewsByUserId[review.author_id].push(review);
-    }
-
-    if (_reviewsBySubscriptionId[review.subscription_id] === undefined) {
-      _reviewsBySubscriptionId[review.subscription_id] = [review];
-    } else {
-      _reviewsBySubscriptionId[review.subscription_id].push(review);
-    }
+    ReviewStore.addReview(review);
   });
-
-  console.log("finished updating reviews");
 };
 
 ReviewStore.deleteReview = function(data) {
@@ -96,7 +84,9 @@ ReviewStore.findBySubscriptionId = function(subscriptionId) {
   }
 };
 
-// ReviewStore.returnChron
+ReviewStore.sortedByAge = function() {
+  return _reviewsArray.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);});
+};
 
 ReviewStore.all = function() {
   var reviews = [];

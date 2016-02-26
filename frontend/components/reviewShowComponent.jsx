@@ -5,6 +5,8 @@ var UserStore = require('../stores/user.js');
 var ReviewStore = require('../stores/review.js');
 var SubscriptionStore = require('../stores/subscription.js');
 
+// TAKES IN A REVIEW IN PROPS
+
 var ReviewShowComponent = React.createClass({
   getInitialState: function() {
     return {

@@ -60,10 +60,6 @@
 	var ReviewFeed = __webpack_require__(515);
 	
 	//test components
-	var SubscriptionSearch = __webpack_require__(512);
-	var NewReviewForm = __webpack_require__(507);
-	
-	window.NewReviewForm = NewReviewForm;
 	
 	var routes = React.createElement(
 	  Route,
@@ -24729,6 +24725,7 @@
 	var SubscriptionBackendActions = __webpack_require__(499);
 	var ReviewBackendActions = __webpack_require__(502);
 	
+	//Test stuff obv
 	window.SessionStore = SessionStore;
 	window.UserStore = UserStore;
 	window.SubscriptionStore = SubscriptionStore;
@@ -49461,7 +49458,8 @@
 	var ReviewStore = new Store(AppDispatcher);
 	var ReviewConstants = __webpack_require__(495);
 	
-	var _reviews = [];
+	var _reviews = {};
+	var _reviewsArray = [];
 	var _reviewsByUserId = {};
 	var _reviewsBySubscriptionId = {};
 	
@@ -49504,27 +49502,14 @@
 	};
 	
 	ReviewStore.updateReviews = function (reviewsData) {
+	  _reviewsArray = reviewsData;
 	  _reviews = {};
 	  _reviewsByUserId = {};
 	  _reviewsBySubscriptionId = {};
 	
 	  reviewsData.forEach(function (review) {
-	    _reviews[review.id] = review;
-	
-	    if (_reviewsByUserId[review.author_id] === undefined) {
-	      _reviewsByUserId[review.author_id] = [review];
-	    } else {
-	      _reviewsByUserId[review.author_id].push(review);
-	    }
-	
-	    if (_reviewsBySubscriptionId[review.subscription_id] === undefined) {
-	      _reviewsBySubscriptionId[review.subscription_id] = [review];
-	    } else {
-	      _reviewsBySubscriptionId[review.subscription_id].push(review);
-	    }
+	    ReviewStore.addReview(review);
 	  });
-	
-	  console.log("finished updating reviews");
 	};
 	
 	ReviewStore.deleteReview = function (data) {
@@ -49553,7 +49538,11 @@
 	  }
 	};
 	
-	// ReviewStore.returnChron
+	ReviewStore.sortedByAge = function () {
+	  return _reviewsArray.sort(function (a, b) {
+	    return new Date(b.updated_at) - new Date(a.updated_at);
+	  });
+	};
 	
 	ReviewStore.all = function () {
 	  var reviews = [];
@@ -49861,6 +49850,7 @@
 
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
+	var Link = __webpack_require__(159).Link;
 	var Alert = __webpack_require__(218).Alert;
 	var Modal = __webpack_require__(218).Modal;
 	var OverlayTrigger = __webpack_require__(218).OverlayTrigger;
@@ -49980,8 +49970,8 @@
 	                'li',
 	                null,
 	                React.createElement(
-	                  'a',
-	                  { onClick: self.openSubscriptionPage.bind(self, review.subscription_id) },
+	                  Link,
+	                  { to: "/subscriptions/" + review.subscription_id },
 	                  SubscriptionStore.findById(review.subscription_id).name
 	                )
 	              );
@@ -49999,7 +49989,16 @@
 	          React.createElement(
 	            'div',
 	            { className: 'lead' },
-	            this.state.currentShowUser.first_name + " " + this.state.currentShowUser.last_name
+	            this.state.currentShowUser.first_name + " " + this.state.currentShowUser.last_name,
+	            parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ? React.createElement(
+	              'span',
+	              { className: 'small' },
+	              React.createElement(
+	                Link,
+	                { to: "/users/" + this.props.params.userId + "/edit" },
+	                '                   Edit'
+	              )
+	            ) : ""
 	          ),
 	          React.createElement(
 	            'div',
@@ -50068,11 +50067,11 @@
 	                'div',
 	                null,
 	                React.createElement(ReviewShowComponent, { review: userReview, key: userReview.id }),
-	                React.createElement(
+	                parseInt(self.props.params.userId) === parseInt(self.props.currentUser.id) ? React.createElement(
 	                  'button',
 	                  { className: 'btn btn-default btn-sm', onClick: self.toggleEditReviewModal },
 	                  'Edit Review'
-	                ),
+	                ) : "",
 	                React.createElement(
 	                  Modal,
 	                  { show: self.state.editReviewModalIsOpen, onHide: self.closeEditReviewModal },
@@ -50124,6 +50123,8 @@
 	var UserStore = __webpack_require__(490);
 	var ReviewStore = __webpack_require__(494);
 	var SubscriptionStore = __webpack_require__(492);
+	
+	// TAKES IN A REVIEW IN PROPS
 	
 	var ReviewShowComponent = React.createClass({
 	  displayName: 'ReviewShowComponent',
@@ -50910,6 +50911,13 @@
 	        'div',
 	        null,
 	        React.createElement(
+	          'h1',
+	          null,
+	          React.createElement('img', { src: this.state.currentSubscription.logo }),
+	          '     ',
+	          this.state.currentSubscription.name
+	        ),
+	        React.createElement(
 	          'ul',
 	          null,
 	          'Reviews for ',
@@ -50945,21 +50953,43 @@
 	
 	  getInitialState: function () {
 	    return {
-	      reviews: ReviewStore.all()
+	      unseenReviews: 0,
+	      reviews: ReviewStore.sortedByAge()
 	    };
 	  },
+	  componentDidMount: function () {
+	    this.listenerToken = ReviewStore.addListener(this.onReviewChange);
+	  },
+	  componentWillUnmount: function () {
+	    this.listenerToken.remove();
+	  },
+	
+	  onReviewChange: function () {
+	    this.setState({
+	      unSeenReviews: ReviewStore.all().length - this.state.reviews.length,
+	      reviews: ReviewStore.sortedByAge()
+	    });
+	  },
 	  render: function () {
+	    console.log("reviewFeedRender");
 	    if (this.state.reviews === undefined) {
 	      return React.createElement(
 	        'div',
 	        null,
-	        'FEED GOES HERE'
+	        'STAY TUNED'
 	      );
 	    } else {
 	      return React.createElement(
 	        'div',
-	        null,
-	        'STAY TUNED'
+	        { className: 'review-feed' },
+	        React.createElement(
+	          'h2',
+	          null,
+	          'Review Feed'
+	        ),
+	        this.state.reviews.map(function (review) {
+	          return React.createElement(ReviewShowComponent, { review: review });
+	        })
 	      );
 	    }
 	  }
