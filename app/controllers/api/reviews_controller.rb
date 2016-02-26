@@ -13,6 +13,17 @@ class Api::ReviewsController < ApplicationController
     end
   end
 
+  def update
+    @review = Review.find(params[:id])
+
+    if @review.update(review_params)
+      @reviews = Review.all
+      render :index
+    else
+      render json: { status: 404 }
+    end
+  end
+
   private
 
   def review_params

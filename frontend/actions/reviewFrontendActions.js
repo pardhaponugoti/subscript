@@ -10,6 +10,14 @@ var ReviewFrontendActions = {
     });
   },
 
+  // update Review
+  updateReview: function(reviewData) {
+    AppDispatcher.dispatch({
+      actionType: ReviewConstants.RECEIVE_ALL_REVIEWS,
+      data: reviewData
+    });
+  },
+
   // all reviews
   receiveAllReviews: function(reviewsData) {
     AppDispatcher.dispatch({

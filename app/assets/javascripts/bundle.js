@@ -48,17 +48,19 @@
 	var ReactDOM = __webpack_require__(158);
 	var Router = __webpack_require__(159).Router;
 	var Route = __webpack_require__(159).Route;
+	var IndexRoute = __webpack_require__(159).IndexRoute;
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
 	var App = __webpack_require__(216);
-	var NewUserForm = __webpack_require__(491);
-	var NewSessionForm = __webpack_require__(490);
-	var UserShowPage = __webpack_require__(495);
-	var UserEditPage = __webpack_require__(496);
+	var NewUserForm = __webpack_require__(471);
+	var NewSessionForm = __webpack_require__(470);
+	var UserShowPage = __webpack_require__(505);
+	var UserEditPage = __webpack_require__(513);
 	var SubscriptionShowPage = __webpack_require__(514);
+	var ReviewFeed = __webpack_require__(515);
 	
 	//test components
-	var SubscriptionSearch = __webpack_require__(506);
+	var SubscriptionSearch = __webpack_require__(512);
 	var NewReviewForm = __webpack_require__(507);
 	
 	window.NewReviewForm = NewReviewForm;
@@ -66,9 +68,12 @@
 	var routes = React.createElement(
 	  Route,
 	  { path: '/', component: App },
+	  React.createElement(IndexRoute, { component: ReviewFeed }),
+	  React.createElement(Route, { path: 'feed', component: ReviewFeed }),
 	  React.createElement(Route, { path: 'users/:userId', component: UserShowPage }),
 	  React.createElement(Route, { path: 'users/:userId/edit', component: UserEditPage }),
-	  React.createElement(Route, { path: 'subscriptions/:subscriptionId', component: SubscriptionShowPage })
+	  React.createElement(Route, { path: 'subscriptions/:subscriptionId', component: SubscriptionShowPage }),
+	  React.createElement(Route, { path: '*', component: ReviewFeed })
 	);
 	
 	document.addEventListener("DOMContentLoaded", function () {
@@ -24714,15 +24719,15 @@
 	
 	var Header = __webpack_require__(217);
 	
-	var SessionStore = __webpack_require__(470);
-	var UserStore = __webpack_require__(488);
-	var SubscriptionStore = __webpack_require__(501);
-	var ReviewStore = __webpack_require__(508);
+	var SessionStore = __webpack_require__(472);
+	var UserStore = __webpack_require__(490);
+	var SubscriptionStore = __webpack_require__(492);
+	var ReviewStore = __webpack_require__(494);
 	
 	var SessionBackendActions = __webpack_require__(462);
-	var UserBackendActions = __webpack_require__(492);
-	var SubscriptionBackendActions = __webpack_require__(503);
-	var ReviewBackendActions = __webpack_require__(509);
+	var UserBackendActions = __webpack_require__(496);
+	var SubscriptionBackendActions = __webpack_require__(499);
+	var ReviewBackendActions = __webpack_require__(502);
 	
 	window.SessionStore = SessionStore;
 	window.UserStore = UserStore;
@@ -24806,8 +24811,8 @@
 	var Button = __webpack_require__(218).Button;
 	
 	var SessionBackendActions = __webpack_require__(462);
-	var NewSessionForm = __webpack_require__(490);
-	var NewUserForm = __webpack_require__(491);
+	var NewSessionForm = __webpack_require__(470);
+	var NewUserForm = __webpack_require__(471);
 	
 	var Header = React.createClass({
 	  displayName: 'Header',
@@ -24876,7 +24881,8 @@
 	        React.createElement(
 	          'button',
 	          { className: 'btn btn-default btn-sm dropdown-toggle', type: 'button', 'data-toggle': 'dropdown' },
-	          this.props.currentUser.email,
+	          React.createElement('img', { src: this.props.currentUser.image, height: '20', width: '20' }),
+	          " " + this.props.currentUser.first_name + " " + this.props.currentUser.last_name,
 	          ' ',
 	          React.createElement('span', { className: 'caret' })
 	        ),
@@ -42537,13 +42543,276 @@
 /* 470 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(471).Store;
+	var React = __webpack_require__(1);
+	var BrowserHistory = __webpack_require__(159).browserHistory;
+	
+	var SessionBackendActions = __webpack_require__(462);
+	
+	var NewSessionForm = React.createClass({
+	  displayName: 'NewSessionForm',
+	
+	  getInitialState: function () {
+	    return {
+	      email: "",
+	      password: ""
+	    };
+	  },
+	  emailChange: function (e) {
+	    this.setState({
+	      email: e.target.value
+	    });
+	  },
+	  passwordChange: function (e) {
+	    this.setState({
+	      password: e.target.value
+	    });
+	  },
+	  handleSubmit: function (e) {
+	    e.preventDefault();
+	    this.props.closeModalCallback();
+	    SessionBackendActions.signInUser({ user: { email: this.state.email,
+	        password: this.state.password } }, function (id) {
+	      BrowserHistory.push("/users/" + id);
+	    });
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        { action: '/session', method: 'post', className: 'form', onSubmit: this.handleSubmit },
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement('input', { type: 'string', name: 'user[email]', placeholder: 'Email', value: this.state.email,
+	            onChange: this.emailChange })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement('input', { type: 'password', name: 'user[password]', placeholder: 'Password', value: this.state.password,
+	            onChange: this.passwordChange })
+	        ),
+	        React.createElement('input', { className: 'btn btn-default', type: 'submit', value: 'Sign In' })
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewSessionForm;
+
+/***/ },
+/* 471 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var SessionBackendActions = __webpack_require__(462);
+	var BrowserHistory = __webpack_require__(159).browserHistory;
+	
+	var NewUserForm = React.createClass({
+	  displayName: 'NewUserForm',
+	
+	  getInitialState: function () {
+	    return {
+	      email: "",
+	      password: "",
+	      confirmPassword: "",
+	      firstName: "",
+	      lastName: ""
+	    };
+	  },
+	  firstNameChange: function (e) {
+	    this.setState({
+	      firstName: e.target.value
+	    });
+	  },
+	  lastNameChange: function (e) {
+	    this.setState({
+	      lastName: e.target.value
+	    });
+	  },
+	  emailChange: function (e) {
+	    this.setState({
+	      email: e.target.value
+	    });
+	  },
+	  passwordChange: function (e) {
+	    this.setState({
+	      password: e.target.value
+	    });
+	  },
+	  confirmPasswordChange: function (e) {
+	    this.setState({
+	      confirmPassword: e.target.value
+	    });
+	  },
+	  passwordUl: function () {
+	    var passwordErrors = [];
+	    var length = this.state.password.length;
+	
+	    if (length < 8 && length > 0) {
+	      passwordErrors.push(React.createElement(
+	        'li',
+	        { key: '1' },
+	        React.createElement(
+	          'strong',
+	          null,
+	          React.createElement(
+	            'font',
+	            { color: 'red' },
+	            'Password must be at least 8 characters long'
+	          )
+	        )
+	      ));
+	    } else if (length > 0) {
+	      passwordErrors.push(React.createElement(
+	        'li',
+	        { key: '2' },
+	        React.createElement(
+	          'font',
+	          { color: 'green' },
+	          'Password must be at least 8 characters long'
+	        )
+	      ));
+	    }
+	
+	    if (length > 0 && containsNumber(this.state.password)) {
+	      passwordErrors.push(React.createElement(
+	        'li',
+	        { key: '3' },
+	        React.createElement(
+	          'font',
+	          { color: 'green' },
+	          'Password must contain a number'
+	        )
+	      ));
+	    } else if (length > 0) {
+	      passwordErrors.push(React.createElement(
+	        'li',
+	        { key: '4' },
+	        React.createElement(
+	          'strong',
+	          null,
+	          React.createElement(
+	            'font',
+	            { color: 'red' },
+	            'Password must contain a number'
+	          )
+	        )
+	      ));
+	    }
+	
+	    if (passwordErrors.length === 0) {
+	      return;
+	    } else {
+	      return React.createElement(
+	        'ul',
+	        null,
+	        passwordErrors.map(function (error) {
+	          return error;
+	        })
+	      );
+	    }
+	  },
+	  matchedPassword: function () {
+	    if (this.state.password !== "" && this.state.password.length > 7 && containsNumber(this.state.password)) {
+	      if (this.state.password !== this.state.confirmPassword && this.state.confirmPassword !== "") {
+	        return React.createElement(
+	          'div',
+	          null,
+	          React.createElement(
+	            'strong',
+	            null,
+	            React.createElement(
+	              'font',
+	              { color: 'red' },
+	              'Passwords do not match!'
+	            )
+	          )
+	        );
+	      } else if (this.state.confirmPassword !== "" && this.state.confirmPassword === this.state.password) {
+	        return React.createElement(
+	          'div',
+	          null,
+	          React.createElement(
+	            'font',
+	            { color: 'green' },
+	            'Passwords match!'
+	          )
+	        );
+	      }
+	    } else {
+	      return;
+	    }
+	  },
+	  handleSubmit: function (e) {
+	    e.preventDefault();
+	    this.props.closeModalCallback();
+	    SessionBackendActions.signUpUser({ user: { email: this.state.email,
+	        password: this.state.password,
+	        first_name: this.state.firstName,
+	        last_name: this.state.lastName } }, function (id) {
+	      BrowserHistory.push("/users/" + id + "/edit");
+	    });
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        { action: '/users', method: 'post', className: 'new-user-form', onSubmit: this.handleSubmit },
+	        React.createElement('input', { className: 'session-user-form-input', type: 'string', name: 'user[first_name]',
+	          value: this.state.firstName, placeholder: 'First Name*', onChange: this.firstNameChange }),
+	        React.createElement('br', null),
+	        React.createElement('input', { className: 'session-user-form-input', type: 'string', name: 'user[last_name]',
+	          value: this.state.lastName, placeholder: 'Last Name*', onChange: this.lastNameChange }),
+	        React.createElement('br', null),
+	        React.createElement('input', { className: 'session-user-form-input', type: 'string', name: 'user[email]',
+	          value: this.state.email, placeholder: 'Email*', onChange: this.emailChange }),
+	        React.createElement('br', null),
+	        React.createElement('input', { className: 'session-user-form-input', type: 'password', name: 'user[password]',
+	          value: this.state.password, placeholder: 'Password*', onChange: this.passwordChange }),
+	        this.passwordUl(),
+	        React.createElement('br', null),
+	        React.createElement('input', { className: 'session-user-form-input', type: 'password', value: this.state.confirmPassword,
+	          placeholder: 'Confirm Password*', onChange: this.confirmPasswordChange }),
+	        this.matchedPassword(),
+	        React.createElement('br', null),
+	        React.createElement('input', { className: 'btn btn-default', type: 'submit', value: 'Sign Up' })
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewUserForm;
+	
+	function isNumeric(n) {
+	  return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+	
+	function containsNumber(str) {
+	  var containsNum = false;
+	  for (var i = 0; i < str.length; i++) {
+	    if (isNumeric(str[i])) {
+	      containsNum = true;
+	    }
+	  }
+	  return containsNum;
+	}
+
+/***/ },
+/* 472 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(473).Store;
 	var AppDispatcher = __webpack_require__(465);
 	
 	var SessionStore = new Store(AppDispatcher);
-	var UserStore = __webpack_require__(488);
+	var UserStore = __webpack_require__(490);
 	var SessionConstants = __webpack_require__(469);
-	var UserConstants = __webpack_require__(489);
+	var UserConstants = __webpack_require__(491);
 	
 	//Get initial from localStorage and set to local variable
 	var _currentUser = _currentUser || JSON.parse(window.localStorage.getItem('pardhauser'));
@@ -42594,7 +42863,7 @@
 	module.exports = SessionStore;
 
 /***/ },
-/* 471 */
+/* 473 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -42606,15 +42875,15 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 	
-	module.exports.Container = __webpack_require__(472);
-	module.exports.MapStore = __webpack_require__(475);
-	module.exports.Mixin = __webpack_require__(487);
-	module.exports.ReduceStore = __webpack_require__(476);
-	module.exports.Store = __webpack_require__(477);
+	module.exports.Container = __webpack_require__(474);
+	module.exports.MapStore = __webpack_require__(477);
+	module.exports.Mixin = __webpack_require__(489);
+	module.exports.ReduceStore = __webpack_require__(478);
+	module.exports.Store = __webpack_require__(479);
 
 
 /***/ },
-/* 472 */
+/* 474 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -42636,10 +42905,10 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxStoreGroup = __webpack_require__(473);
+	var FluxStoreGroup = __webpack_require__(475);
 	
 	var invariant = __webpack_require__(468);
-	var shallowEqual = __webpack_require__(474);
+	var shallowEqual = __webpack_require__(476);
 	
 	var DEFAULT_OPTIONS = {
 	  pure: true,
@@ -42797,7 +43066,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 473 */
+/* 475 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -42878,7 +43147,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 474 */
+/* 476 */
 /***/ function(module, exports) {
 
 	/**
@@ -42933,7 +43202,7 @@
 	module.exports = shallowEqual;
 
 /***/ },
-/* 475 */
+/* 477 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -42954,8 +43223,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxReduceStore = __webpack_require__(476);
-	var Immutable = __webpack_require__(486);
+	var FluxReduceStore = __webpack_require__(478);
+	var Immutable = __webpack_require__(488);
 	
 	var invariant = __webpack_require__(468);
 	
@@ -43083,7 +43352,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 476 */
+/* 478 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -43104,9 +43373,9 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var FluxStore = __webpack_require__(477);
+	var FluxStore = __webpack_require__(479);
 	
-	var abstractMethod = __webpack_require__(485);
+	var abstractMethod = __webpack_require__(487);
 	var invariant = __webpack_require__(468);
 	
 	var FluxReduceStore = (function (_FluxStore) {
@@ -43190,7 +43459,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 477 */
+/* 479 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -43209,7 +43478,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var _require = __webpack_require__(478);
+	var _require = __webpack_require__(480);
 	
 	var EventEmitter = _require.EventEmitter;
 	
@@ -43373,7 +43642,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 478 */
+/* 480 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43386,14 +43655,14 @@
 	 */
 	
 	var fbemitter = {
-	  EventEmitter: __webpack_require__(479)
+	  EventEmitter: __webpack_require__(481)
 	};
 	
 	module.exports = fbemitter;
 
 
 /***/ },
-/* 479 */
+/* 481 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -43412,11 +43681,11 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var EmitterSubscription = __webpack_require__(480);
-	var EventSubscriptionVendor = __webpack_require__(482);
+	var EmitterSubscription = __webpack_require__(482);
+	var EventSubscriptionVendor = __webpack_require__(484);
 	
-	var emptyFunction = __webpack_require__(484);
-	var invariant = __webpack_require__(483);
+	var emptyFunction = __webpack_require__(486);
+	var invariant = __webpack_require__(485);
 	
 	/**
 	 * @class BaseEventEmitter
@@ -43590,7 +43859,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 480 */
+/* 482 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -43611,7 +43880,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var EventSubscription = __webpack_require__(481);
+	var EventSubscription = __webpack_require__(483);
 	
 	/**
 	 * EmitterSubscription represents a subscription with listener and context data.
@@ -43643,7 +43912,7 @@
 	module.exports = EmitterSubscription;
 
 /***/ },
-/* 481 */
+/* 483 */
 /***/ function(module, exports) {
 
 	/**
@@ -43697,7 +43966,7 @@
 	module.exports = EventSubscription;
 
 /***/ },
-/* 482 */
+/* 484 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -43716,7 +43985,7 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var invariant = __webpack_require__(483);
+	var invariant = __webpack_require__(485);
 	
 	/**
 	 * EventSubscriptionVendor stores a set of EventSubscriptions that are
@@ -43806,7 +44075,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 483 */
+/* 485 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -43861,7 +44130,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 484 */
+/* 486 */
 /***/ function(module, exports) {
 
 	/**
@@ -43903,7 +44172,7 @@
 	module.exports = emptyFunction;
 
 /***/ },
-/* 485 */
+/* 487 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -43930,7 +44199,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 486 */
+/* 488 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -48917,7 +49186,7 @@
 	}));
 
 /***/ },
-/* 487 */
+/* 489 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -48934,7 +49203,7 @@
 	
 	'use strict';
 	
-	var FluxStoreGroup = __webpack_require__(473);
+	var FluxStoreGroup = __webpack_require__(475);
 	
 	var invariant = __webpack_require__(468);
 	
@@ -49040,13 +49309,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 488 */
+/* 490 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(471).Store;
+	var Store = __webpack_require__(473).Store;
 	var AppDispatcher = __webpack_require__(465);
 	var UserStore = new Store(AppDispatcher);
-	var UserConstants = __webpack_require__(489);
+	var UserConstants = __webpack_require__(491);
 	var SessionConstants = __webpack_require__(469);
 	
 	var _users = {};
@@ -49103,7 +49372,7 @@
 	module.exports = UserStore;
 
 /***/ },
-/* 489 */
+/* 491 */
 /***/ function(module, exports) {
 
 	var UserConstants = {
@@ -49115,273 +49384,204 @@
 	module.exports = UserConstants;
 
 /***/ },
-/* 490 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var BrowserHistory = __webpack_require__(159).browserHistory;
-	
-	var SessionBackendActions = __webpack_require__(462);
-	
-	var NewSessionForm = React.createClass({
-	  displayName: 'NewSessionForm',
-	
-	  getInitialState: function () {
-	    return {
-	      email: "",
-	      password: ""
-	    };
-	  },
-	  emailChange: function (e) {
-	    this.setState({
-	      email: e.target.value
-	    });
-	  },
-	  passwordChange: function (e) {
-	    this.setState({
-	      password: e.target.value
-	    });
-	  },
-	  handleSubmit: function (e) {
-	    e.preventDefault();
-	    this.props.closeModalCallback();
-	    SessionBackendActions.signInUser({ user: { email: this.state.email,
-	        password: this.state.password } }, function (id) {
-	      BrowserHistory.push("/users/" + id);
-	    });
-	  },
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'form',
-	        { action: '/session', method: 'post', className: 'form', onSubmit: this.handleSubmit },
-	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement('input', { type: 'string', name: 'user[email]', placeholder: 'Email', value: this.state.email,
-	            onChange: this.emailChange })
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement('input', { type: 'password', name: 'user[password]', placeholder: 'Password', value: this.state.password,
-	            onChange: this.passwordChange })
-	        ),
-	        React.createElement('input', { className: 'btn btn-default', type: 'submit', value: 'Sign In' })
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = NewSessionForm;
-
-/***/ },
-/* 491 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	var SessionBackendActions = __webpack_require__(462);
-	var BrowserHistory = __webpack_require__(159).browserHistory;
-	
-	var NewUserForm = React.createClass({
-	  displayName: 'NewUserForm',
-	
-	  getInitialState: function () {
-	    return {
-	      email: "",
-	      password: "",
-	      confirmPassword: "",
-	      firstName: "",
-	      lastName: ""
-	    };
-	  },
-	  firstNameChange: function (e) {
-	    this.setState({
-	      firstName: e.target.value
-	    });
-	  },
-	  lastNameChange: function (e) {
-	    this.setState({
-	      lastName: e.target.value
-	    });
-	  },
-	  emailChange: function (e) {
-	    this.setState({
-	      email: e.target.value
-	    });
-	  },
-	  passwordChange: function (e) {
-	    this.setState({
-	      password: e.target.value
-	    });
-	  },
-	  confirmPasswordChange: function (e) {
-	    this.setState({
-	      confirmPassword: e.target.value
-	    });
-	  },
-	  passwordUl: function () {
-	    var passwordErrors = [];
-	    var length = this.state.password.length;
-	
-	    if (length < 8 && length > 0) {
-	      passwordErrors.push(React.createElement(
-	        'li',
-	        { key: '1' },
-	        React.createElement(
-	          'strong',
-	          null,
-	          React.createElement(
-	            'font',
-	            { color: 'red' },
-	            'Password must be at least 8 characters long'
-	          )
-	        )
-	      ));
-	    } else if (length > 0) {
-	      passwordErrors.push(React.createElement(
-	        'li',
-	        { key: '2' },
-	        React.createElement(
-	          'font',
-	          { color: 'green' },
-	          'Password must be at least 8 characters long'
-	        )
-	      ));
-	    }
-	
-	    if (length > 0 && containsNumber(this.state.password)) {
-	      passwordErrors.push(React.createElement(
-	        'li',
-	        { key: '3' },
-	        React.createElement(
-	          'font',
-	          { color: 'green' },
-	          'Password must contain a number'
-	        )
-	      ));
-	    } else if (length > 0) {
-	      passwordErrors.push(React.createElement(
-	        'li',
-	        { key: '4' },
-	        React.createElement(
-	          'strong',
-	          null,
-	          React.createElement(
-	            'font',
-	            { color: 'red' },
-	            'Password must contain a number'
-	          )
-	        )
-	      ));
-	    }
-	
-	    if (passwordErrors.length === 0) {
-	      return;
-	    } else {
-	      return React.createElement(
-	        'ul',
-	        null,
-	        passwordErrors.map(function (error) {
-	          return error;
-	        })
-	      );
-	    }
-	  },
-	  matchedPassword: function () {
-	    if (this.state.password !== "" && this.state.password.length > 7 && containsNumber(this.state.password)) {
-	      if (this.state.password !== this.state.confirmPassword && this.state.confirmPassword !== "") {
-	        return React.createElement(
-	          'div',
-	          null,
-	          React.createElement(
-	            'strong',
-	            null,
-	            React.createElement(
-	              'font',
-	              { color: 'red' },
-	              'Passwords do not match!'
-	            )
-	          )
-	        );
-	      } else if (this.state.confirmPassword !== "" && this.state.confirmPassword === this.state.password) {
-	        return React.createElement(
-	          'div',
-	          null,
-	          React.createElement(
-	            'font',
-	            { color: 'green' },
-	            'Passwords match!'
-	          )
-	        );
-	      }
-	    } else {
-	      return;
-	    }
-	  },
-	  handleSubmit: function (e) {
-	    e.preventDefault();
-	    this.props.closeModalCallback();
-	    SessionBackendActions.signUpUser({ user: { email: this.state.email,
-	        password: this.state.password,
-	        first_name: this.state.firstName,
-	        last_name: this.state.lastName } }, function (id) {
-	      BrowserHistory.push("/users/" + id + "/edit");
-	    });
-	  },
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'form',
-	        { action: '/users', method: 'post', className: 'new-user-form', onSubmit: this.handleSubmit },
-	        React.createElement('input', { className: 'session-user-form-input', type: 'string', name: 'user[first_name]',
-	          value: this.state.firstName, placeholder: 'First Name*', onChange: this.firstNameChange }),
-	        React.createElement('br', null),
-	        React.createElement('input', { className: 'session-user-form-input', type: 'string', name: 'user[last_name]',
-	          value: this.state.lastName, placeholder: 'Last Name*', onChange: this.lastNameChange }),
-	        React.createElement('br', null),
-	        React.createElement('input', { className: 'session-user-form-input', type: 'string', name: 'user[email]',
-	          value: this.state.email, placeholder: 'Email*', onChange: this.emailChange }),
-	        React.createElement('br', null),
-	        React.createElement('input', { className: 'session-user-form-input', type: 'password', name: 'user[password]',
-	          value: this.state.password, placeholder: 'Password*', onChange: this.passwordChange }),
-	        this.passwordUl(),
-	        React.createElement('br', null),
-	        React.createElement('input', { className: 'session-user-form-input', type: 'password', value: this.state.confirmPassword,
-	          placeholder: 'Confirm Password*', onChange: this.confirmPasswordChange }),
-	        this.matchedPassword(),
-	        React.createElement('br', null),
-	        React.createElement('input', { className: 'btn btn-default', type: 'submit', value: 'Sign Up' })
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = NewUserForm;
-	
-	function isNumeric(n) {
-	  return !isNaN(parseFloat(n)) && isFinite(n);
-	}
-	
-	function containsNumber(str) {
-	  var containsNum = false;
-	  for (var i = 0; i < str.length; i++) {
-	    if (isNumeric(str[i])) {
-	      containsNum = true;
-	    }
-	  }
-	  return containsNum;
-	}
-
-/***/ },
 /* 492 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var UserUtil = __webpack_require__(493);
+	var Store = __webpack_require__(473).Store;
+	var AppDispatcher = __webpack_require__(465);
+	var SubscriptionStore = new Store(AppDispatcher);
+	
+	var SubscriptionConstants = __webpack_require__(493);
+	
+	var _subscriptions = {};
+	
+	SubscriptionStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case SubscriptionConstants.RECEIVE_ALL_SUBSCRIPTIONS:
+	      console.log("subscriptionsReceivedByStore");
+	      SubscriptionStore.updateSubscriptions(payload.data);
+	      SubscriptionStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	SubscriptionStore.addSubscription = function (subscription) {
+	  _subscriptions[subscription.id] = subscription;
+	};
+	
+	SubscriptionStore.updateSubscriptions = function (subscriptionsData) {
+	  _subscriptions = {};
+	  subscriptionsData.forEach(function (subscription) {
+	    _subscriptions[subscription.id] = subscription;
+	  });
+	};
+	
+	SubscriptionStore.deleteSubscription = function (data) {
+	  var id = data.id;
+	  delete _subscriptions[id];
+	};
+	
+	SubscriptionStore.all = function () {
+	  var subscriptions = [];
+	  for (var id in _subscriptions) {
+	    subscriptions.push(_subscriptions[id]);
+	  }
+	  return subscriptions;
+	};
+	
+	SubscriptionStore.findById = function (id) {
+	  if (_subscriptions === {}) {
+	    return undefined;
+	  } else if (_subscriptions[id] === undefined) {
+	    return [];
+	  } else {
+	    return _subscriptions[id];
+	  }
+	};
+	
+	module.exports = SubscriptionStore;
+
+/***/ },
+/* 493 */
+/***/ function(module, exports) {
+
+	var SubscriptionConstants = {
+	  RECEIVE_ALL_SUBSCRIPTIONS: "RECEIVE_ALL_SUBSCRIPTIONS"
+	};
+	
+	module.exports = SubscriptionConstants;
+
+/***/ },
+/* 494 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(473).Store;
+	var AppDispatcher = __webpack_require__(465);
+	
+	var ReviewStore = new Store(AppDispatcher);
+	var ReviewConstants = __webpack_require__(495);
+	
+	var _reviews = [];
+	var _reviewsByUserId = {};
+	var _reviewsBySubscriptionId = {};
+	
+	ReviewStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case ReviewConstants.RECEIVE_NEW_REVIEW:
+	      console.log("ReviewReceivedByStore");
+	      ReviewStore.addReview(payload.data);
+	      ReviewStore.__emitChange();
+	      break;
+	    // case (ReviewConstants.UPDATE_REVIEW):
+	    //   ReviewStore.updateReview(payload.data);
+	    //   ReviewStore.updateReviews(_reviews);
+	    //   ReviewStore.__emitChange();
+	    //   break;
+	    case ReviewConstants.RECEIVE_ALL_REVIEWS:
+	      console.log("allReviewsReceivedByStore");
+	      ReviewStore.updateReviews(payload.data);
+	      ReviewStore.__emitChange();
+	      break;
+	  }
+	};
+	
+	ReviewStore.addReview = function (review) {
+	  _reviews[review.id] = review;
+	  if (_reviewsByUserId[review.author_id] === undefined) {
+	    _reviewsByUserId[review.author_id] = [review];
+	  } else {
+	    _reviewsByUserId[review.author_id].push(review);
+	  }
+	  if (_reviewsBySubscriptionId[review.subscription_id] === undefined) {
+	    _reviewsBySubscriptionId[review.subscription_id] = [review];
+	  } else {
+	    _reviewsBySubscriptionId[review.subscription_id].push(review);
+	  }
+	};
+	
+	ReviewStore.updateReview = function (review) {
+	  _reviews[review.id] = review;
+	};
+	
+	ReviewStore.updateReviews = function (reviewsData) {
+	  _reviews = {};
+	  _reviewsByUserId = {};
+	  _reviewsBySubscriptionId = {};
+	
+	  reviewsData.forEach(function (review) {
+	    _reviews[review.id] = review;
+	
+	    if (_reviewsByUserId[review.author_id] === undefined) {
+	      _reviewsByUserId[review.author_id] = [review];
+	    } else {
+	      _reviewsByUserId[review.author_id].push(review);
+	    }
+	
+	    if (_reviewsBySubscriptionId[review.subscription_id] === undefined) {
+	      _reviewsBySubscriptionId[review.subscription_id] = [review];
+	    } else {
+	      _reviewsBySubscriptionId[review.subscription_id].push(review);
+	    }
+	  });
+	
+	  console.log("finished updating reviews");
+	};
+	
+	ReviewStore.deleteReview = function (data) {
+	  var id = data.id;
+	  delete _reviews[id];
+	};
+	
+	ReviewStore.findByUserId = function (userId) {
+	  console.log("finding by user id");
+	  if (_reviewsByUserId === {}) {
+	    return undefined;
+	  } else if (_reviewsByUserId[userId] === undefined) {
+	    return [];
+	  } else {
+	    return _reviewsByUserId[userId];
+	  }
+	};
+	
+	ReviewStore.findBySubscriptionId = function (subscriptionId) {
+	  if (_reviewsBySubscriptionId === {}) {
+	    return undefined;
+	  } else if (_reviewsBySubscriptionId[subscriptionId] === undefined) {
+	    return [];
+	  } else {
+	    return _reviewsBySubscriptionId[subscriptionId];
+	  }
+	};
+	
+	// ReviewStore.returnChron
+	
+	ReviewStore.all = function () {
+	  var reviews = [];
+	  for (var id in _reviews) {
+	    reviews.push(_reviews[id]);
+	  }
+	  return reviews;
+	};
+	
+	module.exports = ReviewStore;
+
+/***/ },
+/* 495 */
+/***/ function(module, exports) {
+
+	var ReviewConstants = {
+	  RECEIVE_ALL_REVIEWS: "RECEIVE_ALL_REVIEWS",
+	  RECEIVE_NEW_REVIEW: "RECEIVE_NEW_REVIEW",
+	  UPDATE_REVIEW: "UPDATE_REVIEW"
+	};
+	
+	module.exports = ReviewConstants;
+
+/***/ },
+/* 496 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var UserUtil = __webpack_require__(497);
 	
 	var UserBackendActions = {
 	  fetchAllUsers: function () {
@@ -49398,10 +49598,10 @@
 	module.exports = UserBackendActions;
 
 /***/ },
-/* 493 */
+/* 497 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var UserFrontendActions = __webpack_require__(494);
+	var UserFrontendActions = __webpack_require__(498);
 	
 	var UserUtil = {
 	  // on page load
@@ -49446,11 +49646,11 @@
 	module.exports = UserUtil;
 
 /***/ },
-/* 494 */
+/* 498 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(465);
-	var UserConstants = __webpack_require__(489);
+	var UserConstants = __webpack_require__(491);
 	
 	var UserFrontendActions = {
 	  // On Load, User Create
@@ -49482,7 +49682,181 @@
 	module.exports = UserFrontendActions;
 
 /***/ },
-/* 495 */
+/* 499 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var SubscriptionUtil = __webpack_require__(500);
+	
+	var SubscriptionBackendActions = {
+	  // on site load
+	  fetchAllSubscriptions: function () {
+	    SubscriptionUtil.fetchAllSubscriptions();
+	  },
+	
+	  // subscription create
+	  createSubscription: function (subscriptionParams, callback) {
+	    SubscriptionUtil.createSubscription(subscriptionParams, callback);
+	  }
+	
+	};
+	
+	module.exports = SubscriptionBackendActions;
+
+/***/ },
+/* 500 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var SubscriptionFrontendActions = __webpack_require__(501);
+	
+	var SubscriptionUtil = {
+	  fetchAllSubscriptions: function () {
+	    $.ajax({
+	      url: "/api/subscriptions",
+	      type: "GET",
+	      success: function (data) {
+	        SubscriptionFrontendActions.receiveAllSubscriptions(data);
+	      }
+	    });
+	  }
+	};
+	
+	module.exports = SubscriptionUtil;
+
+/***/ },
+/* 501 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(465);
+	var SubscriptionConstants = __webpack_require__(493);
+	
+	var SubscriptionFrontendActions = {
+	  receiveAllSubscriptions: function (data) {
+	    AppDispatcher.dispatch({
+	      actionType: SubscriptionConstants.RECEIVE_ALL_SUBSCRIPTIONS,
+	      data: data
+	    });
+	  }
+	};
+	
+	module.exports = SubscriptionFrontendActions;
+
+/***/ },
+/* 502 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ReviewUtil = __webpack_require__(503);
+	
+	var ReviewBackendActions = {
+	  // create Review
+	  createReview: function (reviewParams, callback) {
+	    ReviewUtil.createReview(reviewParams, callback);
+	  },
+	
+	  // edit Review
+	  editReview: function (reviewParams, callback) {
+	    ReviewUtil.editReview(reviewParams, callback);
+	  },
+	
+	  // all reviews
+	  fetchAllReviews: function (callback) {
+	    ReviewUtil.fetchAllReviews(callback);
+	  }
+	
+	};
+	
+	module.exports = ReviewBackendActions;
+
+/***/ },
+/* 503 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ReviewFrontendActions = __webpack_require__(504);
+	
+	var ReviewUtil = {
+	  // create new review
+	  createReview: function (reviewParams, callback) {
+	    $.ajax({
+	      url: "/api/reviews",
+	      type: "POST",
+	      data: reviewParams,
+	      success: function (data) {
+	        if (callback) {
+	          callback();
+	        }
+	        ReviewFrontendActions.receiveNewReview(data);
+	      }
+	    });
+	  },
+	
+	  //edit review
+	  editReview: function (reviewParams, callback) {
+	    $.ajax({
+	      url: "/api/reviews/" + reviewParams.id,
+	      type: "PATCH",
+	      data: reviewParams,
+	      success: function (data) {
+	        if (callback) {
+	          callback();
+	        }
+	        ReviewFrontendActions.updateReview(data);
+	      }
+	    });
+	  },
+	
+	  // all reviews (on app load)
+	  fetchAllReviews: function (callback) {
+	    $.ajax({
+	      url: "/api/reviews",
+	      type: "GET",
+	      success: function (data) {
+	        if (callback) {
+	          callback();
+	        }
+	        ReviewFrontendActions.receiveAllReviews(data);
+	      }
+	    });
+	  }
+	};
+	
+	module.exports = ReviewUtil;
+
+/***/ },
+/* 504 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(465);
+	var ReviewConstants = __webpack_require__(495);
+	
+	var ReviewFrontendActions = {
+	  // review create
+	  receiveNewReview: function (reviewData) {
+	    AppDispatcher.dispatch({
+	      actionType: ReviewConstants.RECEIVE_NEW_REVIEW,
+	      data: reviewData
+	    });
+	  },
+	
+	  // update Review
+	  updateReview: function (reviewData) {
+	    AppDispatcher.dispatch({
+	      actionType: ReviewConstants.RECEIVE_ALL_REVIEWS,
+	      data: reviewData
+	    });
+	  },
+	
+	  // all reviews
+	  receiveAllReviews: function (reviewsData) {
+	    AppDispatcher.dispatch({
+	      actionType: ReviewConstants.RECEIVE_ALL_REVIEWS,
+	      data: reviewsData
+	    });
+	  }
+	};
+	
+	module.exports = ReviewFrontendActions;
+
+/***/ },
+/* 505 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -49492,14 +49866,15 @@
 	var OverlayTrigger = __webpack_require__(218).OverlayTrigger;
 	var Button = __webpack_require__(218).Button;
 	
-	var UserStore = __webpack_require__(488);
-	var ReviewStore = __webpack_require__(508);
-	var SubscriptionStore = __webpack_require__(501);
+	var UserStore = __webpack_require__(490);
+	var ReviewStore = __webpack_require__(494);
+	var SubscriptionStore = __webpack_require__(492);
 	
-	var UserBackendActions = __webpack_require__(492);
+	var UserBackendActions = __webpack_require__(496);
 	
-	var ReviewShowComponent = __webpack_require__(513);
+	var ReviewShowComponent = __webpack_require__(506);
 	var NewReviewForm = __webpack_require__(507);
+	var EditReviewForm = __webpack_require__(516);
 	
 	function isNumeric(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);
@@ -49512,7 +49887,8 @@
 	    return {
 	      currentShowUser: UserStore.findById(this.props.params.userId),
 	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId),
-	      newReviewModalIsOpen: false
+	      newReviewModalIsOpen: false,
+	      editReviewModalIsOpen: false
 	    };
 	  },
 	  // componentWillMount: function() {
@@ -49536,7 +49912,9 @@
 	  onUserChange: function (newProps) {
 	    this.setState({
 	      currentShowUser: UserStore.findById(newProps.params.userId),
-	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
+	      currentShowUserReviews: ReviewStore.findByUserId(newProps.params.userId),
+	      newReviewModalIsOpen: false,
+	      editReviewModalIsOpen: false
 	    });
 	  },
 	
@@ -49547,27 +49925,44 @@
 	    });
 	  },
 	  reviewChange: function () {
+	    console.log("setting state for user show page");
 	    this.setState({
 	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
 	    });
 	  },
 	
-	  toggleModal: function () {
+	  toggleNewReviewModal: function () {
 	    this.setState({
 	      newReviewModalIsOpen: !this.state.newReviewModalIsOpen
 	    });
 	  },
-	  close: function () {
+	  closeNewReviewModal: function () {
 	    this.setState({
 	      newReviewModalIsOpen: false
 	    });
 	  },
+	  toggleEditReviewModal: function () {
+	    this.setState({
+	      editReviewModalIsOpen: !this.state.editReviewModalIsOpen
+	    });
+	  },
+	  closeEditReviewModal: function () {
+	    this.setState({
+	      editReviewModalIsOpen: false
+	    });
+	  },
+	
+	  openSubscriptionPage: function (id) {
+	    BrowserHistory.push("/subscriptions/" + id);
+	  },
 	
 	  render: function () {
+	    console.log("render show page");
 	    if (this.state.currentShowUser === undefined || this.state.currentShowUserReviews === undefined) {
 	      // Insert Loading Symbol Here -- waiting for the userstore to update
 	      return React.createElement('div', { id: 'WAITING-FOR-LOAD' });
 	    } else {
+	      var self = this;
 	      return React.createElement(
 	        'div',
 	        null,
@@ -49584,7 +49979,11 @@
 	              return React.createElement(
 	                'li',
 	                null,
-	                SubscriptionStore.findById(review.subscription_id).name
+	                React.createElement(
+	                  'a',
+	                  { onClick: self.openSubscriptionPage.bind(self, review.subscription_id) },
+	                  SubscriptionStore.findById(review.subscription_id).name
+	                )
 	              );
 	            })
 	          ),
@@ -49626,14 +50025,14 @@
 	            'RIGHT 2/3'
 	          ),
 	          React.createElement('br', null),
-	          React.createElement(
+	          parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ? React.createElement(
 	            'button',
-	            { className: 'btn btn-default btn-sm', onClick: this.toggleModal },
-	            'CreateNewReview'
-	          ),
+	            { className: 'btn btn-default btn-sm', onClick: this.toggleNewReviewModal },
+	            'Create New Review'
+	          ) : "",
 	          React.createElement(
 	            Modal,
-	            { show: this.state.newReviewModalIsOpen, onHide: this.close },
+	            { show: this.state.newReviewModalIsOpen, onHide: this.closeNewReviewModal },
 	            React.createElement(
 	              Modal.Header,
 	              { closeButton: true },
@@ -49646,14 +50045,14 @@
 	            React.createElement(
 	              Modal.Body,
 	              null,
-	              React.createElement(NewReviewForm, { currentUser: this.props.currentUser, closeModalCallback: this.close })
+	              React.createElement(NewReviewForm, { currentUser: this.props.currentUser, closeModalCallback: this.closeNewReviewModal })
 	            ),
 	            React.createElement(
 	              Modal.Footer,
 	              null,
 	              React.createElement(
 	                Button,
-	                { onClick: this.close },
+	                { onClick: this.closeNewReviewModal },
 	                'Never Mind'
 	              )
 	            )
@@ -49665,7 +50064,45 @@
 	            'div',
 	            null,
 	            this.state.currentShowUserReviews.map(function (userReview) {
-	              return React.createElement(ReviewShowComponent, { review: userReview, key: userReview.id });
+	              return React.createElement(
+	                'div',
+	                null,
+	                React.createElement(ReviewShowComponent, { review: userReview, key: userReview.id }),
+	                React.createElement(
+	                  'button',
+	                  { className: 'btn btn-default btn-sm', onClick: self.toggleEditReviewModal },
+	                  'Edit Review'
+	                ),
+	                React.createElement(
+	                  Modal,
+	                  { show: self.state.editReviewModalIsOpen, onHide: self.closeEditReviewModal },
+	                  React.createElement(
+	                    Modal.Header,
+	                    { closeButton: true },
+	                    React.createElement(
+	                      Modal.Title,
+	                      null,
+	                      'Edit Review'
+	                    )
+	                  ),
+	                  React.createElement(
+	                    Modal.Body,
+	                    null,
+	                    React.createElement(EditReviewForm, { review: userReview, currentUser: self.props.currentUser,
+	                      closeModalCallback: self.closeEditReviewModal })
+	                  ),
+	                  React.createElement(
+	                    Modal.Footer,
+	                    null,
+	                    React.createElement(
+	                      Button,
+	                      { onClick: self.closeEditReviewModal },
+	                      'Never Mind'
+	                    )
+	                  )
+	                ),
+	                React.createElement('br', null)
+	              );
 	            })
 	          )
 	        )
@@ -49678,14 +50115,579 @@
 	module.exports = UserShowPage;
 
 /***/ },
-/* 496 */
+/* 506 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
-	var UserStore = __webpack_require__(488);
-	var UserBackendActions = __webpack_require__(492);
+	var UserStore = __webpack_require__(490);
+	var ReviewStore = __webpack_require__(494);
+	var SubscriptionStore = __webpack_require__(492);
+	
+	var ReviewShowComponent = React.createClass({
+	  displayName: 'ReviewShowComponent',
+	
+	  getInitialState: function () {
+	    return {
+	      author: UserStore.findById(this.props.review.author_id),
+	      subscription: SubscriptionStore.findById(this.props.review.subscription_id)
+	    };
+	  },
+	
+	  openSubscriptionPage: function () {
+	    BrowserHistory.push("/subscriptions/" + this.state.subscription.id);
+	  },
+	  openAuthorPage: function () {
+	    BrowserHistory.push("/users/" + this.state.author.id);
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement('img', { src: this.state.author.image, onClick: this.openAuthorPage,
+	        className: 'profile-link-img', height: '100', width: '100' }),
+	      React.createElement(
+	        'span',
+	        null,
+	        "★".repeat(this.props.review.rating)
+	      ),
+	      React.createElement(
+	        'span',
+	        null,
+	        this.props.review.frequency
+	      ),
+	      React.createElement(
+	        'span',
+	        null,
+	        React.createElement(
+	          'a',
+	          { onClick: this.openSubscriptionPage },
+	          this.state.subscription.name
+	        )
+	      ),
+	      React.createElement('br', null),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'a',
+	          { onClick: this.openAuthorPage },
+	          this.state.author.first_name + " " + this.state.author.last_name
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.props.review.comment
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = ReviewShowComponent;
+
+/***/ },
+/* 507 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var Input = __webpack_require__(218).Input;
+	
+	var ReviewStore = __webpack_require__(494);
+	var BrowserHistory = __webpack_require__(159).browserHistory;
+	var LinkedStateMixin = __webpack_require__(508);
+	var SubscriptionSearch = __webpack_require__(512);
+	var ReviewBackendActions = __webpack_require__(502);
+	
+	var NewReviewForm = React.createClass({
+	  displayName: 'NewReviewForm',
+	
+	  mixins: [LinkedStateMixin],
+	  getInitialState: function () {
+	    return {
+	      subscriptionId: null,
+	      rating: 5,
+	      comment: "",
+	      frequency: 5
+	    };
+	  },
+	
+	  updateFormCallback: function (id) {
+	    this.setState({
+	      subscriptionId: id
+	    });
+	  },
+	
+	  submitNewReview: function (e) {
+	    e.preventDefault();
+	    this.props.closeModalCallback();
+	    ReviewBackendActions.createReview({
+	      review: {
+	        author_id: this.props.currentUser.id,
+	        subscription_id: this.state.subscriptionId,
+	        rating: this.state.rating,
+	        comment: this.state.comment,
+	        frequency: this.state.frequency
+	      }
+	    });
+	  },
+	
+	  updateFrequency: function (e) {
+	    this.setState({
+	      frequency: e.target.value
+	    });
+	  },
+	  updateRating: function (e) {
+	    this.setState({
+	      rating: e.target.value
+	    });
+	  },
+	
+	  render: function () {
+	    return React.createElement(
+	      'form',
+	      null,
+	      React.createElement(
+	        'div',
+	        { className: 'col-md-4' },
+	        React.createElement(SubscriptionSearch, { updateFormCallback: this.updateFormCallback })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'col-md-8' },
+	        'How often do you use this service?',
+	        React.createElement('br', null),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '5',
+	            checked: this.state.frequency == 5,
+	            name: 'review[frequency]', onClick: this.updateFrequency }),
+	          'Daily'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '4',
+	            checked: this.state.frequency == 4,
+	            name: 'review[frequency]', onClick: this.updateFrequency }),
+	          'Weekly'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '3',
+	            checked: this.state.frequency == 3,
+	            name: 'review[frequency]', onClick: this.updateFrequency }),
+	          'Monthly'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '2',
+	            checked: this.state.frequency == 2,
+	            name: 'review[frequency]', onClick: this.updateFrequency }),
+	          'Yearly'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '1',
+	            checked: this.state.frequency == 1,
+	            name: 'review[frequency]', onClick: this.updateFrequency }),
+	          'Never'
+	        ),
+	        React.createElement('br', null),
+	        React.createElement('br', null),
+	        'Rate the service:',
+	        React.createElement('br', null),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '1',
+	            checked: this.state.rating == 1,
+	            name: 'review[rating]', onClick: this.updateRating }),
+	          '1'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '2',
+	            checked: this.state.rating == 2,
+	            name: 'review[rating]', onClick: this.updateRating }),
+	          '2'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '3',
+	            checked: this.state.rating == 3,
+	            name: 'review[rating]', onClick: this.updateRating }),
+	          '3'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '4',
+	            checked: this.state.rating == 4,
+	            name: 'review[rating]', onClick: this.updateRating }),
+	          '4'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '5',
+	            checked: this.state.rating == 5,
+	            name: 'review[rating]', onClick: this.updateRating }),
+	          '5'
+	        ),
+	        React.createElement('br', null),
+	        React.createElement('br', null),
+	        'Comments:',
+	        React.createElement('br', null),
+	        React.createElement('input', { type: 'textarea', cols: '40', rows: '5', valueLink: this.linkState("comment") }),
+	        React.createElement('br', null),
+	        React.createElement('input', { type: 'submit', onClick: this.submitNewReview })
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = NewReviewForm;
+
+/***/ },
+/* 508 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(509);
+
+/***/ },
+/* 509 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule LinkedStateMixin
+	 * @typechecks static-only
+	 */
+	
+	'use strict';
+	
+	var ReactLink = __webpack_require__(510);
+	var ReactStateSetters = __webpack_require__(511);
+	
+	/**
+	 * A simple mixin around ReactLink.forState().
+	 */
+	var LinkedStateMixin = {
+	  /**
+	   * Create a ReactLink that's linked to part of this component's state. The
+	   * ReactLink will have the current value of this.state[key] and will call
+	   * setState() when a change is requested.
+	   *
+	   * @param {string} key state key to update. Note: you may want to use keyOf()
+	   * if you're using Google Closure Compiler advanced mode.
+	   * @return {ReactLink} ReactLink instance linking to the state.
+	   */
+	  linkState: function (key) {
+	    return new ReactLink(this.state[key], ReactStateSetters.createStateKeySetter(this, key));
+	  }
+	};
+	
+	module.exports = LinkedStateMixin;
+
+/***/ },
+/* 510 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactLink
+	 * @typechecks static-only
+	 */
+	
+	'use strict';
+	
+	/**
+	 * ReactLink encapsulates a common pattern in which a component wants to modify
+	 * a prop received from its parent. ReactLink allows the parent to pass down a
+	 * value coupled with a callback that, when invoked, expresses an intent to
+	 * modify that value. For example:
+	 *
+	 * React.createClass({
+	 *   getInitialState: function() {
+	 *     return {value: ''};
+	 *   },
+	 *   render: function() {
+	 *     var valueLink = new ReactLink(this.state.value, this._handleValueChange);
+	 *     return <input valueLink={valueLink} />;
+	 *   },
+	 *   _handleValueChange: function(newValue) {
+	 *     this.setState({value: newValue});
+	 *   }
+	 * });
+	 *
+	 * We have provided some sugary mixins to make the creation and
+	 * consumption of ReactLink easier; see LinkedValueUtils and LinkedStateMixin.
+	 */
+	
+	var React = __webpack_require__(2);
+	
+	/**
+	 * @param {*} value current value of the link
+	 * @param {function} requestChange callback to request a change
+	 */
+	function ReactLink(value, requestChange) {
+	  this.value = value;
+	  this.requestChange = requestChange;
+	}
+	
+	/**
+	 * Creates a PropType that enforces the ReactLink API and optionally checks the
+	 * type of the value being passed inside the link. Example:
+	 *
+	 * MyComponent.propTypes = {
+	 *   tabIndexLink: ReactLink.PropTypes.link(React.PropTypes.number)
+	 * }
+	 */
+	function createLinkTypeChecker(linkType) {
+	  var shapes = {
+	    value: typeof linkType === 'undefined' ? React.PropTypes.any.isRequired : linkType.isRequired,
+	    requestChange: React.PropTypes.func.isRequired
+	  };
+	  return React.PropTypes.shape(shapes);
+	}
+	
+	ReactLink.PropTypes = {
+	  link: createLinkTypeChecker
+	};
+	
+	module.exports = ReactLink;
+
+/***/ },
+/* 511 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactStateSetters
+	 */
+	
+	'use strict';
+	
+	var ReactStateSetters = {
+	  /**
+	   * Returns a function that calls the provided function, and uses the result
+	   * of that to set the component's state.
+	   *
+	   * @param {ReactCompositeComponent} component
+	   * @param {function} funcReturningState Returned callback uses this to
+	   *                                      determine how to update state.
+	   * @return {function} callback that when invoked uses funcReturningState to
+	   *                    determined the object literal to setState.
+	   */
+	  createStateSetter: function (component, funcReturningState) {
+	    return function (a, b, c, d, e, f) {
+	      var partialState = funcReturningState.call(component, a, b, c, d, e, f);
+	      if (partialState) {
+	        component.setState(partialState);
+	      }
+	    };
+	  },
+	
+	  /**
+	   * Returns a single-argument callback that can be used to update a single
+	   * key in the component's state.
+	   *
+	   * Note: this is memoized function, which makes it inexpensive to call.
+	   *
+	   * @param {ReactCompositeComponent} component
+	   * @param {string} key The key in the state that you should update.
+	   * @return {function} callback of 1 argument which calls setState() with
+	   *                    the provided keyName and callback argument.
+	   */
+	  createStateKeySetter: function (component, key) {
+	    // Memoize the setters.
+	    var cache = component.__keySetters || (component.__keySetters = {});
+	    return cache[key] || (cache[key] = createStateKeySetter(component, key));
+	  }
+	};
+	
+	function createStateKeySetter(component, key) {
+	  // Partial state is allocated outside of the function closure so it can be
+	  // reused with every call, avoiding memory allocation when this function
+	  // is called.
+	  var partialState = {};
+	  return function stateKeySetter(value) {
+	    partialState[key] = value;
+	    component.setState(partialState);
+	  };
+	}
+	
+	ReactStateSetters.Mixin = {
+	  /**
+	   * Returns a function that calls the provided function, and uses the result
+	   * of that to set the component's state.
+	   *
+	   * For example, these statements are equivalent:
+	   *
+	   *   this.setState({x: 1});
+	   *   this.createStateSetter(function(xValue) {
+	   *     return {x: xValue};
+	   *   })(1);
+	   *
+	   * @param {function} funcReturningState Returned callback uses this to
+	   *                                      determine how to update state.
+	   * @return {function} callback that when invoked uses funcReturningState to
+	   *                    determined the object literal to setState.
+	   */
+	  createStateSetter: function (funcReturningState) {
+	    return ReactStateSetters.createStateSetter(this, funcReturningState);
+	  },
+	
+	  /**
+	   * Returns a single-argument callback that can be used to update a single
+	   * key in the component's state.
+	   *
+	   * For example, these statements are equivalent:
+	   *
+	   *   this.setState({x: 1});
+	   *   this.createStateKeySetter('x')(1);
+	   *
+	   * Note: this is memoized function, which makes it inexpensive to call.
+	   *
+	   * @param {string} key The key in the state that you should update.
+	   * @return {function} callback of 1 argument which calls setState() with
+	   *                    the provided keyName and callback argument.
+	   */
+	  createStateKeySetter: function (key) {
+	    return ReactStateSetters.createStateKeySetter(this, key);
+	  }
+	};
+	
+	module.exports = ReactStateSetters;
+
+/***/ },
+/* 512 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SubscriptionStore = __webpack_require__(492);
+	
+	var SubscriptionSearch = React.createClass({
+	  displayName: 'SubscriptionSearch',
+	
+	  getInitialState: function () {
+	    return {
+	      selected: false,
+	      searchString: '',
+	      subscriptions: SubscriptionStore.all()
+	    };
+	  },
+	  componentDidMount: function () {
+	    this.listenerToken = SubscriptionStore.addListener(this.subscriptionChange);
+	  },
+	  componentWillUnmount: function () {
+	    this.listenerToken.remove();
+	  },
+	
+	  subscriptionChange: function () {
+	    this.setState({
+	      subscriptions: SubscriptionStore.all()
+	    });
+	  },
+	
+	  handleChange: function (e) {
+	    e.preventDefault();
+	    this.setState({
+	      searchString: e.target.value,
+	      selected: false
+	    });
+	  },
+	
+	  updateForm: function (id, name) {
+	    if (this.props.updateFormCallback) {
+	      this.props.updateFormCallback(id);
+	    }
+	    this.setState({
+	      searchString: name,
+	      selected: true
+	    });
+	  },
+	
+	  render: function () {
+	    var subs = this.state.subscriptions;
+	    var self = this;
+	
+	    if (this.state.searchString.length > 0) {
+	      subs = subs.filter(function (sub) {
+	        return sub.name.toLowerCase().match(self.state.searchString.toLowerCase());
+	      });
+	    }
+	
+	    var subUl;
+	
+	    if (this.state.selected || this.state.searchString.length === 0) {
+	      subUl = null;
+	    } else {
+	      subUl = React.createElement(
+	        'ul',
+	        null,
+	        subs.map(function (sub) {
+	          return React.createElement(
+	            'li',
+	            { key: sub.id, onClick: self.updateForm.bind(self, sub.id, sub.name) },
+	            sub.name
+	          );
+	        })
+	      );
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      'Start typing in a service to review',
+	      React.createElement('br', null),
+	      React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange,
+	        name: this.props.searchName, placeholder: 'Subscription' }),
+	      subUl
+	    );
+	  }
+	});
+	
+	module.exports = SubscriptionSearch;
+
+/***/ },
+/* 513 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var BrowserHistory = __webpack_require__(159).browserHistory;
+	
+	var UserStore = __webpack_require__(490);
+	var UserBackendActions = __webpack_require__(496);
 	
 	var UserEditPage = React.createClass({
 	  displayName: 'UserEditPage',
@@ -49856,488 +50858,151 @@
 	module.exports = UserEditPage;
 
 /***/ },
-/* 497 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(498);
-
-/***/ },
-/* 498 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule LinkedStateMixin
-	 * @typechecks static-only
-	 */
-	
-	'use strict';
-	
-	var ReactLink = __webpack_require__(499);
-	var ReactStateSetters = __webpack_require__(500);
-	
-	/**
-	 * A simple mixin around ReactLink.forState().
-	 */
-	var LinkedStateMixin = {
-	  /**
-	   * Create a ReactLink that's linked to part of this component's state. The
-	   * ReactLink will have the current value of this.state[key] and will call
-	   * setState() when a change is requested.
-	   *
-	   * @param {string} key state key to update. Note: you may want to use keyOf()
-	   * if you're using Google Closure Compiler advanced mode.
-	   * @return {ReactLink} ReactLink instance linking to the state.
-	   */
-	  linkState: function (key) {
-	    return new ReactLink(this.state[key], ReactStateSetters.createStateKeySetter(this, key));
-	  }
-	};
-	
-	module.exports = LinkedStateMixin;
-
-/***/ },
-/* 499 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule ReactLink
-	 * @typechecks static-only
-	 */
-	
-	'use strict';
-	
-	/**
-	 * ReactLink encapsulates a common pattern in which a component wants to modify
-	 * a prop received from its parent. ReactLink allows the parent to pass down a
-	 * value coupled with a callback that, when invoked, expresses an intent to
-	 * modify that value. For example:
-	 *
-	 * React.createClass({
-	 *   getInitialState: function() {
-	 *     return {value: ''};
-	 *   },
-	 *   render: function() {
-	 *     var valueLink = new ReactLink(this.state.value, this._handleValueChange);
-	 *     return <input valueLink={valueLink} />;
-	 *   },
-	 *   _handleValueChange: function(newValue) {
-	 *     this.setState({value: newValue});
-	 *   }
-	 * });
-	 *
-	 * We have provided some sugary mixins to make the creation and
-	 * consumption of ReactLink easier; see LinkedValueUtils and LinkedStateMixin.
-	 */
-	
-	var React = __webpack_require__(2);
-	
-	/**
-	 * @param {*} value current value of the link
-	 * @param {function} requestChange callback to request a change
-	 */
-	function ReactLink(value, requestChange) {
-	  this.value = value;
-	  this.requestChange = requestChange;
-	}
-	
-	/**
-	 * Creates a PropType that enforces the ReactLink API and optionally checks the
-	 * type of the value being passed inside the link. Example:
-	 *
-	 * MyComponent.propTypes = {
-	 *   tabIndexLink: ReactLink.PropTypes.link(React.PropTypes.number)
-	 * }
-	 */
-	function createLinkTypeChecker(linkType) {
-	  var shapes = {
-	    value: typeof linkType === 'undefined' ? React.PropTypes.any.isRequired : linkType.isRequired,
-	    requestChange: React.PropTypes.func.isRequired
-	  };
-	  return React.PropTypes.shape(shapes);
-	}
-	
-	ReactLink.PropTypes = {
-	  link: createLinkTypeChecker
-	};
-	
-	module.exports = ReactLink;
-
-/***/ },
-/* 500 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule ReactStateSetters
-	 */
-	
-	'use strict';
-	
-	var ReactStateSetters = {
-	  /**
-	   * Returns a function that calls the provided function, and uses the result
-	   * of that to set the component's state.
-	   *
-	   * @param {ReactCompositeComponent} component
-	   * @param {function} funcReturningState Returned callback uses this to
-	   *                                      determine how to update state.
-	   * @return {function} callback that when invoked uses funcReturningState to
-	   *                    determined the object literal to setState.
-	   */
-	  createStateSetter: function (component, funcReturningState) {
-	    return function (a, b, c, d, e, f) {
-	      var partialState = funcReturningState.call(component, a, b, c, d, e, f);
-	      if (partialState) {
-	        component.setState(partialState);
-	      }
-	    };
-	  },
-	
-	  /**
-	   * Returns a single-argument callback that can be used to update a single
-	   * key in the component's state.
-	   *
-	   * Note: this is memoized function, which makes it inexpensive to call.
-	   *
-	   * @param {ReactCompositeComponent} component
-	   * @param {string} key The key in the state that you should update.
-	   * @return {function} callback of 1 argument which calls setState() with
-	   *                    the provided keyName and callback argument.
-	   */
-	  createStateKeySetter: function (component, key) {
-	    // Memoize the setters.
-	    var cache = component.__keySetters || (component.__keySetters = {});
-	    return cache[key] || (cache[key] = createStateKeySetter(component, key));
-	  }
-	};
-	
-	function createStateKeySetter(component, key) {
-	  // Partial state is allocated outside of the function closure so it can be
-	  // reused with every call, avoiding memory allocation when this function
-	  // is called.
-	  var partialState = {};
-	  return function stateKeySetter(value) {
-	    partialState[key] = value;
-	    component.setState(partialState);
-	  };
-	}
-	
-	ReactStateSetters.Mixin = {
-	  /**
-	   * Returns a function that calls the provided function, and uses the result
-	   * of that to set the component's state.
-	   *
-	   * For example, these statements are equivalent:
-	   *
-	   *   this.setState({x: 1});
-	   *   this.createStateSetter(function(xValue) {
-	   *     return {x: xValue};
-	   *   })(1);
-	   *
-	   * @param {function} funcReturningState Returned callback uses this to
-	   *                                      determine how to update state.
-	   * @return {function} callback that when invoked uses funcReturningState to
-	   *                    determined the object literal to setState.
-	   */
-	  createStateSetter: function (funcReturningState) {
-	    return ReactStateSetters.createStateSetter(this, funcReturningState);
-	  },
-	
-	  /**
-	   * Returns a single-argument callback that can be used to update a single
-	   * key in the component's state.
-	   *
-	   * For example, these statements are equivalent:
-	   *
-	   *   this.setState({x: 1});
-	   *   this.createStateKeySetter('x')(1);
-	   *
-	   * Note: this is memoized function, which makes it inexpensive to call.
-	   *
-	   * @param {string} key The key in the state that you should update.
-	   * @return {function} callback of 1 argument which calls setState() with
-	   *                    the provided keyName and callback argument.
-	   */
-	  createStateKeySetter: function (key) {
-	    return ReactStateSetters.createStateKeySetter(this, key);
-	  }
-	};
-	
-	module.exports = ReactStateSetters;
-
-/***/ },
-/* 501 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(471).Store;
-	var AppDispatcher = __webpack_require__(465);
-	var SubscriptionStore = new Store(AppDispatcher);
-	
-	var SubscriptionConstants = __webpack_require__(502);
-	
-	var _subscriptions = {};
-	
-	SubscriptionStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case SubscriptionConstants.RECEIVE_ALL_SUBSCRIPTIONS:
-	      console.log("subscriptionsReceivedByStore");
-	      SubscriptionStore.updateSubscriptions(payload.data);
-	      SubscriptionStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	SubscriptionStore.addSubscription = function (subscription) {
-	  _subscriptions[subscription.id] = subscription;
-	};
-	
-	SubscriptionStore.updateSubscriptions = function (subscriptionsData) {
-	  _subscriptions = {};
-	  subscriptionsData.forEach(function (subscription) {
-	    _subscriptions[subscription.id] = subscription;
-	  });
-	};
-	
-	SubscriptionStore.deleteSubscription = function (data) {
-	  var id = data.id;
-	  delete _subscriptions[id];
-	};
-	
-	SubscriptionStore.all = function () {
-	  var subscriptions = [];
-	  for (var id in _subscriptions) {
-	    subscriptions.push(_subscriptions[id]);
-	  }
-	  return subscriptions;
-	};
-	
-	SubscriptionStore.findById = function (id) {
-	  if (_subscriptions === {}) {
-	    return undefined;
-	  } else if (_subscriptions[id] === undefined) {
-	    return [];
-	  } else {
-	    return _subscriptions[id];
-	  }
-	};
-	
-	module.exports = SubscriptionStore;
-
-/***/ },
-/* 502 */
-/***/ function(module, exports) {
-
-	var SubscriptionConstants = {
-	  RECEIVE_ALL_SUBSCRIPTIONS: "RECEIVE_ALL_SUBSCRIPTIONS"
-	};
-	
-	module.exports = SubscriptionConstants;
-
-/***/ },
-/* 503 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var SubscriptionUtil = __webpack_require__(504);
-	
-	var SubscriptionBackendActions = {
-	  // on site load
-	  fetchAllSubscriptions: function () {
-	    SubscriptionUtil.fetchAllSubscriptions();
-	  },
-	
-	  // subscription create
-	  createSubscription: function (subscriptionParams, callback) {
-	    SubscriptionUtil.createSubscription(subscriptionParams, callback);
-	  }
-	
-	};
-	
-	module.exports = SubscriptionBackendActions;
-
-/***/ },
-/* 504 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var SubscriptionFrontendActions = __webpack_require__(505);
-	
-	var SubscriptionUtil = {
-	  fetchAllSubscriptions: function () {
-	    $.ajax({
-	      url: "/api/subscriptions",
-	      type: "GET",
-	      success: function (data) {
-	        SubscriptionFrontendActions.receiveAllSubscriptions(data);
-	      }
-	    });
-	  }
-	};
-	
-	module.exports = SubscriptionUtil;
-
-/***/ },
-/* 505 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var AppDispatcher = __webpack_require__(465);
-	var SubscriptionConstants = __webpack_require__(502);
-	
-	var SubscriptionFrontendActions = {
-	  receiveAllSubscriptions: function (data) {
-	    AppDispatcher.dispatch({
-	      actionType: SubscriptionConstants.RECEIVE_ALL_SUBSCRIPTIONS,
-	      data: data
-	    });
-	  }
-	};
-	
-	module.exports = SubscriptionFrontendActions;
-
-/***/ },
-/* 506 */
+/* 514 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
-	var SubscriptionStore = __webpack_require__(501);
+	var ReviewStore = __webpack_require__(494);
+	var SubscriptionStore = __webpack_require__(492);
 	
-	var SubscriptionSearch = React.createClass({
-	  displayName: 'SubscriptionSearch',
+	var ReviewShowComponent = __webpack_require__(506);
+	
+	var SubscriptionShowPage = React.createClass({
+	  displayName: 'SubscriptionShowPage',
 	
 	  getInitialState: function () {
 	    return {
-	      selected: false,
-	      searchString: '',
-	      subscriptions: SubscriptionStore.all()
+	      currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId)),
+	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId))
 	    };
 	  },
-	  componentDidMount: function () {
-	    this.listenerToken = SubscriptionStore.addListener(this.subscriptionChange);
-	  },
 	  componentWillUnmount: function () {
-	    this.listenerToken.remove();
+	    this.subscriptionListenerToken.remove();
+	    this.reviewListenerToken.remove();
+	  },
+	  componentDidMount: function () {
+	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.onSubscriptionChange);
+	    this.reviewListenerToken = ReviewStore.addListener(this.onReviewChange);
 	  },
 	
-	  subscriptionChange: function () {
+	  onSubscriptionChange: function () {
 	    this.setState({
-	      subscriptions: SubscriptionStore.all()
+	      currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId))
 	    });
 	  },
-	
-	  handleChange: function (e) {
-	    e.preventDefault();
+	  onReviewChange: function () {
 	    this.setState({
-	      searchString: e.target.value,
-	      selected: false
-	    });
-	  },
-	
-	  updateForm: function (id, name) {
-	    this.props.updateFormCallback(id);
-	    this.setState({
-	      searchString: name,
-	      selected: true
+	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId))
 	    });
 	  },
 	
 	  render: function () {
-	    var subs = this.state.subscriptions;
-	    var self = this;
-	
-	    if (this.state.searchString.length > 0) {
-	      subs = subs.filter(function (sub) {
-	        return sub.name.toLowerCase().match(self.state.searchString.toLowerCase());
-	      });
-	    }
-	
-	    var subUl;
-	
-	    if (this.state.selected || this.state.searchString.length === 0) {
-	      subUl = null;
-	    } else {
-	      subUl = React.createElement(
-	        'ul',
+	    if (this.state.currentSubscription.name === undefined) {
+	      // INSERT LOADING SYMBOL HERE
+	      return React.createElement(
+	        'div',
 	        null,
-	        subs.map(function (sub) {
-	          return React.createElement(
-	            'li',
-	            { key: sub.id, onClick: self.updateForm.bind(self, sub.id, sub.name) },
-	            sub.name
-	          );
-	        })
+	        'WAITING-FOR-LOAD'
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'ul',
+	          null,
+	          'Reviews for ',
+	          this.state.currentSubscription.name,
+	          this.state.reviews.map(function (review) {
+	            return React.createElement(
+	              'li',
+	              null,
+	              React.createElement(ReviewShowComponent, { review: review })
+	            );
+	          })
+	        )
 	      );
 	    }
+	  }
 	
-	    return React.createElement(
-	      'div',
-	      null,
-	      'Start typing in a service to review',
-	      React.createElement('br', null),
-	      React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange,
-	        name: this.props.searchName, placeholder: 'Subscription' }),
-	      subUl
-	    );
+	});
+	
+	module.exports = SubscriptionShowPage;
+
+/***/ },
+/* 515 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var ReviewStore = __webpack_require__(494);
+	
+	var ReviewShowComponent = __webpack_require__(506);
+	
+	var ReviewFeed = React.createClass({
+	  displayName: 'ReviewFeed',
+	
+	  getInitialState: function () {
+	    return {
+	      reviews: ReviewStore.all()
+	    };
+	  },
+	  render: function () {
+	    if (this.state.reviews === undefined) {
+	      return React.createElement(
+	        'div',
+	        null,
+	        'FEED GOES HERE'
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        null,
+	        'STAY TUNED'
+	      );
+	    }
 	  }
 	});
 	
-	module.exports = SubscriptionSearch;
+	module.exports = ReviewFeed;
 
 /***/ },
-/* 507 */
+/* 516 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 	
 	var Input = __webpack_require__(218).Input;
 	
-	var ReviewStore = __webpack_require__(508);
+	var ReviewStore = __webpack_require__(494);
+	var SubscriptionStore = __webpack_require__(492);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
-	var LinkedStateMixin = __webpack_require__(497);
-	var SubscriptionSearch = __webpack_require__(506);
-	var ReviewBackendActions = __webpack_require__(509);
+	var LinkedStateMixin = __webpack_require__(508);
+	var SubscriptionSearch = __webpack_require__(512);
+	var ReviewBackendActions = __webpack_require__(502);
 	
-	var NewReviewForm = React.createClass({
-	  displayName: 'NewReviewForm',
+	// THIS FORM MUST BE PASSED THE CURRENT USER, A REVIEW, AND A CLOSE MODAL CALLBACK
+	
+	var EditReviewForm = React.createClass({
+	  displayName: 'EditReviewForm',
 	
 	  mixins: [LinkedStateMixin],
 	  getInitialState: function () {
 	    return {
-	      subscriptionId: null,
-	      rating: 5,
-	      comment: "",
-	      frequency: 5
+	      subscriptionId: this.props.review.subscription_id,
+	      subscription: SubscriptionStore.findById(this.props.review.subscription_id),
+	      rating: this.props.review.rating,
+	      comment: this.props.review.comment,
+	      frequency: this.props.review.frequency
 	    };
 	  },
 	
-	  updateFormCallback: function (id) {
-	    this.setState({
-	      subscriptionId: id
-	    });
-	  },
-	
-	  submitNewReview: function (e) {
+	  submitEditedReview: function (e) {
 	    e.preventDefault();
 	    this.props.closeModalCallback();
-	    ReviewBackendActions.createReview({
+	    ReviewBackendActions.editReview({
+	      id: this.props.review.id,
 	      review: {
 	        author_id: this.props.currentUser.id,
 	        subscription_id: this.state.subscriptionId,
@@ -50366,7 +51031,11 @@
 	      React.createElement(
 	        'div',
 	        { className: 'col-md-4' },
-	        React.createElement(SubscriptionSearch, { updateFormCallback: this.updateFormCallback })
+	        React.createElement(
+	          'div',
+	          null,
+	          this.state.subscription.name
+	        )
 	      ),
 	      React.createElement(
 	        'div',
@@ -50463,334 +51132,13 @@
 	        React.createElement('br', null),
 	        React.createElement('input', { type: 'textarea', cols: '40', rows: '5', valueLink: this.linkState("comment") }),
 	        React.createElement('br', null),
-	        React.createElement('input', { type: 'submit', onClick: this.submitNewReview })
+	        React.createElement('input', { type: 'submit', onClick: this.submitEditedReview })
 	      )
 	    );
 	  }
 	});
 	
-	module.exports = NewReviewForm;
-
-/***/ },
-/* 508 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(471).Store;
-	var AppDispatcher = __webpack_require__(465);
-	
-	var ReviewStore = new Store(AppDispatcher);
-	var ReviewConstants = __webpack_require__(511);
-	
-	var _reviews = {};
-	var _reviewsByUserId = {};
-	var _reviewsBySubscriptionId = {};
-	
-	ReviewStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case ReviewConstants.RECEIVE_NEW_REVIEW:
-	      console.log("ReviewReceivedByStore");
-	      ReviewStore.addReview(payload.data);
-	      ReviewStore.__emitChange();
-	      break;
-	    case ReviewConstants.RECEIVE_ALL_REVIEWS:
-	      console.log("allReviewsReceivedByStore");
-	      ReviewStore.updateReviews(payload.data);
-	      ReviewStore.__emitChange();
-	      break;
-	  }
-	};
-	
-	ReviewStore.addReview = function (review) {
-	  _reviews[review.id] = review;
-	  if (_reviewsByUserId[review.author_id] === undefined) {
-	    _reviewsByUserId[review.author_id] = [review];
-	  } else {
-	    _reviewsByUserId[review.author_id].push(review);
-	  }
-	  if (_reviewsBySubscriptionId[review.subscription_id] === undefined) {
-	    _reviewsBySubscriptionId[review.subscription_id] = [review];
-	  } else {
-	    _reviewsBySubscriptionId[review.subscription_id].push(review);
-	  }
-	};
-	
-	ReviewStore.updateReviews = function (reviewsData) {
-	  _reviews = {};
-	  reviewsData.forEach(function (review) {
-	    _reviews[review.id] = review;
-	
-	    if (_reviewsByUserId[review.author_id] === undefined) {
-	      _reviewsByUserId[review.author_id] = [review];
-	    } else {
-	      _reviewsByUserId[review.author_id].push(review);
-	    }
-	
-	    if (_reviewsBySubscriptionId[review.subscription_id] === undefined) {
-	      _reviewsBySubscriptionId[review.subscription_id] = [review];
-	    } else {
-	      _reviewsBySubscriptionId[review.subscription_id].push(review);
-	    }
-	  });
-	};
-	
-	ReviewStore.deleteReview = function (data) {
-	  var id = data.id;
-	  delete _reviews[id];
-	};
-	
-	ReviewStore.findByUserId = function (userId) {
-	  if (_reviewsByUserId === {}) {
-	    return undefined;
-	  } else if (_reviewsByUserId[userId] === undefined) {
-	    return [];
-	  } else {
-	    return _reviewsByUserId[userId];
-	  }
-	};
-	
-	ReviewStore.findBySubscriptionId = function (subscriptionId) {
-	  if (_reviewsBySubscriptionId === {}) {
-	    return undefined;
-	  } else if (_reviewsBySubscriptionId[subscriptionId] === undefined) {
-	    return [];
-	  } else {
-	    return _reviewsBySubscriptionId[subscriptionId];
-	  }
-	};
-	
-	ReviewStore.all = function () {
-	  var reviews = [];
-	  for (var id in _reviews) {
-	    reviews.push(_reviews[id]);
-	  }
-	  return reviews;
-	};
-	
-	module.exports = ReviewStore;
-
-/***/ },
-/* 509 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ReviewUtil = __webpack_require__(510);
-	
-	var ReviewBackendActions = {
-	  // create Review
-	  createReview: function (reviewParams, callback) {
-	    ReviewUtil.createReview(reviewParams, callback);
-	  },
-	
-	  // all reviews
-	  fetchAllReviews: function (callback) {
-	    ReviewUtil.fetchAllReviews(callback);
-	  }
-	
-	};
-	
-	module.exports = ReviewBackendActions;
-
-/***/ },
-/* 510 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var ReviewFrontendActions = __webpack_require__(512);
-	
-	var ReviewUtil = {
-	  // create new review
-	  createReview: function (reviewParams, callback) {
-	    $.ajax({
-	      url: "/api/reviews",
-	      type: "POST",
-	      data: reviewParams,
-	      success: function (data) {
-	        if (callback) {
-	          callback();
-	        }
-	        ReviewFrontendActions.receiveNewReview(data);
-	      }
-	    });
-	  },
-	
-	  // all reviews (on app load)
-	  fetchAllReviews: function (callback) {
-	    $.ajax({
-	      url: "/api/reviews",
-	      type: "GET",
-	      success: function (data) {
-	        if (callback) {
-	          callback();
-	        }
-	        ReviewFrontendActions.receiveAllReviews(data);
-	      }
-	    });
-	  }
-	};
-	
-	module.exports = ReviewUtil;
-
-/***/ },
-/* 511 */
-/***/ function(module, exports) {
-
-	var ReviewConstants = {
-	  RECEIVE_ALL_REVIEWS: "RECEIVE_ALL_REVIEWS",
-	  RECEIVE_NEW_REVIEW: "RECEIVE_NEW_REVIEW"
-	};
-	
-	module.exports = ReviewConstants;
-
-/***/ },
-/* 512 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var AppDispatcher = __webpack_require__(465);
-	var ReviewConstants = __webpack_require__(511);
-	
-	var ReviewFrontendActions = {
-	  // review create
-	  receiveNewReview: function (reviewData) {
-	    AppDispatcher.dispatch({
-	      actionType: ReviewConstants.RECEIVE_NEW_REVIEW,
-	      data: reviewData
-	    });
-	  },
-	
-	  // all reviews
-	  receiveAllReviews: function (reviewsData) {
-	    AppDispatcher.dispatch({
-	      actionType: ReviewConstants.RECEIVE_ALL_REVIEWS,
-	      data: reviewsData
-	    });
-	  }
-	};
-	
-	module.exports = ReviewFrontendActions;
-
-/***/ },
-/* 513 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var UserStore = __webpack_require__(488);
-	var SubscriptionStore = __webpack_require__(501);
-	
-	var ReviewShowComponent = React.createClass({
-	  displayName: 'ReviewShowComponent',
-	
-	  getInitialState: function () {
-	    return {
-	      author: UserStore.findById(this.props.review.author_id),
-	      subscription: SubscriptionStore.findById(this.props.review.subscription_id),
-	      frequency: this.props.review.frequency,
-	      rating: this.props.review.rating,
-	      comment: this.props.review.comment
-	    };
-	  },
-	
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'div',
-	        null,
-	        this.state.author.first_name + " " + this.state.author.last_name
-	      ),
-	      React.createElement('img', { src: this.state.author.image, height: '100', width: '100' }),
-	      React.createElement('br', null),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.state.subscription.name
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.state.rating
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.state.comment
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = ReviewShowComponent;
-
-/***/ },
-/* 514 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-	
-	var ReviewStore = __webpack_require__(508);
-	var SubscriptionStore = __webpack_require__(501);
-	
-	var ReviewShowComponent = __webpack_require__(513);
-	
-	var SubscriptionShowPage = React.createClass({
-	  displayName: 'SubscriptionShowPage',
-	
-	  getInitialState: function () {
-	    return {
-	      currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId)),
-	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId))
-	    };
-	  },
-	  componentWillUnmount: function () {
-	    this.subscriptionListenerToken.remove();
-	    this.reviewListenerToken.remove();
-	  },
-	  componentDidMount: function () {
-	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.onSubscriptionChange);
-	    this.reviewListenerToken = ReviewStore.addListener(this.onReviewChange);
-	  },
-	
-	  onSubscriptionChange: function () {
-	    this.setState({
-	      currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId))
-	    });
-	  },
-	  onReviewChange: function () {
-	    this.setState({
-	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId))
-	    });
-	  },
-	
-	  render: function () {
-	    if (this.state.currentSubscription.name === undefined) {
-	      return React.createElement(
-	        'div',
-	        null,
-	        'WAITING-FOR-LOAD'
-	      );
-	    } else {
-	      return React.createElement(
-	        'div',
-	        null,
-	        React.createElement(
-	          'ul',
-	          null,
-	          'Reviews for ',
-	          this.state.currentSubscription.name,
-	          this.state.reviews.map(function (review) {
-	            return React.createElement(
-	              'li',
-	              null,
-	              React.createElement(ReviewShowComponent, { review: review })
-	            );
-	          })
-	        )
-	      );
-	    }
-	  }
-	
-	});
-	
-	module.exports = SubscriptionShowPage;
+	module.exports = EditReviewForm;
 
 /***/ }
 /******/ ]);

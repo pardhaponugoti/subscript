@@ -6,6 +6,11 @@ var ReviewBackendActions = {
     ReviewUtil.createReview(reviewParams, callback);
   },
 
+  // edit Review
+  editReview: function(reviewParams, callback) {
+    ReviewUtil.editReview(reviewParams, callback);
+  },
+
   // all reviews
   fetchAllReviews: function(callback) {
     ReviewUtil.fetchAllReviews(callback);

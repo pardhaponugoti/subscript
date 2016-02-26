@@ -32,7 +32,9 @@ var SubscriptionSearch = React.createClass({
     },
 
     updateForm: function(id, name){
-      this.props.updateFormCallback(id);
+      if (this.props.updateFormCallback) {
+        this.props.updateFormCallback(id);
+      }
       this.setState({
         searchString: name,
         selected: true

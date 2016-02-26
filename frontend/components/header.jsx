@@ -72,7 +72,8 @@ var Header = React.createClass({
     if (this.props.loggedIn) {
       return <div className="btn-group nav navbar-nav navbar-right">
         <button className="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-          {this.props.currentUser.email} <span className="caret"></span>
+          <img src={this.props.currentUser.image} height="20" width="20"/>
+          {" " + this.props.currentUser.first_name + " " + this.props.currentUser.last_name} <span className="caret"></span>
         </button>
         <ul className="dropdown-menu">
           <li><a onClick={this.showCurrentUserPage}>My Page</a></li>

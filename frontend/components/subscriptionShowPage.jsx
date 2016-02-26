@@ -34,6 +34,7 @@ var SubscriptionShowPage = React.createClass({
 
   render: function() {
     if(this.state.currentSubscription.name === undefined) {
+      // INSERT LOADING SYMBOL HERE
       return <div>WAITING-FOR-LOAD</div>;
     } else {
       return <div>

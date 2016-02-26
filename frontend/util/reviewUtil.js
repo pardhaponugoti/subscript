@@ -16,6 +16,21 @@ var ReviewUtil = {
     });
   },
 
+  //edit review
+  editReview: function(reviewParams, callback) {
+    $.ajax({
+      url : "/api/reviews/"+reviewParams.id,
+      type: "PATCH",
+      data: reviewParams,
+      success: function(data) {
+        if (callback) {
+          callback();
+        }
+        ReviewFrontendActions.updateReview(data);
+      }
+    });
+  },
+
   // all reviews (on app load)
   fetchAllReviews: function(callback) {
     $.ajax({

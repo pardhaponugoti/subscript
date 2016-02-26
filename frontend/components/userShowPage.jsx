@@ -13,6 +13,7 @@ var UserBackendActions = require('../actions/userBackendActions.js');
 
 var ReviewShowComponent = require('./reviewShowComponent.jsx');
 var NewReviewForm = require('./newReviewForm.jsx');
+var EditReviewForm = require('./editReviewForm.jsx');
 
 
 function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
@@ -22,7 +23,8 @@ var UserShowPage = React.createClass({
     return {
       currentShowUser: UserStore.findById(this.props.params.userId),
       currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId),
-      newReviewModalIsOpen: false
+      newReviewModalIsOpen: false,
+      editReviewModalIsOpen: false
     };
   },
   // componentWillMount: function() {
@@ -46,7 +48,9 @@ var UserShowPage = React.createClass({
   onUserChange: function(newProps) {
     this.setState({
       currentShowUser: UserStore.findById(newProps.params.userId),
-      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
+      currentShowUserReviews: ReviewStore.findByUserId(newProps.params.userId),
+      newReviewModalIsOpen: false,
+      editReviewModalIsOpen: false
     });
   },
 
@@ -58,34 +62,52 @@ var UserShowPage = React.createClass({
     });
   },
   reviewChange: function() {
+    console.log("setting state for user show page");
     this.setState({
       currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
     });
   },
 
-  toggleModal: function() {
+  toggleNewReviewModal: function() {
     this.setState({
       newReviewModalIsOpen: !this.state.newReviewModalIsOpen
     });
   },
-  close: function() {
+  closeNewReviewModal: function() {
     this.setState({
       newReviewModalIsOpen: false
     });
   },
+  toggleEditReviewModal: function() {
+    this.setState({
+      editReviewModalIsOpen: !this.state.editReviewModalIsOpen
+    });
+  },
+  closeEditReviewModal: function() {
+    this.setState({
+      editReviewModalIsOpen: false
+    });
+  },
+
+  openSubscriptionPage: function(id) {
+    BrowserHistory.push("/subscriptions/" + id);
+  },
 
   render: function() {
+    console.log("render show page");
     if (this.state.currentShowUser === undefined || this.state.currentShowUserReviews === undefined) {
       // Insert Loading Symbol Here -- waiting for the userstore to update
       return <div id="WAITING-FOR-LOAD"></div>;
     } else {
+      var self = this;
       return <div>
         <div className="col-md-4">
           <img src={this.state.currentShowUser.image} className="img-center"></img>
           <br/>
           <ul>Subscriptions
             {this.state.currentShowUserReviews.map(function(review) {
-              return <li>{SubscriptionStore.findById(review.subscription_id).name}</li>;
+              return <li><a onClick={self.openSubscriptionPage.bind(self, review.subscription_id)}>
+                {SubscriptionStore.findById(review.subscription_id).name}</a></li>;
             })}
           </ul>
           <div>LEFT 1/3</div>
@@ -97,16 +119,17 @@ var UserShowPage = React.createClass({
           <div>Date of Birth: {this.state.currentShowUser.date_of_birth}</div>
           <div>RIGHT 2/3</div>
           <br/>
-            <button className="btn btn-default btn-sm" onClick={this.toggleModal}>CreateNewReview</button>
-            <Modal show={this.state.newReviewModalIsOpen} onHide={this.close}>
+            { parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ?
+              <button className="btn btn-default btn-sm" onClick={this.toggleNewReviewModal}>Create New Review</button> : "" }
+            <Modal show={this.state.newReviewModalIsOpen} onHide={this.closeNewReviewModal}>
               <Modal.Header closeButton>
                 <Modal.Title>Write a New Review</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <NewReviewForm currentUser={this.props.currentUser} closeModalCallback={this.close}/>
+                <NewReviewForm currentUser={this.props.currentUser} closeModalCallback={this.closeNewReviewModal}/>
               </Modal.Body>
               <Modal.Footer>
-                <Button onClick={this.close}>Never Mind</Button>
+                <Button onClick={this.closeNewReviewModal}>Never Mind</Button>
               </Modal.Footer>
             </Modal>
           <br/>
@@ -114,7 +137,23 @@ var UserShowPage = React.createClass({
           <br/>
           <div>
             { this.state.currentShowUserReviews.map(function(userReview) {
-              return <ReviewShowComponent review={userReview} key={userReview.id}/>;
+              return <div>
+                <ReviewShowComponent review={userReview} key={userReview.id}/>
+                <button className="btn btn-default btn-sm" onClick={self.toggleEditReviewModal}>Edit Review</button>
+                  <Modal show={self.state.editReviewModalIsOpen} onHide={self.closeEditReviewModal}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>Edit Review</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <EditReviewForm review={userReview} currentUser={self.props.currentUser}
+                        closeModalCallback={self.closeEditReviewModal}/>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button onClick={self.closeEditReviewModal}>Never Mind</Button>
+                    </Modal.Footer>
+                  </Modal>
+                <br/>
+              </div>;
             })}
           </div>
         </div>
