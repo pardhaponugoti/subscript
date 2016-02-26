@@ -1,3 +1,5 @@
+// NOT ACTUALLY IN USE ...... YET ..... OR FOREVER??
+
 var React = require('react');
 var SessionStore = require('../stores/session.js');
 var UserStore = require('../stores/user.js');

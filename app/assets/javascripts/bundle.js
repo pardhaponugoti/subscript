@@ -24716,14 +24716,17 @@
 	var SessionStore = __webpack_require__(470);
 	var UserStore = __webpack_require__(488);
 	var SubscriptionStore = __webpack_require__(501);
+	var ReviewStore = __webpack_require__(508);
 	
 	var SessionBackendActions = __webpack_require__(462);
 	var UserBackendActions = __webpack_require__(492);
 	var SubscriptionBackendActions = __webpack_require__(503);
+	var ReviewBackendActions = __webpack_require__(509);
 	
 	window.SessionStore = SessionStore;
 	window.UserStore = UserStore;
 	window.SubscriptionStore = SubscriptionStore;
+	window.ReviewStore = ReviewStore;
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -24735,13 +24738,14 @@
 	  componentDidMount: function () {
 	    UserBackendActions.fetchAllUsers();
 	    SubscriptionBackendActions.fetchAllSubscriptions();
+	    ReviewBackendActions.fetchAllReviews();
 	  },
 	  // componentWillUnmount: function() {
 	  //   console.log("AppUnmounting");
 	  // },
 	  linkToTest: function (e) {
 	    e.preventDefault();
-	    BrowserHistory.push("test");
+	    BrowserHistory.push("/test");
 	  },
 	
 	  render: function () {
@@ -42532,41 +42536,50 @@
 	var SessionConstants = __webpack_require__(469);
 	var UserConstants = __webpack_require__(489);
 	
+	//Get initial from localStorage and set to local variable
+	var _currentUser = _currentUser || JSON.parse(window.localStorage.getItem('pardhauser'));
+	
 	SessionStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case SessionConstants.USER_SIGN_IN:
-	      window.localStorage.setItem('pardhauser', JSON.stringify(payload.data));
+	      SessionStore.signInUser(payload.data);
 	      SessionStore.__emitChange();
 	      break;
 	    case SessionConstants.USER_SIGN_UP:
-	      window.localStorage.setItem('pardhauser', JSON.stringify(payload.data));
+	      SessionStore.signInUser(payload.data);
 	      SessionStore.__emitChange();
 	      break;
 	    case SessionConstants.USER_SIGN_OUT:
-	      window.localStorage.setItem('pardhauser', JSON.stringify({}));
+	      SessionStore.signOutUser();
 	      SessionStore.__emitChange();
 	      break;
 	    case UserConstants.UPDATE_USER:
-	      window.localStorage.setItem('pardhauser', JSON.stringify(payload.data));
+	      SessionStore.signInUser(payload.data);
 	      SessionStore.__emitChange();
 	      break;
 	    case UserConstants.DELETE_USER:
-	      window.localStorage.setItem('pardhauser', JSON.stringify({}));
+	      SessionStore.signOutUser();
 	      SessionStore.__emitChange();
 	      break;
 	  }
 	};
 	
-	SessionStore.currentUser = function () {
-	  return JSON.parse(window.localStorage.getItem('pardhauser'));
+	SessionStore.signInUser = function (data) {
+	  _currentUser = data;
+	  window.localStorage.setItem('pardhauser', JSON.stringify(data));
 	};
 	
-	// SessionStore.newUser = function() {
-	//   return _newUser;
-	// };
+	SessionStore.signOutUser = function () {
+	  _currentUser = {};
+	  window.localStorage.setItem('pardhauser', JSON.stringify({}));
+	};
+	
+	SessionStore.currentUser = function () {
+	  return _currentUser;
+	};
 	
 	SessionStore.loggedIn = function () {
-	  return SessionStore.currentUser().email !== undefined;
+	  return _currentUser.email !== undefined;
 	};
 	
 	module.exports = SessionStore;
@@ -50052,6 +50065,10 @@
 	  return subscriptions;
 	};
 	
+	SubscriptionStore.findById = function (id) {
+	  return _subscriptions[id];
+	};
+	
 	module.exports = SubscriptionStore;
 
 /***/ },
@@ -50164,7 +50181,10 @@
 	
 	  updateForm: function (id, name) {
 	    this.props.updateFormCallback(id);
-	    this.setState({ searchString: name });
+	    this.setState({
+	      searchString: name,
+	      selected: true
+	    });
 	  },
 	
 	  render: function () {
@@ -50179,12 +50199,10 @@
 	
 	    var subUl;
 	
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange,
-	        name: this.props.searchName, placeholder: 'Subscription' }),
-	      React.createElement(
+	    if (this.state.selected) {
+	      subUl = null;
+	    } else {
+	      subUl = React.createElement(
 	        'ul',
 	        null,
 	        subs.map(function (sub) {
@@ -50194,8 +50212,17 @@
 	            sub.name
 	          );
 	        })
-	      ),
-	      ';'
+	      );
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      null,
+	      'Start typing in a service to review',
+	      React.createElement('br', null),
+	      React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange,
+	        name: this.props.searchName, placeholder: 'Subscription' }),
+	      subUl
 	    );
 	  }
 	});
@@ -50208,10 +50235,14 @@
 
 	var React = __webpack_require__(1);
 	
+	var Input = __webpack_require__(218).Input;
+	
+	var SessionStore = __webpack_require__(470);
 	var ReviewStore = __webpack_require__(508);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	var LinkedStateMixin = __webpack_require__(497);
 	var SubscriptionSearch = __webpack_require__(506);
+	var ReviewBackendActions = __webpack_require__(509);
 	
 	var NewReviewForm = React.createClass({
 	  displayName: 'NewReviewForm',
@@ -50220,8 +50251,9 @@
 	  getInitialState: function () {
 	    return {
 	      subscriptionId: null,
-	      rating: 0,
-	      comment: ""
+	      rating: 5,
+	      comment: "",
+	      frequency: 5
 	    };
 	  },
 	
@@ -50233,9 +50265,26 @@
 	
 	  submitNewReview: function (e) {
 	    e.preventDefault();
-	    console.log(this.state.subscriptionId);
-	    console.log(this.state.rating);
-	    console.log(this.state.comment);
+	    ReviewBackendActions.createReview({
+	      review: {
+	        author_id: SessionStore.currentUser().id,
+	        subscription_id: this.state.subscriptionId,
+	        rating: this.state.rating,
+	        comment: this.state.comment,
+	        frequency: this.state.frequency
+	      }
+	    });
+	  },
+	
+	  updateFrequency: function (e) {
+	    this.setState({
+	      frequency: e.target.value
+	    });
+	  },
+	  updateRating: function (e) {
+	    this.setState({
+	      rating: e.target.value
+	    });
 	  },
 	
 	  render: function () {
@@ -50250,13 +50299,97 @@
 	      React.createElement(
 	        'div',
 	        { className: 'col-md-8' },
-	        'Rating: Input a number from 0 to 5, decimals ok!',
+	        'How often do you use this service?',
 	        React.createElement('br', null),
-	        React.createElement('input', { className: 'form-group', type: 'string', valueLink: this.linkState("rating") }),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '5',
+	            checked: this.state.frequency == 5,
+	            name: 'review[frequency]', onClick: this.updateFrequency }),
+	          'Daily'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '4',
+	            checked: this.state.frequency == 4,
+	            name: 'review[frequency]', onClick: this.updateFrequency }),
+	          'Weekly'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '3',
+	            checked: this.state.frequency == 3,
+	            name: 'review[frequency]', onClick: this.updateFrequency }),
+	          'Monthly'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '2',
+	            checked: this.state.frequency == 2,
+	            name: 'review[frequency]', onClick: this.updateFrequency }),
+	          'Yearly'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '1',
+	            checked: this.state.frequency == 1,
+	            name: 'review[frequency]', onClick: this.updateFrequency }),
+	          'Never'
+	        ),
+	        React.createElement('br', null),
+	        React.createElement('br', null),
+	        'Rate the service:',
+	        React.createElement('br', null),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '1',
+	            checked: this.state.rating == 1,
+	            name: 'review[rating]', onClick: this.updateRating }),
+	          '1'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '2',
+	            checked: this.state.rating == 2,
+	            name: 'review[rating]', onClick: this.updateRating }),
+	          '2'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '3',
+	            checked: this.state.rating == 3,
+	            name: 'review[rating]', onClick: this.updateRating }),
+	          '3'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '4',
+	            checked: this.state.rating == 4,
+	            name: 'review[rating]', onClick: this.updateRating }),
+	          '4'
+	        ),
+	        React.createElement(
+	          'label',
+	          { className: 'radio-inline' },
+	          React.createElement('input', { type: 'radio', value: '5',
+	            checked: this.state.rating == 5,
+	            name: 'review[rating]', onClick: this.updateRating }),
+	          '5'
+	        ),
+	        React.createElement('br', null),
 	        React.createElement('br', null),
 	        'Comments:',
 	        React.createElement('br', null),
-	        React.createElement('input', { type: 'text', valueLink: this.linkState("comment") }),
+	        React.createElement('input', { type: 'textarea', cols: '40', rows: '5', valueLink: this.linkState("comment") }),
 	        React.createElement('br', null),
 	        React.createElement('input', { type: 'submit', onClick: this.submitNewReview })
 	      )
@@ -50274,12 +50407,24 @@
 	var AppDispatcher = __webpack_require__(465);
 	
 	var ReviewStore = new Store(AppDispatcher);
-	var SessionConstants = __webpack_require__(469);
-	var UserConstants = __webpack_require__(489);
+	var ReviewConstants = __webpack_require__(511);
 	
 	var _reviews = {};
 	
-	ReviewStore.__onDispatch = function (payload) {};
+	ReviewStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case ReviewConstants.RECEIVE_NEW_REVIEW:
+	      console.log("ReviewReceivedByStore");
+	      ReviewStore.addReview(payload.data);
+	      ReviewStore.__emitChange();
+	      break;
+	    case ReviewConstants.RECEIVE_ALL_REVIEWS:
+	      console.log("allReviewsReceivedByStore");
+	      ReviewStore.updateReviews(payload.data);
+	      ReviewStore.__emitChange();
+	      break;
+	  }
+	};
 	
 	ReviewStore.addReview = function (review) {
 	  _reviews[review.id] = review;
@@ -50306,6 +50451,104 @@
 	};
 	
 	module.exports = ReviewStore;
+
+/***/ },
+/* 509 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ReviewUtil = __webpack_require__(510);
+	
+	var ReviewBackendActions = {
+	  // create Review
+	  createReview: function (reviewParams, callback) {
+	    ReviewUtil.createReview(reviewParams, callback);
+	  },
+	
+	  // all reviews
+	  fetchAllReviews: function (callback) {
+	    ReviewUtil.fetchAllReviews(callback);
+	  }
+	
+	};
+	
+	module.exports = ReviewBackendActions;
+
+/***/ },
+/* 510 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var ReviewFrontendActions = __webpack_require__(512);
+	
+	var ReviewUtil = {
+	  // create new review
+	  createReview: function (reviewParams, callback) {
+	    $.ajax({
+	      url: "/api/reviews",
+	      type: "POST",
+	      data: reviewParams,
+	      success: function (data) {
+	        if (callback) {
+	          callback();
+	        }
+	        ReviewFrontendActions.receiveNewReview(data);
+	      }
+	    });
+	  },
+	
+	  // all reviews (on app load)
+	  fetchAllReviews: function (callback) {
+	    $.ajax({
+	      url: "/api/reviews",
+	      type: "GET",
+	      success: function (data) {
+	        if (callback) {
+	          callback();
+	        }
+	        ReviewFrontendActions.receiveAllReviews(data);
+	      }
+	    });
+	  }
+	};
+	
+	module.exports = ReviewUtil;
+
+/***/ },
+/* 511 */
+/***/ function(module, exports) {
+
+	var ReviewConstants = {
+	  RECEIVE_ALL_REVIEWS: "RECEIVE_ALL_REVIEWS",
+	  RECEIVE_NEW_REVIEW: "RECEIVE_NEW_REVIEW"
+	};
+	
+	module.exports = ReviewConstants;
+
+/***/ },
+/* 512 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(465);
+	var ReviewConstants = __webpack_require__(511);
+	
+	var ReviewFrontendActions = {
+	  // review create
+	  receiveNewReview: function (reviewData) {
+	    AppDispatcher.dispatch({
+	      actionType: ReviewConstants.RECEIVE_NEW_REVIEW,
+	      data: reviewData
+	    });
+	  },
+	
+	  // all reviews
+	  receiveAllReviews: function (reviewsData) {
+	    AppDispatcher.dispatch({
+	      actionType: ReviewConstants.RECEIVE_ALL_REVIEWS,
+	      data: reviewsData
+	    });
+	  }
+	};
+	
+	module.exports = ReviewFrontendActions;
 
 /***/ }
 /******/ ]);

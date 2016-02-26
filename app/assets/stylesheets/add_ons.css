@@ -1,3 +1,13 @@
 .btn-group { padding: 10px 10px 10px 0px; }
 
 input {outline: none;}
+
+ul {
+  display: block;
+  list-style-type: none;
+}
+
+li {
+  display: block;
+  border: 1px green solid;
+}

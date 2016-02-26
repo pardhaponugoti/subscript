@@ -40,4 +40,8 @@ SubscriptionStore.all = function() {
   return subscriptions;
 };
 
+SubscriptionStore.findById = function(id) {
+  return _subscriptions[id];
+};
+
 module.exports = SubscriptionStore;

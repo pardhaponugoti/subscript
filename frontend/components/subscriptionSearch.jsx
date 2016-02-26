@@ -33,7 +33,10 @@ var SubscriptionSearch = React.createClass({
 
     updateForm: function(id, name){
       this.props.updateFormCallback(id);
-      this.setState({searchString: name});
+      this.setState({
+        searchString: name,
+        selected: true
+      });
     },
 
     render: function() {
@@ -48,14 +51,22 @@ var SubscriptionSearch = React.createClass({
 
       var subUl;
 
+      if(this.state.selected) {
+        subUl = null;
+      } else {
+        subUl = <ul>
+          { subs.map(function(sub){
+            return <li key={sub.id} onClick={self.updateForm.bind(self, sub.id, sub.name)}>{sub.name}</li>;
+            }) }
+        </ul>;
+      }
+
       return <div>
+        Start typing in a service to review
+        <br/>
         <input type="text" value={this.state.searchString} onChange={this.handleChange}
           name={this.props.searchName} placeholder="Subscription" />
-            <ul>
-            { subs.map(function(sub){
-              return <li key={sub.id} onClick={self.updateForm.bind(self, sub.id, sub.name)}>{sub.name}</li>;
-              }) }
-          </ul>;
+        {subUl}
       </div>;
     }
 });
