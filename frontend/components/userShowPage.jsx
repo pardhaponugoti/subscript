@@ -1,5 +1,9 @@
 var React = require('react');
 var BrowserHistory = require('react-router').browserHistory;
+var Alert = require('react-bootstrap').Alert;
+var Modal = require('react-bootstrap').Modal;
+var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
+var Button = require('react-bootstrap').Button;
 
 var SessionStore = require('../stores/session.js');
 var UserStore = require('../stores/user.js');
@@ -8,6 +12,8 @@ var ReviewStore = require('../stores/review.js');
 var UserBackendActions = require('../actions/userBackendActions.js');
 
 var ReviewShowComponent = require('./reviewShowComponent.jsx');
+var NewReviewForm = require('./newReviewForm.jsx');
+
 
 function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
 
@@ -16,7 +22,8 @@ var UserShowPage = React.createClass({
     return {
       currentUser: SessionStore.currentUser(),
       currentShowUser: UserStore.findById(this.props.params.userId),
-      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
+      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId),
+      newReviewModalIsOpen: false
     };
   },
   // componentWillMount: function() {
@@ -30,6 +37,7 @@ var UserShowPage = React.createClass({
   componentWillUnmount: function() {
     this.userListenerToken.remove();
     this.sessionListenerToken.remove();
+    this.reviewListenerToken.remove();
   },
   componentWillReceiveProps: function(newProps) {
     if(!isNumeric(this.props.params.userId)) {
@@ -43,6 +51,8 @@ var UserShowPage = React.createClass({
       currentShowUser: UserStore.findById(newProps.params.userId)
     });
   },
+
+
   userChange: function() {
     console.log("userShowPageRenderFromUserStoreChange");
     this.setState({
@@ -59,6 +69,18 @@ var UserShowPage = React.createClass({
       currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
     });
   },
+
+  toggleModal: function() {
+    this.setState({
+      newReviewModalIsOpen: !this.state.newReviewModalIsOpen
+    });
+  },
+  close: function() {
+    this.setState({
+      newReviewModalIsOpen: false
+    });
+  },
+
   render: function() {
     if (this.state.currentShowUser === undefined || this.state.currentShowUserReviews === undefined) {
       // Insert Loading Symbol Here -- waiting for the userstore to update
@@ -76,11 +98,24 @@ var UserShowPage = React.createClass({
           <div>Date of Birth: {this.state.currentShowUser.date_of_birth}</div>
           <div>RIGHT 2/3</div>
           <br/>
+            <button className="btn btn-default btn-sm" onClick={this.toggleModal}>CreateNewReview</button>
+            <Modal show={this.state.newReviewModalIsOpen} onHide={this.close}>
+              <Modal.Header closeButton>
+                <Modal.Title>Write a New Review</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <NewReviewForm closeModalCallback={this.close}/>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button onClick={this.close}>Never Mind</Button>
+              </Modal.Footer>
+            </Modal>
+          <br/>
           <br/>
           <br/>
           <div>
             { this.state.currentShowUserReviews.map(function(userReview) {
-              return <ReviewShowComponent review={userReview} />;
+              return <ReviewShowComponent review={userReview} key={userReview.id}/>;
             })}
           </div>
         </div>

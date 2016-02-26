@@ -49482,6 +49482,10 @@
 
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
+	var Alert = __webpack_require__(218).Alert;
+	var Modal = __webpack_require__(218).Modal;
+	var OverlayTrigger = __webpack_require__(218).OverlayTrigger;
+	var Button = __webpack_require__(218).Button;
 	
 	var SessionStore = __webpack_require__(470);
 	var UserStore = __webpack_require__(488);
@@ -49490,6 +49494,7 @@
 	var UserBackendActions = __webpack_require__(492);
 	
 	var ReviewShowComponent = __webpack_require__(513);
+	var NewReviewForm = __webpack_require__(507);
 	
 	function isNumeric(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);
@@ -49502,7 +49507,8 @@
 	    return {
 	      currentUser: SessionStore.currentUser(),
 	      currentShowUser: UserStore.findById(this.props.params.userId),
-	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
+	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId),
+	      newReviewModalIsOpen: false
 	    };
 	  },
 	  // componentWillMount: function() {
@@ -49516,6 +49522,7 @@
 	  componentWillUnmount: function () {
 	    this.userListenerToken.remove();
 	    this.sessionListenerToken.remove();
+	    this.reviewListenerToken.remove();
 	  },
 	  componentWillReceiveProps: function (newProps) {
 	    if (!isNumeric(this.props.params.userId)) {
@@ -49529,6 +49536,7 @@
 	      currentShowUser: UserStore.findById(newProps.params.userId)
 	    });
 	  },
+	
 	  userChange: function () {
 	    console.log("userShowPageRenderFromUserStoreChange");
 	    this.setState({
@@ -49545,6 +49553,18 @@
 	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
 	    });
 	  },
+	
+	  toggleModal: function () {
+	    this.setState({
+	      newReviewModalIsOpen: !this.state.newReviewModalIsOpen
+	    });
+	  },
+	  close: function () {
+	    this.setState({
+	      newReviewModalIsOpen: false
+	    });
+	  },
+	
 	  render: function () {
 	    if (this.state.currentShowUser === undefined || this.state.currentShowUserReviews === undefined) {
 	      // Insert Loading Symbol Here -- waiting for the userstore to update
@@ -49595,13 +49615,46 @@
 	            'RIGHT 2/3'
 	          ),
 	          React.createElement('br', null),
+	          React.createElement(
+	            'button',
+	            { className: 'btn btn-default btn-sm', onClick: this.toggleModal },
+	            'CreateNewReview'
+	          ),
+	          React.createElement(
+	            Modal,
+	            { show: this.state.newReviewModalIsOpen, onHide: this.close },
+	            React.createElement(
+	              Modal.Header,
+	              { closeButton: true },
+	              React.createElement(
+	                Modal.Title,
+	                null,
+	                'Write a New Review'
+	              )
+	            ),
+	            React.createElement(
+	              Modal.Body,
+	              null,
+	              React.createElement(NewReviewForm, { closeModalCallback: this.close })
+	            ),
+	            React.createElement(
+	              Modal.Footer,
+	              null,
+	              React.createElement(
+	                Button,
+	                { onClick: this.close },
+	                'Never Mind'
+	              )
+	            )
+	          ),
+	          React.createElement('br', null),
 	          React.createElement('br', null),
 	          React.createElement('br', null),
 	          React.createElement(
 	            'div',
 	            null,
 	            this.state.currentShowUserReviews.map(function (userReview) {
-	              return React.createElement(ReviewShowComponent, { review: userReview });
+	              return React.createElement(ReviewShowComponent, { review: userReview, key: userReview.id });
 	            })
 	          )
 	        )
@@ -50286,6 +50339,7 @@
 	
 	  submitNewReview: function (e) {
 	    e.preventDefault();
+	    this.props.closeModalCallback();
 	    ReviewBackendActions.createReview({
 	      review: {
 	        author_id: SessionStore.currentUser().id,
@@ -50450,6 +50504,11 @@
 	
 	ReviewStore.addReview = function (review) {
 	  _reviews[review.id] = review;
+	  if (_reviewsByUserId[review.author_id] === undefined) {
+	    _reviewsByUserId[review.author_id] = [review];
+	  } else {
+	    _reviewsByUserId[review.author_id].push(review);
+	  }
 	};
 	
 	ReviewStore.updateReviews = function (reviewsData) {

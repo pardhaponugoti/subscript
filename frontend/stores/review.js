@@ -24,6 +24,11 @@ ReviewStore.__onDispatch = function(payload) {
 
 ReviewStore.addReview= function(review) {
   _reviews[review.id] = review;
+  if (_reviewsByUserId[review.author_id] === undefined) {
+    _reviewsByUserId[review.author_id] = [review];
+  } else {
+    _reviewsByUserId[review.author_id].push(review);
+  }
 };
 
 ReviewStore.updateReviews = function(reviewsData) {

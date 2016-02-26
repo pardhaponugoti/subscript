@@ -28,6 +28,7 @@ var NewReviewForm = React.createClass({
 
   submitNewReview: function(e) {
     e.preventDefault();
+    this.props.closeModalCallback();
     ReviewBackendActions.createReview({
       review: {
         author_id: SessionStore.currentUser().id,
