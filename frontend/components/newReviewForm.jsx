@@ -2,7 +2,6 @@ var React = require('react');
 
 var Input = require('react-bootstrap').Input;
 
-var SessionStore = require('../stores/session.js');
 var ReviewStore = require('../stores/review.js');
 var BrowserHistory = require('react-router').browserHistory;
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
@@ -31,7 +30,7 @@ var NewReviewForm = React.createClass({
     this.props.closeModalCallback();
     ReviewBackendActions.createReview({
       review: {
-        author_id: SessionStore.currentUser().id,
+        author_id: this.props.currentUser.id,
         subscription_id: this.state.subscriptionId,
         rating: this.state.rating,
         comment: this.state.comment,

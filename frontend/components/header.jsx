@@ -6,7 +6,6 @@ var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
 var Button = require('react-bootstrap').Button;
 
 var SessionBackendActions = require('../actions/sessionBackendActions.js');
-var SessionStore = require('../stores/session.js');
 var NewSessionForm = require('../components/newSessionForm.jsx');
 var NewUserForm = require('../components/newUserForm.jsx');
 

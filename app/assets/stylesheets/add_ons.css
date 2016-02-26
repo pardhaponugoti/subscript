@@ -5,9 +5,14 @@ input {outline: none;}
 ul {
   display: block;
   list-style-type: none;
+  border: 1px red solid;
 }
 
 li {
   display: block;
   border: 1px green solid;
+}
+
+a {
+  cursor: pointer;
 }

@@ -19,6 +19,7 @@ var ReviewShowComponent = React.createClass({
         <div>{ this.state.author.first_name + " " + this.state.author.last_name }</div>
         <img src={this.state.author.image} height="100" width="100"></img>
         <br/>
+        <div>{this.state.subscription.name}</div>
         <div>{this.state.rating}</div>
         <div>{this.state.comment}</div>
     </div>;

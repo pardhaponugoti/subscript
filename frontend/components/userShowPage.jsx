@@ -7,6 +7,7 @@ var Button = require('react-bootstrap').Button;
 
 var UserStore = require('../stores/user.js');
 var ReviewStore = require('../stores/review.js');
+var SubscriptionStore = require('../stores/subscription.js');
 
 var UserBackendActions = require('../actions/userBackendActions.js');
 
@@ -81,6 +82,12 @@ var UserShowPage = React.createClass({
       return <div>
         <div className="col-md-4">
           <img src={this.state.currentShowUser.image} className="img-center"></img>
+          <br/>
+          <ul>Subscriptions
+            {this.state.currentShowUserReviews.map(function(review) {
+              return <li>{SubscriptionStore.findById(review.subscription_id).name}</li>;
+            })}
+          </ul>
           <div>LEFT 1/3</div>
         </div>
         <div className="col-md-8">
@@ -96,7 +103,7 @@ var UserShowPage = React.createClass({
                 <Modal.Title>Write a New Review</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <NewReviewForm closeModalCallback={this.close}/>
+                <NewReviewForm currentUser={this.props.currentUser} closeModalCallback={this.close}/>
               </Modal.Body>
               <Modal.Footer>
                 <Button onClick={this.close}>Never Mind</Button>

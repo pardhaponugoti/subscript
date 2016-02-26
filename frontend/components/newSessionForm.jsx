@@ -1,7 +1,6 @@
 var React = require('react');
 var BrowserHistory = require('react-router').browserHistory;
 
-var SessionStore = require('../stores/session.js');
 var SessionBackendActions = require('../actions/sessionBackendActions.js');
 
 var NewSessionForm = React.createClass({
@@ -31,11 +30,6 @@ var NewSessionForm = React.createClass({
        function(id) {BrowserHistory.push("/users/"+id);}
      );
   },
-  // componentDidMount: function() {
-  //   if (SessionStore.loggedIn()) {
-  //     this.history.push("/");
-  //   }
-  // },
   render: function() {
     return <div>
       <form action="/session" method="post" className="form" onSubmit={this.handleSubmit} >

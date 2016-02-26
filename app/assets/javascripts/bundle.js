@@ -24805,7 +24805,6 @@
 	var Button = __webpack_require__(218).Button;
 	
 	var SessionBackendActions = __webpack_require__(462);
-	var SessionStore = __webpack_require__(470);
 	var NewSessionForm = __webpack_require__(490);
 	var NewUserForm = __webpack_require__(491);
 	
@@ -49122,7 +49121,6 @@
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
-	var SessionStore = __webpack_require__(470);
 	var SessionBackendActions = __webpack_require__(462);
 	
 	var NewSessionForm = React.createClass({
@@ -49152,11 +49150,6 @@
 	      BrowserHistory.push("/users/" + id);
 	    });
 	  },
-	  // componentDidMount: function() {
-	  //   if (SessionStore.loggedIn()) {
-	  //     this.history.push("/");
-	  //   }
-	  // },
 	  render: function () {
 	    return React.createElement(
 	      'div',
@@ -49501,6 +49494,7 @@
 	
 	var UserStore = __webpack_require__(488);
 	var ReviewStore = __webpack_require__(508);
+	var SubscriptionStore = __webpack_require__(501);
 	
 	var UserBackendActions = __webpack_require__(492);
 	
@@ -49581,6 +49575,19 @@
 	          'div',
 	          { className: 'col-md-4' },
 	          React.createElement('img', { src: this.state.currentShowUser.image, className: 'img-center' }),
+	          React.createElement('br', null),
+	          React.createElement(
+	            'ul',
+	            null,
+	            'Subscriptions',
+	            this.state.currentShowUserReviews.map(function (review) {
+	              return React.createElement(
+	                'li',
+	                null,
+	                SubscriptionStore.findById(review.subscription_id).name
+	              );
+	            })
+	          ),
 	          React.createElement(
 	            'div',
 	            null,
@@ -49639,7 +49646,7 @@
 	            React.createElement(
 	              Modal.Body,
 	              null,
-	              React.createElement(NewReviewForm, { closeModalCallback: this.close })
+	              React.createElement(NewReviewForm, { currentUser: this.props.currentUser, closeModalCallback: this.close })
 	            ),
 	            React.createElement(
 	              Modal.Footer,
@@ -50295,7 +50302,6 @@
 	
 	var Input = __webpack_require__(218).Input;
 	
-	var SessionStore = __webpack_require__(470);
 	var ReviewStore = __webpack_require__(508);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	var LinkedStateMixin = __webpack_require__(497);
@@ -50326,7 +50332,7 @@
 	    this.props.closeModalCallback();
 	    ReviewBackendActions.createReview({
 	      review: {
-	        author_id: SessionStore.currentUser().id,
+	        author_id: this.props.currentUser.id,
 	        subscription_id: this.state.subscriptionId,
 	        rating: this.state.rating,
 	        comment: this.state.comment,
@@ -50664,6 +50670,11 @@
 	      ),
 	      React.createElement('img', { src: this.state.author.image, height: '100', width: '100' }),
 	      React.createElement('br', null),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.state.subscription.name
+	      ),
 	      React.createElement(
 	        'div',
 	        null,
