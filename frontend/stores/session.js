@@ -10,6 +10,7 @@ var UserConstants = require('../constants/userConstants.js');
 var _currentUser = _currentUser || JSON.parse(window.localStorage.getItem('pardhauser'));
 
 SessionStore.__onDispatch = function(payload) {
+  console.log("dispatchjohnson");
   switch (payload.actionType) {
     case (SessionConstants.USER_SIGN_IN):
       SessionStore.signInUser(payload.data);

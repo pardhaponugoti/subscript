@@ -13,30 +13,19 @@ var NewUserForm = require('../components/newUserForm.jsx');
 var Header = React.createClass({
   getInitialState: function() {
     return {
-      currentUser: SessionStore.currentUser(),
-      loggedIn: SessionStore.loggedIn(),
       modalIsOpen: false,
       signInOpen: true
     };
   },
-  componentDidMount: function() {
-    this.listenerToken = SessionStore.addListener(this.onSessionChange);
-  },
-  componentWillUnmount: function() {
-    this.listenerToken.remove();
-  },
-  onSessionChange: function() {
-    console.log("sessionChangeInHeader");
-    this.setState({
-      currentUser: SessionStore.currentUser(),
-      loggedIn: SessionStore.loggedIn(),
-      modalIsOpen: false,
-      signInOpen: true
-    });
-  },
+
+  // componentWillReceiveProps: function(newProps) {
+  //   console.log(newProps);
+  //   console.log(newProps.currentUser);
+  //   console.log(newProps.loggedIn);
+  // },
 
   currentUserUrl: function() {
-    return "users/" + this.state.currentUser.id;
+    return "users/" + this.props.currentUser.id;
   },
   editUserUrl: function() {
     return this.currentUserUrl() + "/edit";
@@ -81,10 +70,10 @@ var Header = React.createClass({
   },
 
   userDropdown: function() {
-    if (this.state.loggedIn) {
+    if (this.props.loggedIn) {
       return <div className="btn-group nav navbar-nav navbar-right">
         <button className="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-          {this.state.currentUser.email} <span className="caret"></span>
+          {this.props.currentUser.email} <span className="caret"></span>
         </button>
         <ul className="dropdown-menu">
           <li><a onClick={this.showCurrentUserPage}>My Page</a></li>
@@ -96,12 +85,12 @@ var Header = React.createClass({
       var inputs = {};
       if (this.state.signInOpen) {
         inputs.header = "Sign In";
-        inputs.form = <NewSessionForm />;
+        inputs.form = <NewSessionForm closeModalCallback={this.close}/>;
         inputs.string = "New user?  ";
         inputs.button = <Button onClick={this.openSignUpForm}>Sign Up</Button>;
       } else {
         inputs.header = "Sign Up";
-        inputs.form = <NewUserForm />;
+        inputs.form = <NewUserForm closeModalCallback={this.close}/>;
         inputs.string = "Already a user?";
         inputs.button = <Button onClick={this.openSignInForm}>Sign In</Button>;
       }

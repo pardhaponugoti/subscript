@@ -15,7 +15,13 @@ var ReviewShowComponent = React.createClass({
   },
 
   render: function() {
-    return <img src={this.state.author.image} height="100" width="100"></img>;
+    return <div>
+        <div>{ this.state.author.first_name + " " + this.state.author.last_name }</div>
+        <img src={this.state.author.image} height="100" width="100"></img>
+        <br/>
+        <div>{this.state.rating}</div>
+        <div>{this.state.comment}</div>
+    </div>;
   }
 });
 

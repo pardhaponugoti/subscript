@@ -1,40 +1,20 @@
 var React = require('react');
 var BrowserHistory = require('react-router').browserHistory;
 
-var SessionStore = require('../stores/session.js');
 var UserStore = require('../stores/user.js');
 var UserBackendActions = require('../actions/userBackendActions');
 
 var UserEditPage = React.createClass({
   getInitialState: function() {
     return {
-      currentUser: SessionStore.currentUser(),
-      firstName: SessionStore.currentUser().first_name,
-      lastName: SessionStore.currentUser().last_name,
-      email: SessionStore.currentUser().email,
-      location: SessionStore.currentUser().location,
-      dateOfBirth: SessionStore.currentUser().date_of_birth,
-      image: SessionStore.currentUser().image
+      firstName: this.props.currentUser.first_name,
+      lastName: this.props.currentUser.last_name,
+      email: this.props.currentUser.email,
+      location: this.props.currentUser.location,
+      dateOfBirth: this.props.currentUser.date_of_birth,
+      image: this.props.currentUser.image
     };
   },
-  componentDidMount: function() {
-    this.listenerToken = SessionStore.addListener(this.onSessionChange);
-  },
-  componentWillUnmount: function() {
-    this.listenerToken.remove();
-  },
-  onSessionChange: function() {
-    this.setState({
-      currentUser: SessionStore.currentUser(),
-      firstName: SessionStore.currentUser().first_name,
-      lastName: SessionStore.currentUser().last_name,
-      email: SessionStore.currentUser().email,
-      location: SessionStore.currentUser().location,
-      dateOfBirth: SessionStore.currentUser().date_of_birth,
-      image: SessionStore.currentUser().image
-    });
-  },
-
   openCloudinaryWidget: function(e) {
     e.preventDefault();
     var self = this;
@@ -81,19 +61,19 @@ var UserEditPage = React.createClass({
 
   cancelUpdate: function(e) {
     e.preventDefault();
-    BrowserHistory.push("/users/"+this.state.currentUser.id);
+    BrowserHistory.push("/users/"+this.props.currentUser.id);
   },
   deleteUser: function(e) {
     e.preventDefault();
     UserBackendActions.deleteUser(
-      this.state.currentUser.id,
+      this.props.currentUser.id,
       function() { BrowserHistory.push("/"); }
     );
   },
 
   handleSubmit: function(e) {
     e.preventDefault();
-    var id = this.state.currentUser.id;
+    var id = this.props.currentUser.id;
     var callback = function() { BrowserHistory.push("/users/" + id); };
     UserBackendActions.updateUser({
       id: id,

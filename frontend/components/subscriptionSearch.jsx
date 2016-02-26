@@ -4,11 +4,11 @@ var SubscriptionStore = require('../stores/subscription.js');
 
 var SubscriptionSearch = React.createClass({
     getInitialState: function(){
-        return {
-          selected: false,
-          searchString: '',
-          subscriptions: SubscriptionStore.all()
-         };
+      return {
+        selected: false,
+        searchString: '',
+        subscriptions: SubscriptionStore.all()
+       };
     },
     componentDidMount: function() {
       this.listenerToken = SubscriptionStore.addListener(this.subscriptionChange);
@@ -51,7 +51,7 @@ var SubscriptionSearch = React.createClass({
 
       var subUl;
 
-      if(this.state.selected) {
+      if(this.state.selected || this.state.searchString.length === 0) {
         subUl = null;
       } else {
         subUl = <ul>

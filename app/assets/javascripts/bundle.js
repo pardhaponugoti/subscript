@@ -24731,14 +24731,30 @@
 	var App = React.createClass({
 	  displayName: 'App',
 	
+	  getInitialState: function () {
+	    return {
+	      currentUser: SessionStore.currentUser(),
+	      loggedIn: SessionStore.loggedIn()
+	    };
+	  },
 	  componentWillMount: function () {
-	    console.log("appwillmount");
 	    SessionBackendActions.checkForUser();
 	  },
 	  componentDidMount: function () {
+	    this.listenerToken = SessionStore.addListener(this.onSessionChange);
 	    UserBackendActions.fetchAllUsers();
 	    SubscriptionBackendActions.fetchAllSubscriptions();
 	    ReviewBackendActions.fetchAllReviews();
+	  },
+	  componentWillUnmount: function () {
+	    this.listenerToken.remove();
+	  },
+	
+	  onSessionChange: function () {
+	    this.setState({
+	      currentUser: SessionStore.currentUser(),
+	      loggedIn: SessionStore.loggedIn()
+	    });
 	  },
 	  // componentWillUnmount: function() {
 	  //   console.log("AppUnmounting");
@@ -24749,13 +24765,14 @@
 	  },
 	
 	  render: function () {
+	    console.log("AppRender");
 	    return React.createElement(
 	      'div',
 	      { id: 'App' },
 	      React.createElement(
 	        'div',
 	        null,
-	        React.createElement(Header, null)
+	        React.createElement(Header, { currentUser: this.state.currentUser, loggedIn: this.state.loggedIn })
 	      ),
 	      React.createElement(
 	        'button',
@@ -24765,7 +24782,10 @@
 	      React.createElement(
 	        'div',
 	        null,
-	        this.props.children
+	        this.props.children && React.cloneElement(this.props.children, {
+	          loggedIn: this.state.loggedIn,
+	          currentUser: this.state.currentUser
+	        })
 	      )
 	    );
 	  }
@@ -24794,30 +24814,19 @@
 	
 	  getInitialState: function () {
 	    return {
-	      currentUser: SessionStore.currentUser(),
-	      loggedIn: SessionStore.loggedIn(),
 	      modalIsOpen: false,
 	      signInOpen: true
 	    };
 	  },
-	  componentDidMount: function () {
-	    this.listenerToken = SessionStore.addListener(this.onSessionChange);
-	  },
-	  componentWillUnmount: function () {
-	    this.listenerToken.remove();
-	  },
-	  onSessionChange: function () {
-	    console.log("sessionChangeInHeader");
-	    this.setState({
-	      currentUser: SessionStore.currentUser(),
-	      loggedIn: SessionStore.loggedIn(),
-	      modalIsOpen: false,
-	      signInOpen: true
-	    });
-	  },
+	
+	  // componentWillReceiveProps: function(newProps) {
+	  //   console.log(newProps);
+	  //   console.log(newProps.currentUser);
+	  //   console.log(newProps.loggedIn);
+	  // },
 	
 	  currentUserUrl: function () {
-	    return "users/" + this.state.currentUser.id;
+	    return "users/" + this.props.currentUser.id;
 	  },
 	  editUserUrl: function () {
 	    return this.currentUserUrl() + "/edit";
@@ -24860,14 +24869,14 @@
 	  },
 	
 	  userDropdown: function () {
-	    if (this.state.loggedIn) {
+	    if (this.props.loggedIn) {
 	      return React.createElement(
 	        'div',
 	        { className: 'btn-group nav navbar-nav navbar-right' },
 	        React.createElement(
 	          'button',
 	          { className: 'btn btn-default btn-sm dropdown-toggle', type: 'button', 'data-toggle': 'dropdown' },
-	          this.state.currentUser.email,
+	          this.props.currentUser.email,
 	          ' ',
 	          React.createElement('span', { className: 'caret' })
 	        ),
@@ -24907,7 +24916,7 @@
 	      var inputs = {};
 	      if (this.state.signInOpen) {
 	        inputs.header = "Sign In";
-	        inputs.form = React.createElement(NewSessionForm, null);
+	        inputs.form = React.createElement(NewSessionForm, { closeModalCallback: this.close });
 	        inputs.string = "New user?  ";
 	        inputs.button = React.createElement(
 	          Button,
@@ -24916,7 +24925,7 @@
 	        );
 	      } else {
 	        inputs.header = "Sign Up";
-	        inputs.form = React.createElement(NewUserForm, null);
+	        inputs.form = React.createElement(NewUserForm, { closeModalCallback: this.close });
 	        inputs.string = "Already a user?";
 	        inputs.button = React.createElement(
 	          Button,
@@ -42540,6 +42549,7 @@
 	var _currentUser = _currentUser || JSON.parse(window.localStorage.getItem('pardhauser'));
 	
 	SessionStore.__onDispatch = function (payload) {
+	  console.log("dispatchjohnson");
 	  switch (payload.actionType) {
 	    case SessionConstants.USER_SIGN_IN:
 	      SessionStore.signInUser(payload.data);
@@ -49136,6 +49146,7 @@
 	  },
 	  handleSubmit: function (e) {
 	    e.preventDefault();
+	    this.props.closeModalCallback();
 	    SessionBackendActions.signInUser({ user: { email: this.state.email,
 	        password: this.state.password } }, function (id) {
 	      BrowserHistory.push("/users/" + id);
@@ -49319,6 +49330,7 @@
 	  },
 	  handleSubmit: function (e) {
 	    e.preventDefault();
+	    this.props.closeModalCallback();
 	    SessionBackendActions.signUpUser({ user: { email: this.state.email,
 	        password: this.state.password,
 	        first_name: this.state.firstName,
@@ -49487,7 +49499,6 @@
 	var OverlayTrigger = __webpack_require__(218).OverlayTrigger;
 	var Button = __webpack_require__(218).Button;
 	
-	var SessionStore = __webpack_require__(470);
 	var UserStore = __webpack_require__(488);
 	var ReviewStore = __webpack_require__(508);
 	
@@ -49505,7 +49516,6 @@
 	
 	  getInitialState: function () {
 	    return {
-	      currentUser: SessionStore.currentUser(),
 	      currentShowUser: UserStore.findById(this.props.params.userId),
 	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId),
 	      newReviewModalIsOpen: false
@@ -49516,12 +49526,10 @@
 	  // },
 	  componentDidMount: function () {
 	    this.userListenerToken = UserStore.addListener(this.userChange);
-	    this.sessionListenerToken = SessionStore.addListener(this.sessionChange);
 	    this.reviewListenerToken = ReviewStore.addListener(this.reviewChange);
 	  },
 	  componentWillUnmount: function () {
 	    this.userListenerToken.remove();
-	    this.sessionListenerToken.remove();
 	    this.reviewListenerToken.remove();
 	  },
 	  componentWillReceiveProps: function (newProps) {
@@ -49533,7 +49541,8 @@
 	  },
 	  onUserChange: function (newProps) {
 	    this.setState({
-	      currentShowUser: UserStore.findById(newProps.params.userId)
+	      currentShowUser: UserStore.findById(newProps.params.userId),
+	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
 	    });
 	  },
 	
@@ -49541,11 +49550,6 @@
 	    console.log("userShowPageRenderFromUserStoreChange");
 	    this.setState({
 	      currentShowUser: UserStore.findById(this.props.params.userId)
-	    });
-	  },
-	  sessionChange: function () {
-	    this.setState({
-	      currentUser: SessionStore.currentUser()
 	    });
 	  },
 	  reviewChange: function () {
@@ -49673,7 +49677,6 @@
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
-	var SessionStore = __webpack_require__(470);
 	var UserStore = __webpack_require__(488);
 	var UserBackendActions = __webpack_require__(492);
 	
@@ -49682,33 +49685,14 @@
 	
 	  getInitialState: function () {
 	    return {
-	      currentUser: SessionStore.currentUser(),
-	      firstName: SessionStore.currentUser().first_name,
-	      lastName: SessionStore.currentUser().last_name,
-	      email: SessionStore.currentUser().email,
-	      location: SessionStore.currentUser().location,
-	      dateOfBirth: SessionStore.currentUser().date_of_birth,
-	      image: SessionStore.currentUser().image
+	      firstName: this.props.currentUser.first_name,
+	      lastName: this.props.currentUser.last_name,
+	      email: this.props.currentUser.email,
+	      location: this.props.currentUser.location,
+	      dateOfBirth: this.props.currentUser.date_of_birth,
+	      image: this.props.currentUser.image
 	    };
 	  },
-	  componentDidMount: function () {
-	    this.listenerToken = SessionStore.addListener(this.onSessionChange);
-	  },
-	  componentWillUnmount: function () {
-	    this.listenerToken.remove();
-	  },
-	  onSessionChange: function () {
-	    this.setState({
-	      currentUser: SessionStore.currentUser(),
-	      firstName: SessionStore.currentUser().first_name,
-	      lastName: SessionStore.currentUser().last_name,
-	      email: SessionStore.currentUser().email,
-	      location: SessionStore.currentUser().location,
-	      dateOfBirth: SessionStore.currentUser().date_of_birth,
-	      image: SessionStore.currentUser().image
-	    });
-	  },
-	
 	  openCloudinaryWidget: function (e) {
 	    e.preventDefault();
 	    var self = this;
@@ -49754,18 +49738,18 @@
 	
 	  cancelUpdate: function (e) {
 	    e.preventDefault();
-	    BrowserHistory.push("/users/" + this.state.currentUser.id);
+	    BrowserHistory.push("/users/" + this.props.currentUser.id);
 	  },
 	  deleteUser: function (e) {
 	    e.preventDefault();
-	    UserBackendActions.deleteUser(this.state.currentUser.id, function () {
+	    UserBackendActions.deleteUser(this.props.currentUser.id, function () {
 	      BrowserHistory.push("/");
 	    });
 	  },
 	
 	  handleSubmit: function (e) {
 	    e.preventDefault();
-	    var id = this.state.currentUser.id;
+	    var id = this.props.currentUser.id;
 	    var callback = function () {
 	      BrowserHistory.push("/users/" + id);
 	    };
@@ -50273,7 +50257,7 @@
 	
 	    var subUl;
 	
-	    if (this.state.selected) {
+	    if (this.state.selected || this.state.searchString.length === 0) {
 	      subUl = null;
 	    } else {
 	      subUl = React.createElement(
@@ -50670,7 +50654,27 @@
 	  },
 	
 	  render: function () {
-	    return React.createElement('img', { src: this.state.author.image, height: '100', width: '100' });
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        this.state.author.first_name + " " + this.state.author.last_name
+	      ),
+	      React.createElement('img', { src: this.state.author.image, height: '100', width: '100' }),
+	      React.createElement('br', null),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.state.rating
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        this.state.comment
+	      )
+	    );
 	  }
 	});
 	

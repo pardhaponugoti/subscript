@@ -5,7 +5,6 @@ var Modal = require('react-bootstrap').Modal;
 var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
 var Button = require('react-bootstrap').Button;
 
-var SessionStore = require('../stores/session.js');
 var UserStore = require('../stores/user.js');
 var ReviewStore = require('../stores/review.js');
 
@@ -20,7 +19,6 @@ function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
 var UserShowPage = React.createClass({
   getInitialState: function() {
     return {
-      currentUser: SessionStore.currentUser(),
       currentShowUser: UserStore.findById(this.props.params.userId),
       currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId),
       newReviewModalIsOpen: false
@@ -31,12 +29,10 @@ var UserShowPage = React.createClass({
   // },
   componentDidMount: function() {
     this.userListenerToken = UserStore.addListener(this.userChange);
-    this.sessionListenerToken = SessionStore.addListener(this.sessionChange);
     this.reviewListenerToken = ReviewStore.addListener(this.reviewChange);
   },
   componentWillUnmount: function() {
     this.userListenerToken.remove();
-    this.sessionListenerToken.remove();
     this.reviewListenerToken.remove();
   },
   componentWillReceiveProps: function(newProps) {
@@ -48,7 +44,8 @@ var UserShowPage = React.createClass({
   },
   onUserChange: function(newProps) {
     this.setState({
-      currentShowUser: UserStore.findById(newProps.params.userId)
+      currentShowUser: UserStore.findById(newProps.params.userId),
+      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
     });
   },
 
@@ -57,11 +54,6 @@ var UserShowPage = React.createClass({
     console.log("userShowPageRenderFromUserStoreChange");
     this.setState({
       currentShowUser: UserStore.findById(this.props.params.userId)
-    });
-  },
-  sessionChange: function() {
-    this.setState({
-      currentUser: SessionStore.currentUser()
     });
   },
   reviewChange: function() {

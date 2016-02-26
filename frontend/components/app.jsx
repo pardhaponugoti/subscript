@@ -20,14 +20,30 @@ window.ReviewStore = ReviewStore;
 
 
 var App = React.createClass({
+  getInitialState: function() {
+    return {
+      currentUser: SessionStore.currentUser(),
+      loggedIn: SessionStore.loggedIn(),
+    };
+  },
   componentWillMount: function() {
-    console.log("appwillmount");
     SessionBackendActions.checkForUser();
   },
   componentDidMount: function() {
+    this.listenerToken = SessionStore.addListener(this.onSessionChange);
     UserBackendActions.fetchAllUsers();
     SubscriptionBackendActions.fetchAllSubscriptions();
     ReviewBackendActions.fetchAllReviews();
+  },
+  componentWillUnmount: function() {
+    this.listenerToken.remove();
+  },
+
+  onSessionChange: function() {
+    this.setState({
+      currentUser: SessionStore.currentUser(),
+      loggedIn: SessionStore.loggedIn()
+    });
   },
   // componentWillUnmount: function() {
   //   console.log("AppUnmounting");
@@ -38,13 +54,21 @@ var App = React.createClass({
   },
 
   render: function() {
+    console.log("AppRender");
     return <div id='App'>
-      <div><Header /></div>
+      <div><Header currentUser={this.state.currentUser} loggedIn={this.state.loggedIn} /></div>
       <button onClick={this.linkToTest}>test</button>
-      <div>{this.props.children}</div>
+      <div>{this.props.children && React.cloneElement(this.props.children, {
+               loggedIn: this.state.loggedIn,
+               currentUser: this.state.currentUser
+             })}</div>
     </div>;
   }
 });
+
+
+
+
 
 
 module.exports = App;

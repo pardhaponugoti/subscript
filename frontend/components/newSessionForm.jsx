@@ -23,6 +23,7 @@ var NewSessionForm = React.createClass({
   },
   handleSubmit: function(e) {
     e.preventDefault();
+    this.props.closeModalCallback();
     SessionBackendActions.signInUser(
       {user:
         {email: this.state.email,
