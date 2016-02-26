@@ -9,6 +9,7 @@ var NewUserForm = require('./components/newUserForm');
 var NewSessionForm = require('./components/newSessionForm.jsx');
 var UserShowPage = require('./components/userShowPage.jsx');
 var UserEditPage = require('./components/userEditPage.jsx');
+var SubscriptionShowPage = require('./components/subscriptionShowPage.jsx');
 
 //test components
 var SubscriptionSearch = require('./components/subscriptionSearch.jsx');
@@ -20,7 +21,7 @@ var routes = (
   <Route path="/" component={App}>
     <Route path="users/:userId" component={UserShowPage}></Route>
     <Route path="users/:userId/edit" component={UserEditPage}></Route>
-    <Route path="test" component={NewReviewForm}></Route>
+    <Route path="subscriptions/:subscriptionId" component={SubscriptionShowPage}></Route>
   </Route>
 );
 

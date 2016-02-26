@@ -50,7 +50,7 @@ var App = React.createClass({
   // },
   linkToTest: function(e) {
     e.preventDefault();
-    BrowserHistory.push("/test");
+    BrowserHistory.push("/subscriptions/1");
   },
 
   render: function() {

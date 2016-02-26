@@ -55,6 +55,7 @@
 	var NewSessionForm = __webpack_require__(490);
 	var UserShowPage = __webpack_require__(495);
 	var UserEditPage = __webpack_require__(496);
+	var SubscriptionShowPage = __webpack_require__(514);
 	
 	//test components
 	var SubscriptionSearch = __webpack_require__(506);
@@ -67,7 +68,7 @@
 	  { path: '/', component: App },
 	  React.createElement(Route, { path: 'users/:userId', component: UserShowPage }),
 	  React.createElement(Route, { path: 'users/:userId/edit', component: UserEditPage }),
-	  React.createElement(Route, { path: 'test', component: NewReviewForm })
+	  React.createElement(Route, { path: 'subscriptions/:subscriptionId', component: SubscriptionShowPage })
 	);
 	
 	document.addEventListener("DOMContentLoaded", function () {
@@ -24761,7 +24762,7 @@
 	  // },
 	  linkToTest: function (e) {
 	    e.preventDefault();
-	    BrowserHistory.push("/test");
+	    BrowserHistory.push("/subscriptions/1");
 	  },
 	
 	  render: function () {
@@ -42548,7 +42549,6 @@
 	var _currentUser = _currentUser || JSON.parse(window.localStorage.getItem('pardhauser'));
 	
 	SessionStore.__onDispatch = function (payload) {
-	  console.log("dispatchjohnson");
 	  switch (payload.actionType) {
 	    case SessionConstants.USER_SIGN_IN:
 	      SessionStore.signInUser(payload.data);
@@ -50100,6 +50100,7 @@
 	SubscriptionStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case SubscriptionConstants.RECEIVE_ALL_SUBSCRIPTIONS:
+	      console.log("subscriptionsReceivedByStore");
 	      SubscriptionStore.updateSubscriptions(payload.data);
 	      SubscriptionStore.__emitChange();
 	      break;
@@ -50131,7 +50132,13 @@
 	};
 	
 	SubscriptionStore.findById = function (id) {
-	  return _subscriptions[id];
+	  if (_subscriptions === {}) {
+	    return undefined;
+	  } else if (_subscriptions[id] === undefined) {
+	    return [];
+	  } else {
+	    return _subscriptions[id];
+	  }
 	};
 	
 	module.exports = SubscriptionStore;
@@ -50476,6 +50483,7 @@
 	
 	var _reviews = {};
 	var _reviewsByUserId = {};
+	var _reviewsBySubscriptionId = {};
 	
 	ReviewStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
@@ -50499,6 +50507,11 @@
 	  } else {
 	    _reviewsByUserId[review.author_id].push(review);
 	  }
+	  if (_reviewsBySubscriptionId[review.subscription_id] === undefined) {
+	    _reviewsBySubscriptionId[review.subscription_id] = [review];
+	  } else {
+	    _reviewsBySubscriptionId[review.subscription_id].push(review);
+	  }
 	};
 	
 	ReviewStore.updateReviews = function (reviewsData) {
@@ -50510,6 +50523,12 @@
 	      _reviewsByUserId[review.author_id] = [review];
 	    } else {
 	      _reviewsByUserId[review.author_id].push(review);
+	    }
+	
+	    if (_reviewsBySubscriptionId[review.subscription_id] === undefined) {
+	      _reviewsBySubscriptionId[review.subscription_id] = [review];
+	    } else {
+	      _reviewsBySubscriptionId[review.subscription_id].push(review);
 	    }
 	  });
 	};
@@ -50526,6 +50545,16 @@
 	    return [];
 	  } else {
 	    return _reviewsByUserId[userId];
+	  }
+	};
+	
+	ReviewStore.findBySubscriptionId = function (subscriptionId) {
+	  if (_reviewsBySubscriptionId === {}) {
+	    return undefined;
+	  } else if (_reviewsBySubscriptionId[subscriptionId] === undefined) {
+	    return [];
+	  } else {
+	    return _reviewsBySubscriptionId[subscriptionId];
 	  }
 	};
 	
@@ -50690,6 +50719,78 @@
 	});
 	
 	module.exports = ReviewShowComponent;
+
+/***/ },
+/* 514 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var ReviewStore = __webpack_require__(508);
+	var SubscriptionStore = __webpack_require__(501);
+	
+	var ReviewShowComponent = __webpack_require__(513);
+	
+	var SubscriptionShowPage = React.createClass({
+	  displayName: 'SubscriptionShowPage',
+	
+	  getInitialState: function () {
+	    return {
+	      currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId)),
+	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId))
+	    };
+	  },
+	  componentWillUnmount: function () {
+	    this.subscriptionListenerToken.remove();
+	    this.reviewListenerToken.remove();
+	  },
+	  componentDidMount: function () {
+	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.onSubscriptionChange);
+	    this.reviewListenerToken = ReviewStore.addListener(this.onReviewChange);
+	  },
+	
+	  onSubscriptionChange: function () {
+	    this.setState({
+	      currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId))
+	    });
+	  },
+	  onReviewChange: function () {
+	    this.setState({
+	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId))
+	    });
+	  },
+	
+	  render: function () {
+	    if (this.state.currentSubscription.name === undefined) {
+	      return React.createElement(
+	        'div',
+	        null,
+	        'WAITING-FOR-LOAD'
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'ul',
+	          null,
+	          'Reviews for ',
+	          this.state.currentSubscription.name,
+	          this.state.reviews.map(function (review) {
+	            return React.createElement(
+	              'li',
+	              null,
+	              React.createElement(ReviewShowComponent, { review: review })
+	            );
+	          })
+	        )
+	      );
+	    }
+	  }
+	
+	});
+	
+	module.exports = SubscriptionShowPage;
 
 /***/ }
 /******/ ]);

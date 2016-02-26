@@ -9,6 +9,7 @@ var _subscriptions = {};
 SubscriptionStore.__onDispatch = function(payload) {
   switch(payload.actionType) {
     case (SubscriptionConstants.RECEIVE_ALL_SUBSCRIPTIONS):
+      console.log("subscriptionsReceivedByStore");
       SubscriptionStore.updateSubscriptions(payload.data);
       SubscriptionStore.__emitChange();
       break;
@@ -41,7 +42,13 @@ SubscriptionStore.all = function() {
 };
 
 SubscriptionStore.findById = function(id) {
-  return _subscriptions[id];
+  if (_subscriptions === {}) {
+    return undefined;
+  } else if ( _subscriptions[id] === undefined) {
+    return [];
+  } else {
+    return _subscriptions[id];
+  }
 };
 
 module.exports = SubscriptionStore;

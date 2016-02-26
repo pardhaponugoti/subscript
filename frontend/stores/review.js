@@ -6,6 +6,7 @@ var ReviewConstants = require('../constants/reviewConstants.js');
 
 var _reviews = {};
 var _reviewsByUserId = {};
+var _reviewsBySubscriptionId = {};
 
 ReviewStore.__onDispatch = function(payload) {
   switch(payload.actionType) {
@@ -29,6 +30,11 @@ ReviewStore.addReview= function(review) {
   } else {
     _reviewsByUserId[review.author_id].push(review);
   }
+  if (_reviewsBySubscriptionId[review.subscription_id] === undefined) {
+    _reviewsBySubscriptionId[review.subscription_id] = [review];
+  } else {
+    _reviewsBySubscriptionId[review.subscription_id].push(review);
+  }
 };
 
 ReviewStore.updateReviews = function(reviewsData) {
@@ -40,6 +46,12 @@ ReviewStore.updateReviews = function(reviewsData) {
       _reviewsByUserId[review.author_id] = [review];
     } else {
       _reviewsByUserId[review.author_id].push(review);
+    }
+
+    if (_reviewsBySubscriptionId[review.subscription_id] === undefined) {
+      _reviewsBySubscriptionId[review.subscription_id] = [review];
+    } else {
+      _reviewsBySubscriptionId[review.subscription_id].push(review);
     }
   });
 };
@@ -56,6 +68,16 @@ ReviewStore.findByUserId = function(userId) {
     return [];
   } else {
     return _reviewsByUserId[userId];
+  }
+};
+
+ReviewStore.findBySubscriptionId = function(subscriptionId) {
+  if (_reviewsBySubscriptionId === {}) {
+    return undefined;
+  } else if (_reviewsBySubscriptionId[subscriptionId] === undefined) {
+    return [];
+  } else {
+    return _reviewsBySubscriptionId[subscriptionId];
   }
 };
 
