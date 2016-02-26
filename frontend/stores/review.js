@@ -5,6 +5,7 @@ var ReviewStore = new Store(AppDispatcher);
 var ReviewConstants = require('../constants/reviewConstants.js');
 
 var _reviews = {};
+var _reviewsByUserId = {};
 
 ReviewStore.__onDispatch = function(payload) {
   switch(payload.actionType) {
@@ -29,12 +30,28 @@ ReviewStore.updateReviews = function(reviewsData) {
   _reviews = {};
   reviewsData.forEach(function(review) {
     _reviews[review.id] = review;
+
+    if (_reviewsByUserId[review.author_id] === undefined) {
+      _reviewsByUserId[review.author_id] = [review];
+    } else {
+      _reviewsByUserId[review.author_id].push(review);
+    }
   });
 };
 
 ReviewStore.deleteReview = function(data) {
   var id = data.id;
   delete _reviews[id];
+};
+
+ReviewStore.findByUserId = function(userId) {
+  if (_reviewsByUserId === {}) {
+    return undefined;
+  } else if (_reviewsByUserId[userId] === undefined) {
+    return [];
+  } else {
+    return _reviewsByUserId[userId];
+  }
 };
 
 ReviewStore.all = function() {

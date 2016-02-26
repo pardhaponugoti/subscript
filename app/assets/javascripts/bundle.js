@@ -49481,11 +49481,15 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var SessionStore = __webpack_require__(470);
-	var UserStore = __webpack_require__(488);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
+	var SessionStore = __webpack_require__(470);
+	var UserStore = __webpack_require__(488);
+	var ReviewStore = __webpack_require__(508);
+	
 	var UserBackendActions = __webpack_require__(492);
+	
+	var ReviewShowComponent = __webpack_require__(513);
 	
 	function isNumeric(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);
@@ -49497,7 +49501,8 @@
 	  getInitialState: function () {
 	    return {
 	      currentUser: SessionStore.currentUser(),
-	      currentShowUser: UserStore.findById(this.props.params.userId)
+	      currentShowUser: UserStore.findById(this.props.params.userId),
+	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
 	    };
 	  },
 	  // componentWillMount: function() {
@@ -49506,6 +49511,7 @@
 	  componentDidMount: function () {
 	    this.userListenerToken = UserStore.addListener(this.userChange);
 	    this.sessionListenerToken = SessionStore.addListener(this.sessionChange);
+	    this.reviewListenerToken = ReviewStore.addListener(this.reviewChange);
 	  },
 	  componentWillUnmount: function () {
 	    this.userListenerToken.remove();
@@ -49534,8 +49540,13 @@
 	      currentUser: SessionStore.currentUser()
 	    });
 	  },
+	  reviewChange: function () {
+	    this.setState({
+	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
+	    });
+	  },
 	  render: function () {
-	    if (this.state.currentShowUser === undefined) {
+	    if (this.state.currentShowUser === undefined || this.state.currentShowUserReviews === undefined) {
 	      // Insert Loading Symbol Here -- waiting for the userstore to update
 	      return React.createElement('div', { id: 'WAITING-FOR-LOAD' });
 	    } else {
@@ -49582,6 +49593,16 @@
 	            'div',
 	            null,
 	            'RIGHT 2/3'
+	          ),
+	          React.createElement('br', null),
+	          React.createElement('br', null),
+	          React.createElement('br', null),
+	          React.createElement(
+	            'div',
+	            null,
+	            this.state.currentShowUserReviews.map(function (userReview) {
+	              return React.createElement(ReviewShowComponent, { review: userReview });
+	            })
 	          )
 	        )
 	      );
@@ -50410,6 +50431,7 @@
 	var ReviewConstants = __webpack_require__(511);
 	
 	var _reviews = {};
+	var _reviewsByUserId = {};
 	
 	ReviewStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
@@ -50434,12 +50456,28 @@
 	  _reviews = {};
 	  reviewsData.forEach(function (review) {
 	    _reviews[review.id] = review;
+	
+	    if (_reviewsByUserId[review.author_id] === undefined) {
+	      _reviewsByUserId[review.author_id] = [review];
+	    } else {
+	      _reviewsByUserId[review.author_id].push(review);
+	    }
 	  });
 	};
 	
 	ReviewStore.deleteReview = function (data) {
 	  var id = data.id;
 	  delete _reviews[id];
+	};
+	
+	ReviewStore.findByUserId = function (userId) {
+	  if (_reviewsByUserId === {}) {
+	    return undefined;
+	  } else if (_reviewsByUserId[userId] === undefined) {
+	    return [];
+	  } else {
+	    return _reviewsByUserId[userId];
+	  }
 	};
 	
 	ReviewStore.all = function () {
@@ -50549,6 +50587,35 @@
 	};
 	
 	module.exports = ReviewFrontendActions;
+
+/***/ },
+/* 513 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var UserStore = __webpack_require__(488);
+	var SubscriptionStore = __webpack_require__(501);
+	
+	var ReviewShowComponent = React.createClass({
+	  displayName: 'ReviewShowComponent',
+	
+	  getInitialState: function () {
+	    return {
+	      author: UserStore.findById(this.props.review.author_id),
+	      subscription: SubscriptionStore.findById(this.props.review.subscription_id),
+	      frequency: this.props.review.frequency,
+	      rating: this.props.review.rating,
+	      comment: this.props.review.comment
+	    };
+	  },
+	
+	  render: function () {
+	    return React.createElement('img', { src: this.state.author.image, height: '100', width: '100' });
+	  }
+	});
+	
+	module.exports = ReviewShowComponent;
 
 /***/ }
 /******/ ]);

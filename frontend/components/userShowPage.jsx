@@ -1,9 +1,13 @@
 var React = require('react');
-var SessionStore = require('../stores/session.js');
-var UserStore = require('../stores/user.js');
 var BrowserHistory = require('react-router').browserHistory;
 
+var SessionStore = require('../stores/session.js');
+var UserStore = require('../stores/user.js');
+var ReviewStore = require('../stores/review.js');
+
 var UserBackendActions = require('../actions/userBackendActions.js');
+
+var ReviewShowComponent = require('./reviewShowComponent.jsx');
 
 function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
 
@@ -11,7 +15,8 @@ var UserShowPage = React.createClass({
   getInitialState: function() {
     return {
       currentUser: SessionStore.currentUser(),
-      currentShowUser: UserStore.findById(this.props.params.userId)
+      currentShowUser: UserStore.findById(this.props.params.userId),
+      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
     };
   },
   // componentWillMount: function() {
@@ -20,6 +25,7 @@ var UserShowPage = React.createClass({
   componentDidMount: function() {
     this.userListenerToken = UserStore.addListener(this.userChange);
     this.sessionListenerToken = SessionStore.addListener(this.sessionChange);
+    this.reviewListenerToken = ReviewStore.addListener(this.reviewChange);
   },
   componentWillUnmount: function() {
     this.userListenerToken.remove();
@@ -48,8 +54,13 @@ var UserShowPage = React.createClass({
       currentUser: SessionStore.currentUser()
     });
   },
+  reviewChange: function() {
+    this.setState({
+      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
+    });
+  },
   render: function() {
-    if (this.state.currentShowUser === undefined) {
+    if (this.state.currentShowUser === undefined || this.state.currentShowUserReviews === undefined) {
       // Insert Loading Symbol Here -- waiting for the userstore to update
       return <div id="WAITING-FOR-LOAD"></div>;
     } else {
@@ -64,6 +75,14 @@ var UserShowPage = React.createClass({
           <div>Email: {this.state.currentShowUser.email}</div>
           <div>Date of Birth: {this.state.currentShowUser.date_of_birth}</div>
           <div>RIGHT 2/3</div>
+          <br/>
+          <br/>
+          <br/>
+          <div>
+            { this.state.currentShowUserReviews.map(function(userReview) {
+              return <ReviewShowComponent review={userReview} />;
+            })}
+          </div>
         </div>
       </div>;
     }
