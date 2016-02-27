@@ -140,7 +140,8 @@ var UserShowPage = React.createClass({
           <br/>
           <br/>
           <div>
-            { this.state.currentShowUserReviews.map(function(userReview) {
+
+            { this.state.currentShowUserReviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(userReview) {
               return <div>
                 <ReviewShowComponent review={userReview} key={userReview.id}/>
                 { parseInt(self.props.params.userId) === parseInt(self.props.currentUser.id) ?

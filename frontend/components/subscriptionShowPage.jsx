@@ -36,7 +36,7 @@ var SubscriptionShowPage = React.createClass({
       currentSubscription: SubscriptionStore.findById(parseInt(newProps.params.subscriptionId))
     });
   },
-  
+
   onSubscriptionChange: function() {
     this.setState({
       currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId))
@@ -58,7 +58,7 @@ var SubscriptionShowPage = React.createClass({
         </h1>
         <h6>{this.state.currentSubscription.description}</h6>
         <ul>Reviews for {this.state.currentSubscription.name}
-          {this.state.reviews.map(function(review) {
+          {this.state.reviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
             return <li><ReviewShowComponent review={review} /></li>;
           })}
         </ul>

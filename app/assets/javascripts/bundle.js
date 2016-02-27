@@ -50070,7 +50070,9 @@
 	          React.createElement(
 	            'div',
 	            null,
-	            this.state.currentShowUserReviews.map(function (userReview) {
+	            this.state.currentShowUserReviews.sort(function (a, b) {
+	              return new Date(b.updated_at) - new Date(a.updated_at);
+	            }).map(function (userReview) {
 	              return React.createElement(
 	                'div',
 	                null,
@@ -51138,7 +51140,9 @@
 	          null,
 	          'Reviews for ',
 	          this.state.currentSubscription.name,
-	          this.state.reviews.map(function (review) {
+	          this.state.reviews.sort(function (a, b) {
+	            return new Date(b.updated_at) - new Date(a.updated_at);
+	          }).map(function (review) {
 	            return React.createElement(
 	              'li',
 	              null,
@@ -52508,18 +52512,18 @@
 	    } else {
 	      elementUl = React.createElement(
 	        'ul',
-	        null,
+	        { className: 'header-search-ul list-group' },
 	        elements.map(function (element) {
 	          if (element.email === undefined) {
 	            return React.createElement(
 	              'li',
-	              { className: 'header-search-li', onClick: self.updateForm.bind(self, element) },
+	              { className: 'header-search-li list-group-item', onClick: self.updateForm.bind(self, element) },
 	              element.name
 	            );
 	          } else {
 	            return React.createElement(
 	              'li',
-	              { className: 'header-search-li', onClick: self.updateForm.bind(self, element) },
+	              { className: 'header-search-li list-group-item', onClick: self.updateForm.bind(self, element) },
 	              element.first_name + " " + element.last_name
 	            );
 	          }
@@ -52532,8 +52536,9 @@
 	      { role: 'search', className: 'navbar-form navbar-left' },
 	      React.createElement(
 	        'div',
-	        { className: 'form-group' },
-	        React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange, placeholder: 'Search', className: 'form-control' }),
+	        { className: 'form-group header-search-box' },
+	        React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange,
+	          placeholder: 'Search', className: 'form-control' }),
 	        elementUl
 	      )
 	    );
@@ -52628,18 +52633,18 @@
 	    } else {
 	      elementUl = React.createElement(
 	        'ul',
-	        null,
+	        { className: 'header-search-ul list-group' },
 	        elements.map(function (element) {
 	          if (element.email === undefined) {
 	            return React.createElement(
 	              'li',
-	              { className: 'header-search-li', onClick: self.updateForm.bind(self, element) },
+	              { className: 'header-search-li list-group-item', onClick: self.updateForm.bind(self, element) },
 	              element.name
 	            );
 	          } else {
 	            return React.createElement(
 	              'li',
-	              { className: 'header-search-li', onClick: self.updateForm.bind(self, element) },
+	              { className: 'header-search-li list-group-item', onClick: self.updateForm.bind(self, element) },
 	              element.first_name + " " + element.last_name
 	            );
 	          }
@@ -52652,8 +52657,9 @@
 	      { role: 'search', className: 'navbar-form navbar-left' },
 	      React.createElement(
 	        'div',
-	        { className: 'form-group' },
-	        React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange, placeholder: 'Search', className: 'form-control' }),
+	        { className: 'form-group header-search-box' },
+	        React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange,
+	          placeholder: 'Search', className: 'form-control' }),
 	        elementUl
 	      )
 	    );

@@ -47,6 +47,14 @@ a {
   width: 100%;
 }
 
-.header-search-li {
+.header-search-ul {
+  position: absolute;
+}
 
+.header-search-box {
+  position: relative;
+}
+
+ul {
+  padding: 0;
 }

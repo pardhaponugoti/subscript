@@ -115,6 +115,7 @@ for subscriptions or their friends
 
 ### Bonus Features (TBD)
 - [ ] Add charts to show patterns for the ratings
+- [ ] Add infinite scroll
 - [ ] Add multiple session capability
 - [ ] Add Facebook integration to validate friends
 - [ ] Add capability for other users to post and it shows up on your feed

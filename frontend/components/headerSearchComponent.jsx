@@ -76,12 +76,12 @@ var HeaderSearchComponent = React.createClass({
       if(this.state.selected || this.state.searchString.length === 0) {
         elementUl = null;
       } else {
-        elementUl = <ul>
+        elementUl = <ul className="header-search-ul list-group">
           { elements.map(function(element){
             if (element.email === undefined) {
-              return <li className="header-search-li" onClick={self.updateForm.bind(self, element)}>{element.name}</li>;
+              return <li className="header-search-li list-group-item" onClick={self.updateForm.bind(self, element)}>{element.name}</li>;
               } else {
-                return <li className="header-search-li" onClick={self.updateForm.bind(self, element)}>{element.first_name + " " + element.last_name}</li>;
+                return <li className="header-search-li list-group-item" onClick={self.updateForm.bind(self, element)}>{element.first_name + " " + element.last_name}</li>;
               }
             })
           }
@@ -89,8 +89,9 @@ var HeaderSearchComponent = React.createClass({
       }
 
       return <form role="search" className="navbar-form navbar-left">
-        <div className = "form-group">
-        <input type="text" value={this.state.searchString} onChange={this.handleChange} placeholder="Search" className="form-control"/>
+        <div className = "form-group header-search-box">
+        <input type="text" value={this.state.searchString} onChange={this.handleChange}
+          placeholder="Search" className="form-control"/>
         { elementUl }
         </div>
       </form>;
