@@ -24991,7 +24991,15 @@
 	          'WebSiteName'
 	        )
 	      ),
-	      HeaderSearchComponent,
+	      React.createElement(
+	        'form',
+	        { role: 'search', className: 'navbar-form navbar-left' },
+	        React.createElement(
+	          'div',
+	          { className: 'form-group' },
+	          React.createElement('input', { type: 'text', placeholder: 'Search', className: 'form-control' })
+	        )
+	      ),
 	      React.createElement(
 	        'div',
 	        { id: 'navbarCollapse', className: 'collapse navbar-collapse' },
@@ -25010,13 +25018,8 @@
 	  }
 	});
 	
+	// <HeaderSearchComponent />
 	module.exports = Header;
-	
-	React.createElement(
-	  'div',
-	  { className: 'form-group' },
-	  React.createElement('input', { type: 'text', placeholder: 'Search', className: 'form-control' })
-	);
 
 /***/ },
 /* 218 */
@@ -50138,6 +50141,14 @@
 	var ReviewStore = __webpack_require__(494);
 	var SubscriptionStore = __webpack_require__(492);
 	
+	var FREQUENCY = {
+	  1: "Never",
+	  2: "Yearly",
+	  3: "Monthly",
+	  4: "Weekly",
+	  5: "Daily"
+	};
+	
 	// TAKES IN A REVIEW IN PROPS
 	
 	var ReviewShowComponent = React.createClass({
@@ -52459,10 +52470,6 @@
 	    } else {
 	      BrowserHistory.push("/users/" + element.id);
 	    }
-	    this.setState({
-	      searchString: element.name,
-	      selected: true
-	    });
 	  },
 	
 	  render: function () {
@@ -52578,10 +52585,6 @@
 	    } else {
 	      BrowserHistory.push("/users/" + element.id);
 	    }
-	    this.setState({
-	      searchString: element.name,
-	      selected: true
-	    });
 	  },
 	
 	  render: function () {

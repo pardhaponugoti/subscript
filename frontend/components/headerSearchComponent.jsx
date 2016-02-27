@@ -49,10 +49,6 @@ var HeaderSearchComponent = React.createClass({
       } else {
         BrowserHistory.push("/users/" + element.id);
       }
-      this.setState({
-        searchString: element.name,
-        selected: true
-      });
     },
 
     render: function() {
@@ -90,7 +86,7 @@ var HeaderSearchComponent = React.createClass({
       return <form role="search" className="navbar-form navbar-left">
         <div className = "form-group">
         <input type="text" value={this.state.searchString} onChange={this.handleChange} placeholder="Search" className="form-control"/>
-        {elementUl}
+        { elementUl }
         </div>
       </form>;
     }

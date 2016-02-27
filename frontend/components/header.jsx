@@ -118,7 +118,11 @@ var Header = React.createClass({
       <div className="navbar-header btn-group">
         <a onClick={this.renderRoot} className="btn btn-default btn-sm">WebSiteName</a>
       </div>
-      { HeaderSearchComponent }
+      <form role="search" className="navbar-form navbar-left">
+        <div className="form-group">
+          <input type="text" placeholder="Search" className="form-control"/>
+        </div>
+      </form>
       <div id="navbarCollapse" className="collapse navbar-collapse">
         {this.userDropdown()}
         <div className="navbar-right btn-group">
@@ -129,8 +133,5 @@ var Header = React.createClass({
   }
 });
 
+// <HeaderSearchComponent />
 module.exports = Header;
-
-<div className="form-group">
-  <input type="text" placeholder="Search" className="form-control"/>
-</div>

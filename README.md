@@ -69,7 +69,7 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 **Objective:** Subscriptions will have their own page
 
 - [x] create `Subscription` model
-- [ ] add flux model for Subscriptions
+- [x] add flux model for Subscriptions
 - [ ] Subscription page should be styled and ready for reviews
 
 ### Phase 5: Reviews (0.5 days)
@@ -77,9 +77,9 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 **Objective:** Users can create reviews and they appear on their profile
 
 - [x] create `Review` model
-- [ ] CRUD for Reviews
-- [ ] add flux model for Reviews
-- [ ] reviews will now show up on user profile and on subscription profile page
+- [x] CRUD for Reviews
+- [x] add flux model for Reviews
+- [x] reviews will now show up on user profile and on subscription profile page
 
 ### Phase 6: Friend Model (1 day)
 
@@ -96,7 +96,7 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 **objective:** Add a search functionality to the nav bar where users can search
 for subscriptions or their friends
 
-- [ ] auto-populates suggestions based on what the user has typed in so far
+- [x] auto-populates suggestions based on what the user has typed in so far
 - [ ] when user presses enter it redirects to a search results page
 
 ### Phase 8: Styling Cleanup and Seeding (2 days)

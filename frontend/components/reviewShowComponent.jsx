@@ -5,6 +5,14 @@ var UserStore = require('../stores/user.js');
 var ReviewStore = require('../stores/review.js');
 var SubscriptionStore = require('../stores/subscription.js');
 
+var FREQUENCY = {
+  1: "Never",
+  2: "Yearly",
+  3: "Monthly",
+  4: "Weekly",
+  5: "Daily"
+};
+
 // TAKES IN A REVIEW IN PROPS
 
 var ReviewShowComponent = React.createClass({
