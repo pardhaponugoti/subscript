@@ -24991,15 +24991,7 @@
 	          'WebSiteName'
 	        )
 	      ),
-	      React.createElement(
-	        'form',
-	        { role: 'search', className: 'navbar-form navbar-left' },
-	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement('input', { type: 'text', placeholder: 'Search', className: 'form-control' })
-	        )
-	      ),
+	      React.createElement(HeaderSearchComponent, null),
 	      React.createElement(
 	        'div',
 	        { id: 'navbarCollapse', className: 'collapse navbar-collapse' },
@@ -25018,7 +25010,6 @@
 	  }
 	});
 	
-	// <HeaderSearchComponent />
 	module.exports = Header;
 
 /***/ },
@@ -49910,7 +49901,7 @@
 	    this.reviewListenerToken.remove();
 	  },
 	  componentWillReceiveProps: function (newProps) {
-	    if (!isNumeric(this.props.params.userId)) {
+	    if (!isNumeric(newProps.params.userId)) {
 	      BrowserHistory.push("/");
 	    } else {
 	      this.onUserChange(newProps);
@@ -51062,11 +51053,16 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
+	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
 	var ReviewStore = __webpack_require__(494);
 	var SubscriptionStore = __webpack_require__(492);
 	
 	var ReviewShowComponent = __webpack_require__(506);
+	
+	function isNumeric(n) {
+	  return !isNaN(parseFloat(n)) && isFinite(n);
+	}
 	
 	var SubscriptionShowPage = React.createClass({
 	  displayName: 'SubscriptionShowPage',
@@ -51084,6 +51080,19 @@
 	  componentDidMount: function () {
 	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.onSubscriptionChange);
 	    this.reviewListenerToken = ReviewStore.addListener(this.onReviewChange);
+	  },
+	  componentWillReceiveProps: function (newProps) {
+	    if (!isNumeric(newProps.params.subscriptionId)) {
+	      BrowserHistory.push("/");
+	    } else {
+	      this.subscriptionChange(newProps);
+	    }
+	  },
+	
+	  subscriptionChange: function (newProps) {
+	    this.setState({
+	      currentSubscription: SubscriptionStore.findById(parseInt(newProps.params.subscriptionId))
+	    });
 	  },
 	
 	  onSubscriptionChange: function () {
@@ -52470,6 +52479,11 @@
 	    } else {
 	      BrowserHistory.push("/users/" + element.id);
 	    }
+	
+	    this.setState({
+	      searchString: "",
+	      selected: false
+	    });
 	  },
 	
 	  render: function () {
@@ -52499,13 +52513,13 @@
 	          if (element.email === undefined) {
 	            return React.createElement(
 	              'li',
-	              { onClick: self.updateForm.bind(self, element) },
+	              { className: 'header-search-li', onClick: self.updateForm.bind(self, element) },
 	              element.name
 	            );
 	          } else {
 	            return React.createElement(
 	              'li',
-	              { onClick: self.updateForm.bind(self, element) },
+	              { className: 'header-search-li', onClick: self.updateForm.bind(self, element) },
 	              element.first_name + " " + element.last_name
 	            );
 	          }
@@ -52585,6 +52599,11 @@
 	    } else {
 	      BrowserHistory.push("/users/" + element.id);
 	    }
+	
+	    this.setState({
+	      searchString: "",
+	      selected: false
+	    });
 	  },
 	
 	  render: function () {
@@ -52614,13 +52633,13 @@
 	          if (element.email === undefined) {
 	            return React.createElement(
 	              'li',
-	              { onClick: self.updateForm.bind(self, element) },
+	              { className: 'header-search-li', onClick: self.updateForm.bind(self, element) },
 	              element.name
 	            );
 	          } else {
 	            return React.createElement(
 	              'li',
-	              { onClick: self.updateForm.bind(self, element) },
+	              { className: 'header-search-li', onClick: self.updateForm.bind(self, element) },
 	              element.first_name + " " + element.last_name
 	            );
 	          }

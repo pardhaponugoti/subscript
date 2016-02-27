@@ -1,9 +1,12 @@
 var React = require('react');
+var BrowserHistory = require('react-router').browserHistory;
 
 var ReviewStore = require('../stores/review.js');
 var SubscriptionStore = require('../stores/subscription.js');
 
 var ReviewShowComponent = require('./reviewShowComponent.jsx');
+
+function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
 
 var SubscriptionShowPage = React.createClass({
   getInitialState: function() {
@@ -20,7 +23,20 @@ var SubscriptionShowPage = React.createClass({
     this.subscriptionListenerToken = SubscriptionStore.addListener(this.onSubscriptionChange);
     this.reviewListenerToken = ReviewStore.addListener(this.onReviewChange);
   },
+  componentWillReceiveProps: function(newProps) {
+    if(!isNumeric(newProps.params.subscriptionId)) {
+      BrowserHistory.push("/");
+    } else {
+      this.subscriptionChange(newProps);
+    }
+  },
 
+  subscriptionChange: function(newProps) {
+    this.setState({
+      currentSubscription: SubscriptionStore.findById(parseInt(newProps.params.subscriptionId))
+    });
+  },
+  
   onSubscriptionChange: function() {
     this.setState({
       currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId))

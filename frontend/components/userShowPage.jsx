@@ -40,7 +40,7 @@ var UserShowPage = React.createClass({
     this.reviewListenerToken.remove();
   },
   componentWillReceiveProps: function(newProps) {
-    if(!isNumeric(this.props.params.userId)) {
+    if(!isNumeric(newProps.params.userId)) {
       BrowserHistory.push("/");
     } else {
       this.onUserChange(newProps);

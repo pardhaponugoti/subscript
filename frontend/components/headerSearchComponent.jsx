@@ -49,6 +49,11 @@ var HeaderSearchComponent = React.createClass({
       } else {
         BrowserHistory.push("/users/" + element.id);
       }
+
+      this.setState({
+        searchString: "",
+        selected: false
+      });
     },
 
     render: function() {
@@ -74,9 +79,9 @@ var HeaderSearchComponent = React.createClass({
         elementUl = <ul>
           { elements.map(function(element){
             if (element.email === undefined) {
-              return <li onClick={self.updateForm.bind(self, element)}>{element.name}</li>;
+              return <li className="header-search-li" onClick={self.updateForm.bind(self, element)}>{element.name}</li>;
               } else {
-                return <li onClick={self.updateForm.bind(self, element)}>{element.first_name + " " + element.last_name}</li>;
+                return <li className="header-search-li" onClick={self.updateForm.bind(self, element)}>{element.first_name + " " + element.last_name}</li>;
               }
             })
           }
