@@ -52,7 +52,7 @@ var App = React.createClass({
   // },
   linkToTest: function(e) {
     e.preventDefault();
-    BrowserHistory.push("/subscriptions/1");
+    BrowserHistory.push("/test");
   },
 
   render: function() {

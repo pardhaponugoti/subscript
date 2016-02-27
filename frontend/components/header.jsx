@@ -6,10 +6,10 @@ var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
 var Button = require('react-bootstrap').Button;
 var Link = require('react-router').Link;
 
+var HeaderSearchComponent = require('../components/headerSearchComponent.jsx');
 var SessionBackendActions = require('../actions/sessionBackendActions.js');
-var HeaderSearchComponent = require('./HeaderSearchComponent');
-var NewSessionForm = require('./newSessionForm.jsx');
-var NewUserForm = require('./newUserForm.jsx');
+var NewSessionForm = require('../components/newSessionForm.jsx');
+var NewUserForm = require('../components/newUserForm.jsx');
 
 var Header = React.createClass({
   getInitialState: function() {
@@ -118,12 +118,8 @@ var Header = React.createClass({
       <div className="navbar-header btn-group">
         <a onClick={this.renderRoot} className="btn btn-default btn-sm">WebSiteName</a>
       </div>
+      { HeaderSearchComponent }
       <div id="navbarCollapse" className="collapse navbar-collapse">
-        <form role="search" className="navbar-form navbar-left">
-          <div className="form-group">
-            {HeaderSearchComponent}
-          </div>
-        </form>
         {this.userDropdown()}
         <div className="navbar-right btn-group">
           <Link to="/subscriptions/" className="btn btn-default btn-sm">Companies</Link>
@@ -134,3 +130,7 @@ var Header = React.createClass({
 });
 
 module.exports = Header;
+
+<div className="form-group">
+  <input type="text" placeholder="Search" className="form-control"/>
+</div>

@@ -15,6 +15,7 @@ var ReviewFeed = require('./components/reviewFeed.jsx');
 var SubscriptionIndex = require('./components/subscriptionIndex.jsx');
 
 //test components
+var HeaderSearchComponent = require('./components/HeaderSearchComponent');
 
 var routes = (
   <Route path="/" component={App}>
@@ -24,6 +25,7 @@ var routes = (
     <Route path="users/:userId/edit" component={UserEditPage}></Route>
     <Route path="subscriptions" component={SubscriptionIndex}></Route>
     <Route path="subscriptions/:subscriptionId" component={SubscriptionShowPage}></Route>
+    <Route path="test" component={HeaderSearchComponent}></Route>
     <Route path="*" component={ReviewFeed} ></Route>
   </Route>
 );

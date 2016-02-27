@@ -61,6 +61,7 @@
 	var SubscriptionIndex = __webpack_require__(530);
 	
 	//test components
+	var HeaderSearchComponent = __webpack_require__(531);
 	
 	var routes = React.createElement(
 	  Route,
@@ -71,6 +72,7 @@
 	  React.createElement(Route, { path: 'users/:userId/edit', component: UserEditPage }),
 	  React.createElement(Route, { path: 'subscriptions', component: SubscriptionIndex }),
 	  React.createElement(Route, { path: 'subscriptions/:subscriptionId', component: SubscriptionShowPage }),
+	  React.createElement(Route, { path: 'test', component: HeaderSearchComponent }),
 	  React.createElement(Route, { path: '*', component: ReviewFeed })
 	);
 	
@@ -24767,7 +24769,7 @@
 	  // },
 	  linkToTest: function (e) {
 	    e.preventDefault();
-	    BrowserHistory.push("/subscriptions/1");
+	    BrowserHistory.push("/test");
 	  },
 	
 	  render: function () {
@@ -24811,8 +24813,8 @@
 	var Button = __webpack_require__(218).Button;
 	var Link = __webpack_require__(159).Link;
 	
+	var HeaderSearchComponent = __webpack_require__(532);
 	var SessionBackendActions = __webpack_require__(462);
-	var HeaderSearchComponent = __webpack_require__(531);
 	var NewSessionForm = __webpack_require__(470);
 	var NewUserForm = __webpack_require__(471);
 	
@@ -24989,18 +24991,10 @@
 	          'WebSiteName'
 	        )
 	      ),
+	      HeaderSearchComponent,
 	      React.createElement(
 	        'div',
 	        { id: 'navbarCollapse', className: 'collapse navbar-collapse' },
-	        React.createElement(
-	          'form',
-	          { role: 'search', className: 'navbar-form navbar-left' },
-	          React.createElement(
-	            'div',
-	            { className: 'form-group' },
-	            HeaderSearchComponent
-	          )
-	        ),
 	        this.userDropdown(),
 	        React.createElement(
 	          'div',
@@ -25017,6 +25011,12 @@
 	});
 	
 	module.exports = Header;
+	
+	React.createElement(
+	  'div',
+	  { className: 'form-group' },
+	  React.createElement('input', { type: 'text', placeholder: 'Search', className: 'form-control' })
+	);
 
 /***/ },
 /* 218 */
@@ -52411,7 +52411,7 @@
 	
 	var LinkedStateMixin = __webpack_require__(508);
 	
-	var UserStore = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../stores/user.js/)\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var UserStore = __webpack_require__(490);
 	var SubscriptionStore = __webpack_require__(492);
 	
 	var HeaderSearchComponent = React.createClass({
@@ -52459,6 +52459,10 @@
 	    } else {
 	      BrowserHistory.push("/users/" + element.id);
 	    }
+	    this.setState({
+	      searchString: element.name,
+	      selected: true
+	    });
 	  },
 	
 	  render: function () {
@@ -52467,7 +52471,12 @@
 	
 	    if (this.state.searchString.length > 0) {
 	      elements = elements.filter(function (element) {
-	        return element.name.toLowerCase().match(self.state.searchString.toLowerCase());
+	        if (element.email === undefined) {
+	          return element.name.toLowerCase().match(self.state.searchString.toLowerCase());
+	        } else {
+	          var name = element.first_name + " " + element.last_name;
+	          return name.toLowerCase().match(self.state.searchString.toLowerCase());
+	        }
 	      });
 	    }
 	
@@ -52480,20 +52489,151 @@
 	        'ul',
 	        null,
 	        elements.map(function (element) {
-	          return React.createElement(
-	            'li',
-	            { onClick: self.updateForm.bind(self, element) },
-	            element.name
-	          );
+	          if (element.email === undefined) {
+	            return React.createElement(
+	              'li',
+	              { onClick: self.updateForm.bind(self, element) },
+	              element.name
+	            );
+	          } else {
+	            return React.createElement(
+	              'li',
+	              { onClick: self.updateForm.bind(self, element) },
+	              element.first_name + " " + element.last_name
+	            );
+	          }
 	        })
 	      );
 	    }
 	
 	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange, placeholder: 'Search' }),
-	      elementUl
+	      'form',
+	      { role: 'search', className: 'navbar-form navbar-left' },
+	      React.createElement(
+	        'div',
+	        { className: 'form-group' },
+	        React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange, placeholder: 'Search', className: 'form-control' }),
+	        elementUl
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = HeaderSearchComponent;
+
+/***/ },
+/* 532 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var BrowserHistory = __webpack_require__(159).browserHistory;
+	
+	var LinkedStateMixin = __webpack_require__(508);
+	
+	var UserStore = __webpack_require__(490);
+	var SubscriptionStore = __webpack_require__(492);
+	
+	var HeaderSearchComponent = React.createClass({
+	  displayName: 'HeaderSearchComponent',
+	
+	  getInitialState: function () {
+	    return {
+	      selected: false,
+	      searchString: '',
+	      subscriptions: SubscriptionStore.all(),
+	      users: UserStore.all()
+	    };
+	  },
+	  componentDidMount: function () {
+	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.subscriptionChange);
+	    this.userListenerToken = UserStore.addListener(this.userChange);
+	  },
+	  componentWillUnmount: function () {
+	    this.subscriptionListenerToken.remove();
+	    this.userListenerToken.remove();
+	  },
+	
+	  subscriptionChange: function () {
+	    this.setState({
+	      subscriptions: SubscriptionStore.all()
+	    });
+	  },
+	  userChange: function () {
+	    this.setState({
+	      users: UserStore.all()
+	    });
+	  },
+	
+	  handleChange: function (e) {
+	    e.preventDefault();
+	    this.setState({
+	      searchString: e.target.value,
+	      selected: false
+	    });
+	  },
+	
+	  updateForm: function (element) {
+	    if (element.email === undefined) {
+	      BrowserHistory.push("/subscriptions/" + element.id);
+	    } else {
+	      BrowserHistory.push("/users/" + element.id);
+	    }
+	    this.setState({
+	      searchString: element.name,
+	      selected: true
+	    });
+	  },
+	
+	  render: function () {
+	    var elements = this.state.subscriptions.concat(this.state.users);
+	    var self = this;
+	
+	    if (this.state.searchString.length > 0) {
+	      elements = elements.filter(function (element) {
+	        if (element.email === undefined) {
+	          return element.name.toLowerCase().match(self.state.searchString.toLowerCase());
+	        } else {
+	          var name = element.first_name + " " + element.last_name;
+	          return name.toLowerCase().match(self.state.searchString.toLowerCase());
+	        }
+	      });
+	    }
+	
+	    var elementUl;
+	
+	    if (this.state.selected || this.state.searchString.length === 0) {
+	      elementUl = null;
+	    } else {
+	      elementUl = React.createElement(
+	        'ul',
+	        null,
+	        elements.map(function (element) {
+	          if (element.email === undefined) {
+	            return React.createElement(
+	              'li',
+	              { onClick: self.updateForm.bind(self, element) },
+	              element.name
+	            );
+	          } else {
+	            return React.createElement(
+	              'li',
+	              { onClick: self.updateForm.bind(self, element) },
+	              element.first_name + " " + element.last_name
+	            );
+	          }
+	        })
+	      );
+	    }
+	
+	    return React.createElement(
+	      'form',
+	      { role: 'search', className: 'navbar-form navbar-left' },
+	      React.createElement(
+	        'div',
+	        { className: 'form-group' },
+	        React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange, placeholder: 'Search', className: 'form-control' }),
+	        elementUl
+	      )
 	    );
 	  }
 	});
