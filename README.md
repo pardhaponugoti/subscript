@@ -117,3 +117,4 @@ for subscriptions or their friends
 - [ ] Add charts to show patterns for the ratings
 - [ ] Add multiple session capability
 - [ ] Add Facebook integration to validate friends
+- [ ] Add capability for other users to post and it shows up on your feed

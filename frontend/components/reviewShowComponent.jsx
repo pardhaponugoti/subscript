@@ -12,6 +12,7 @@ var ReviewShowComponent = React.createClass({
     return {
       author: UserStore.findById(this.props.review.author_id),
       subscription: SubscriptionStore.findById(this.props.review.subscription_id),
+      currentTime: new Date()
     };
   },
 
@@ -23,7 +24,7 @@ var ReviewShowComponent = React.createClass({
   },
 
   render: function() {
-    return <div>
+    return <div className="review-show">
         <img src={this.state.author.image} onClick={this.openAuthorPage}
           className="profile-link-img" height="100" width="100"></img>
         <span>{"★".repeat(this.props.review.rating)}</span>

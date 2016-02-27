@@ -21,10 +21,22 @@ a {
   cursor: pointer;
 }
 
+.review-show {
+  height: 200px;
+}
+
 .review-feed {
   width: 640px;
   margin: 0 auto;
   position: relative;
+}
+
+.review-feed h2{
+  text-align: center;
+}
+
+.subscription-index h2{
+  text-align: center;
 }
 
 #App {

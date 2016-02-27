@@ -7,7 +7,7 @@ var SessionConstants = require('../constants/sessionConstants.js');
 var UserConstants = require('../constants/userConstants.js');
 
 //Get initial from localStorage and set to local variable
-var _currentUser = _currentUser || JSON.parse(window.localStorage.getItem('pardhauser'));
+var _currentUser = _currentUser || JSON.parse(window.localStorage.getItem('pardhauser')) || {};
 
 SessionStore.__onDispatch = function(payload) {
   switch (payload.actionType) {

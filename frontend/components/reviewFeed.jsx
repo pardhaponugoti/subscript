@@ -1,4 +1,5 @@
 var React = require('react');
+var Infinite = require('react-infinite');
 
 var ReviewStore = require('../stores/review.js');
 
@@ -8,7 +9,9 @@ var ReviewFeed = React.createClass({
   getInitialState: function() {
     return {
       unseenReviews: 0,
-      reviews: ReviewStore.sortedByAge()
+      newReviews: [],
+      reviews: ReviewStore.sortedByAge(),
+      isInfiniteLoading: true
     };
   },
   componentDidMount: function() {
@@ -24,6 +27,13 @@ var ReviewFeed = React.createClass({
       reviews: ReviewStore.sortedByAge()
     });
   },
+  infiniteScrollComponent: function() {
+    return <div>
+      {this.state.reviews.map(function(review) {
+        return <li><ReviewShowComponent review={review} key={review.id}/></li>;
+      })}
+    </div>;
+  },
   render: function() {
     console.log("reviewFeedRender");
     if (this.state.reviews === undefined) {
@@ -31,9 +41,9 @@ var ReviewFeed = React.createClass({
     } else {
       return <div className="review-feed">
         <h2>Review Feed</h2>
-        {this.state.reviews.map(function(review) {
-          return <ReviewShowComponent review={review}/>;
-        })}
+          <ul>
+            {this.infiniteScrollComponent()}
+          </ul>
       </div>;
     }
   }

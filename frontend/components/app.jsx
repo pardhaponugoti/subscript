@@ -18,6 +18,7 @@ window.SessionStore = SessionStore;
 window.UserStore = UserStore;
 window.SubscriptionStore = SubscriptionStore;
 window.ReviewStore = ReviewStore;
+window.ReviewBackendActions = ReviewBackendActions;
 
 
 var App = React.createClass({

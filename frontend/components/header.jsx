@@ -4,10 +4,12 @@ var Alert = require('react-bootstrap').Alert;
 var Modal = require('react-bootstrap').Modal;
 var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
 var Button = require('react-bootstrap').Button;
+var Link = require('react-router').Link;
 
 var SessionBackendActions = require('../actions/sessionBackendActions.js');
-var NewSessionForm = require('../components/newSessionForm.jsx');
-var NewUserForm = require('../components/newUserForm.jsx');
+var HeaderSearchComponent = require('./HeaderSearchComponent');
+var NewSessionForm = require('./newSessionForm.jsx');
+var NewUserForm = require('./newUserForm.jsx');
 
 var Header = React.createClass({
   getInitialState: function() {
@@ -119,10 +121,13 @@ var Header = React.createClass({
       <div id="navbarCollapse" className="collapse navbar-collapse">
         <form role="search" className="navbar-form navbar-left">
           <div className="form-group">
-            <input type="text" placeholder="Search" className="form-control"/>
+            {HeaderSearchComponent}
           </div>
         </form>
         {this.userDropdown()}
+        <div className="navbar-right btn-group">
+          <Link to="/subscriptions/" className="btn btn-default btn-sm">Companies</Link>
+        </div>
       </div>
     </nav>;
   }
