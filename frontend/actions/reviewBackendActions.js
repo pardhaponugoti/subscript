@@ -11,6 +11,11 @@ var ReviewBackendActions = {
     ReviewUtil.editReview(reviewParams, callback);
   },
 
+  // delete Review
+  deleteReview: function(reviewId, callback) {
+    ReviewUtil.deleteReview(reviewId, callback);
+  },
+
   // all reviews
   fetchAllReviews: function(callback) {
     ReviewUtil.fetchAllReviews(callback);

@@ -30,7 +30,7 @@ var ReviewFeed = React.createClass({
   infiniteScrollComponent: function() {
     return <div>
       {this.state.reviews.map(function(review) {
-        return <li><ReviewShowComponent review={review} key={review.id}/></li>;
+        return <ReviewShowComponent review={review} key={review.id}/>;
       })}
     </div>;
   },
@@ -42,7 +42,9 @@ var ReviewFeed = React.createClass({
       return <div className="review-feed">
         <h2>Review Feed</h2>
           <ul>
-            {this.infiniteScrollComponent()}
+            {this.state.reviews.map(function(review) {
+              return <ReviewShowComponent review={review} key={review.id}/>;
+            })}
           </ul>
       </div>;
     }

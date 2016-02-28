@@ -21,6 +21,14 @@ a {
   cursor: pointer;
 }
 
+.subscription-logo {
+  border: 1px grey solid;
+}
+
+/*.subscription-review-ul {
+  text-align: center;
+}*/
+
 .review-show {
   height: 200px;
 }
@@ -49,6 +57,16 @@ a {
 
 .header-search-ul {
   position: absolute;
+  width: 187px;
+}
+
+.header-search-li {
+  height: 50px;
+}
+
+.header-search-img {
+  padding: 5px;
+  height: 35px;
 }
 
 .header-search-box {

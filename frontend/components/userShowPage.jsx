@@ -11,6 +11,7 @@ var ReviewStore = require('../stores/review.js');
 var SubscriptionStore = require('../stores/subscription.js');
 
 var UserBackendActions = require('../actions/userBackendActions.js');
+var ReviewBackendActions = require('../actions/reviewBackendActions.js');
 
 var ReviewShowComponent = require('./reviewShowComponent.jsx');
 var NewReviewForm = require('./newReviewForm.jsx');
@@ -28,12 +29,10 @@ var UserShowPage = React.createClass({
       editReviewModalIsOpen: false
     };
   },
-  // componentWillMount: function() {
-  //   UserBackendActions.fetchAllUsers();
-  // },
   componentDidMount: function() {
     this.userListenerToken = UserStore.addListener(this.userChange);
     this.reviewListenerToken = ReviewStore.addListener(this.reviewChange);
+    this.subscriptionListenerToken = SubscriptionStore.addListener(this.subscriptionChange);
   },
   componentWillUnmount: function() {
     this.userListenerToken.remove();
@@ -68,6 +67,11 @@ var UserShowPage = React.createClass({
       currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
     });
   },
+  subscriptionChange: function() {
+    this.setState({
+      newReviewModalIsOpen: false
+    });
+  },
 
   toggleNewReviewModal: function() {
     this.setState({
@@ -79,16 +83,19 @@ var UserShowPage = React.createClass({
       newReviewModalIsOpen: false
     });
   },
-  toggleEditReviewModal: function() {
-    this.setState({
-      editReviewModalIsOpen: !this.state.editReviewModalIsOpen
-    });
-  },
-  closeEditReviewModal: function() {
-    this.setState({
-      editReviewModalIsOpen: false
-    });
-  },
+  // toggleEditReviewModal: function() {
+  //   this.setState({
+  //     editReviewModalIsOpen: !this.state.editReviewModalIsOpen
+  //   });
+  // },
+  // closeEditReviewModal: function() {
+  //   this.setState({
+  //     editReviewModalIsOpen: false
+  //   });
+  // },
+  // deleteReview: function(reviewId) {
+  //   ReviewBackendActions.deleteReview(reviewId);
+  // },
 
   openSubscriptionPage: function(id) {
     BrowserHistory.push("/subscriptions/" + id);
@@ -116,7 +123,7 @@ var UserShowPage = React.createClass({
         <div className="col-md-8">
           <div className="lead">{this.state.currentShowUser.first_name + " " + this.state.currentShowUser.last_name}
             { parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ?
-              <span className="small"><Link to={"/users/" + this.props.params.userId + "/edit"}>                   Edit</Link></span> : "" }
+              <span className="small"><Link to={"/users/" + this.props.params.userId + "/edit"}>Edit</Link></span> : "" }
           </div>
           <div>Location: {this.state.currentShowUser.location}</div>
           <div>Email: {this.state.currentShowUser.email}</div>
@@ -139,29 +146,13 @@ var UserShowPage = React.createClass({
           <br/>
           <br/>
           <br/>
-          <div>
-
-            { this.state.currentShowUserReviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(userReview) {
-              return <div>
-                <ReviewShowComponent review={userReview} key={userReview.id}/>
-                { parseInt(self.props.params.userId) === parseInt(self.props.currentUser.id) ?
-                  <button className="btn btn-default btn-sm" onClick={self.toggleEditReviewModal}>Edit Review</button> : "" }
-                  <Modal show={self.state.editReviewModalIsOpen} onHide={self.closeEditReviewModal}>
-                    <Modal.Header closeButton>
-                      <Modal.Title>Edit Review</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <EditReviewForm review={userReview} currentUser={self.props.currentUser}
-                        closeModalCallback={self.closeEditReviewModal}/>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button onClick={self.closeEditReviewModal}>Never Mind</Button>
-                    </Modal.Footer>
-                  </Modal>
-                <br/>
-              </div>;
-            })}
-          </div>
+          <ul>
+            { this.state.currentShowUserReviews.sort(function(a, b)
+              {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(userReview) {
+                return <ReviewShowComponent userId={self.props.params.userId} currentUser={self.props.currentUser}
+                  review={userReview} key={userReview.id}/>;
+              }) }
+          </ul>
         </div>
       </div>;
     }
@@ -170,3 +161,23 @@ var UserShowPage = React.createClass({
 });
 
 module.exports = UserShowPage;
+
+
+// { parseInt(self.props.params.userId) === parseInt(self.props.currentUser.id) ?
+//   <span>
+//     <button className="btn btn-default btn-sm" onClick={self.toggleEditReviewModal}>Edit Review</button>
+//     <button className="btn btn-default btn-sm" onClick={self.deleteReview.bind(self, userReview.id)}>Delete Review</button>
+//   </span> : "" }
+//   <Modal show={self.state.editReviewModalIsOpen} onHide={self.closeEditReviewModal}>
+//     <Modal.Header closeButton>
+//       <Modal.Title>Edit Review</Modal.Title>
+//     </Modal.Header>
+//     <Modal.Body>
+//       <EditReviewForm review={userReview} currentUser={self.props.currentUser}
+//         closeModalCallback={self.closeEditReviewModal}/>
+//     </Modal.Body>
+//     <Modal.Footer>
+//       <Button onClick={self.closeEditReviewModal}>Never Mind</Button>
+//     </Modal.Footer>
+//   </Modal>
+//   <br/>

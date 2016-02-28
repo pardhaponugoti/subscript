@@ -53,13 +53,18 @@ var SubscriptionShowPage = React.createClass({
       // INSERT LOADING SYMBOL HERE
       return <div>WAITING-FOR-LOAD</div>;
     } else {
-      return <div>
-        <h1><img src={this.state.currentSubscription.logo} width="256"/><text>{this.state.currentSubscription.name}</text>
-        </h1>
-        <h6>{this.state.currentSubscription.description}</h6>
-        <ul>Reviews for {this.state.currentSubscription.name}
+      return <div className="container">
+        <div className="row">
+          <div className="col-md-3"><h1><img className="subscription-logo" src={this.state.currentSubscription.logo} height="256"/></h1></div>
+          <div>
+            <h1>{this.state.currentSubscription.name}</h1>
+            <h4><a href={this.state.currentSubscription.url}>{this.state.currentSubscription.url}</a></h4>
+            <h5>{this.state.currentSubscription.description}</h5>
+          </div>
+        </div>
+        <ul className="container subscription-review-ul" >Reviews for {this.state.currentSubscription.name}
           {this.state.reviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
-            return <li><ReviewShowComponent review={review} /></li>;
+            return <ReviewShowComponent review={review} />;
           })}
         </ul>
       </div>;

@@ -24,6 +24,21 @@ class Api::ReviewsController < ApplicationController
     end
   end
 
+  def destroy
+    @review = Review.find(params[:id])
+
+    if @review
+      if @review.destroy
+        @reviews = Review.all
+        render :index
+      else
+        render json: { status: 404 }
+      end
+    else
+      render json: { status: 404 }
+    end
+  end
+
   private
 
   def review_params

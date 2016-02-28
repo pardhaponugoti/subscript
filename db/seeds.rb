@@ -41,6 +41,28 @@ subscription_list = [
   ["Netflix",
     "www.netflix.com",
     "Netflix is a global provider of streaming movies and TV series, and now has over 75 million subscribers. Netflix started as an American DVD-by-mail service in 1998, and began streaming in 2007.[6] Netflix expanded with streaming to Canada in 2010 and now serves over 190 countries with streaming. Netflix's first big original series was House of Cards, which debuted in 2013, and Netflix now produces hundreds of hours of original programming around the world",
-    "https://i.kinja-img.com/gawker-media/image/upload/fpqabe341bwut16xkmuj.png"
-  ]
+    "http://phandroid.s3.amazonaws.com/wp-content/uploads/2011/07/NetflixSquare.png"
+  ],
+
+  ["Blue Apron",
+   "www.blueapron.com",
+   "Blue Apron makes cooking fun and easy. We'll provide you with all the ingredients that you need to make a delicious meal in exactly the right proportions.",
+   "https://scontent.fsnc1-1.fna.fbcdn.net/hphotos-xfp1/v/t1.0-9/11061187_1053274271382154_6465854666002142974_n.jpg?oh=77b18e2e12724c432b2ece8f20ef1291&oe=576A2251"],
+
+  ["Amazon Prime",
+   "www.amazon.com/prime",
+   "In 2005, Amazon announced the creation of Amazon Prime, a membership offering free two-day shipping within the contiguous United States on all eligible purchases for a flat annual fee of $79 (equivalent to $96 in 2016), as well as discounted one-day shipping rates.",
+   "http://cdn-jpg.allyou.com/sites/default/files/image/2014/01/300x300/i/2012/11/free-amazon-prime-ictcrop-m.jpg"],
+
+  ["Birchbox",
+   "www.birchbox.com",
+   "Welcome to the best way to shop for beauty and grooming products.
+
+Monthly Subscription: Get monthly deliveries of deluxe beauty, grooming, and lifestyle samples, tailored to your profile. Try cult brands, up-and-coming lines, and everything in between. www.birchbox.com/join
+
+Birchbox Shop: Stock up on the best products, including customer favorites, exclusive launches—and of course everything in your monthly Birchboxes. www.birchbox.com/shop
+
+Magazine: Dive into our original content, from product intel and how-to tutorials to trend stories and more. www.birchbox.com/magazine",
+ "https://scontent.fsnc1-1.fna.fbcdn.net/hphotos-xpf1/t31.0-8/12640236_10153483267881647_5793089702169222015_o.jpg"]
+
 ]

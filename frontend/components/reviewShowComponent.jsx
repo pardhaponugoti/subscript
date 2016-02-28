@@ -1,9 +1,15 @@
 var React = require('react');
 var BrowserHistory = require('react-router').browserHistory;
+var Modal = require('react-bootstrap').Modal;
+var Button = require('react-bootstrap').Button;
 
 var UserStore = require('../stores/user.js');
 var ReviewStore = require('../stores/review.js');
 var SubscriptionStore = require('../stores/subscription.js');
+
+var ReviewBackendActions = require('../actions/reviewBackendActions.js');
+
+var EditReviewForm = require('./editReviewForm.jsx');
 
 var FREQUENCY = {
   1: "Never",
@@ -20,7 +26,8 @@ var ReviewShowComponent = React.createClass({
     return {
       author: UserStore.findById(this.props.review.author_id),
       subscription: SubscriptionStore.findById(this.props.review.subscription_id),
-      currentTime: new Date()
+      currentTime: new Date(),
+      editReviewModalIsOpen: false
     };
   },
 
@@ -31,17 +38,65 @@ var ReviewShowComponent = React.createClass({
     BrowserHistory.push("/users/" + this.state.author.id);
   },
 
+  toggleEditReviewModal: function() {
+    this.setState({
+      editReviewModalIsOpen: !this.state.editReviewModalIsOpen
+    });
+  },
+  closeEditReviewModal: function() {
+    this.setState({
+      editReviewModalIsOpen: false
+    });
+  },
+  deleteReview: function(reviewId) {
+    ReviewBackendActions.deleteReview(reviewId);
+  },
+
+
   render: function() {
-    return <div className="review-show">
+    // two cases -- if the currentUser has been passed down or if not
+    if (this.props.currentUser) {
+      return <li className="review-show" key={this.props.review.id}>
+          <img src={this.state.author.image} onClick={this.openAuthorPage}
+            className="profile-link-img" height="125" width="125"></img>
+          <span>{"★".repeat(this.props.review.rating)}</span>
+          <span>{FREQUENCY[this.props.review.frequency]}</span>
+          <span><a onClick={this.openSubscriptionPage}>{this.state.subscription.name}</a></span>
+          <br/>
+          <div><a onClick={this.openAuthorPage}>{ this.state.author.first_name + " " + this.state.author.last_name }</a></div>
+          <div>{this.props.review.comment}</div>
+            { parseInt(this.props.userId) === parseInt(this.props.currentUser.id) ?
+              <div>
+                <span>
+                  <button className="btn btn-default btn-sm" onClick={this.toggleEditReviewModal}>Edit Review</button>
+                  <button className="btn btn-default btn-sm" onClick={this.deleteReview.bind(this, this.props.review.id)}>Delete Review</button>
+                </span>
+                <Modal show={this.state.editReviewModalIsOpen} onHide={this.closeEditReviewModal}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Edit Review</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <EditReviewForm review={this.props.review} currentUser={this.props.currentUser}
+                      closeModalCallback={this.closeEditReviewModal}/>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button onClick={this.closeEditReviewModal}>Never Mind</Button>
+                  </Modal.Footer>
+                </Modal>
+            </div> : null }
+      </li>;
+    } else {
+      return <li className="review-show" key={this.props.review.id}>
         <img src={this.state.author.image} onClick={this.openAuthorPage}
-          className="profile-link-img" height="100" width="100"></img>
+          className="profile-link-img" height="125" width="125"></img>
         <span>{"★".repeat(this.props.review.rating)}</span>
-        <span>{this.props.review.frequency}</span>
+        <span>{FREQUENCY[this.props.review.frequency]}</span>
         <span><a onClick={this.openSubscriptionPage}>{this.state.subscription.name}</a></span>
         <br/>
         <div><a onClick={this.openAuthorPage}>{ this.state.author.first_name + " " + this.state.author.last_name }</a></div>
         <div>{this.props.review.comment}</div>
-    </div>;
+      </li>;
+    }
   }
 });
 

@@ -18,6 +18,14 @@ var ReviewFrontendActions = {
     });
   },
 
+  //delete Review
+  deleteReview: function(reviewsData) {
+    AppDispatcher.dispatch({
+      actionType: ReviewConstants.RECEIVE_ALL_REVIEWS,
+      data: reviewsData
+    });
+  },
+
   // all reviews
   receiveAllReviews: function(reviewsData) {
     AppDispatcher.dispatch({

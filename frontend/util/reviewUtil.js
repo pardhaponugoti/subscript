@@ -31,6 +31,21 @@ var ReviewUtil = {
     });
   },
 
+  // delete Review
+  deleteReview: function(reviewId, callback) {
+    $.ajax({
+      url : "/api/reviews/"+reviewId,
+      type: "DELETE",
+      data: { id: reviewId },
+      success: function(data) {
+        if (callback) {
+          callback();
+        }
+        ReviewFrontendActions.deleteReview(data);
+      }
+    });
+  },
+
   // all reviews (on app load)
   fetchAllReviews: function(callback) {
     $.ajax({

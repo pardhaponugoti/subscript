@@ -79,9 +79,13 @@ var HeaderSearchComponent = React.createClass({
         elementUl = <ul className="header-search-ul list-group">
           { elements.map(function(element){
             if (element.email === undefined) {
-              return <li className="header-search-li list-group-item" onClick={self.updateForm.bind(self, element)}>{element.name}</li>;
+              return <li className="header-search-li list-group-item" onClick={self.updateForm.bind(self, element)}>
+                <img className="header-search-img" src={element.logo} height="35"/>{element.name}
+              </li>;
               } else {
-                return <li className="header-search-li list-group-item" onClick={self.updateForm.bind(self, element)}>{element.first_name + " " + element.last_name}</li>;
+                return <li className="header-search-li list-group-item" onClick={self.updateForm.bind(self, element)}>
+                  <img className="header-search-img" src={element.image} height="35"/>{element.first_name + " " + element.last_name}
+                </li>;
               }
             })
           }

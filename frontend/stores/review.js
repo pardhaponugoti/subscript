@@ -26,6 +26,10 @@ ReviewStore.__onDispatch = function(payload) {
       ReviewStore.updateReviews(payload.data);
       ReviewStore.__emitChange();
       break;
+    case (ReviewConstants.DELETE_REVIEW):
+      ReviewStore.deleteReview(payload.data);
+      ReviewStore.__emitChange();
+      break;
   }
 };
 

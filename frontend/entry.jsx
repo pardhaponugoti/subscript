@@ -15,7 +15,7 @@ var ReviewFeed = require('./components/reviewFeed.jsx');
 var SubscriptionIndex = require('./components/subscriptionIndex.jsx');
 
 //test components
-var HeaderSearchComponent = require('./components/HeaderSearchComponent');
+var HeaderSearchComponent = require('./components/headerSearchComponent');
 
 var routes = (
   <Route path="/" component={App}>
