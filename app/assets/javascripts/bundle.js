@@ -51416,6 +51416,7 @@
 	var SubscriptionStore = __webpack_require__(491);
 	
 	var ReviewShowComponent = __webpack_require__(511);
+	var Chart = __webpack_require__(540);
 	
 	function isNumeric(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);
@@ -51427,7 +51428,9 @@
 	  getInitialState: function () {
 	    return {
 	      currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId)),
-	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId))
+	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)),
+	      showReviews: true,
+	      showCharts: false
 	    };
 	  },
 	  componentWillUnmount: function () {
@@ -51463,6 +51466,35 @@
 	    });
 	  },
 	
+	  reviewsUl: function () {
+	    return React.createElement(
+	      'ul',
+	      { className: 'container-fluid subscription-review-ul' },
+	      this.state.reviews.sort(function (a, b) {
+	        return new Date(b.updated_at) - new Date(a.updated_at);
+	      }).map(function (review) {
+	        return React.createElement(ReviewShowComponent, { review: review });
+	      })
+	    );
+	  },
+	
+	  showReviews: function (e) {
+	    e.preventDefault();
+	    // e.target.toggleClass("active");
+	    this.setState({
+	      showReviews: true,
+	      showCharts: false
+	    });
+	  },
+	  showCharts: function (e) {
+	    e.preventDefault();
+	    // e.target.toggleClass("active");
+	    this.setState({
+	      showCharts: true,
+	      showReviews: false
+	    });
+	  },
+	
 	  render: function () {
 	    if (this.state.currentSubscription.name === undefined) {
 	      // INSERT LOADING SYMBOL HERE
@@ -51472,6 +51504,12 @@
 	        'WAITING-FOR-LOAD'
 	      );
 	    } else {
+	      var input;
+	      if (this.state.showReviews) {
+	        input = this.reviewsUl();
+	      } else if (this.state.showCharts) {
+	        input = React.createElement(Chart, { subscription: this.state.currentSubscription, reviews: this.state.reviews });
+	      }
 	      return React.createElement(
 	        'div',
 	        { className: 'container' },
@@ -51500,7 +51538,7 @@
 	              null,
 	              React.createElement(
 	                'a',
-	                { href: this.state.currentSubscription.url },
+	                { href: "http://" + this.state.currentSubscription.url },
 	                this.state.currentSubscription.url
 	              )
 	            ),
@@ -51512,19 +51550,31 @@
 	          )
 	        ),
 	        React.createElement(
-	          'h4',
-	          null,
-	          'Reviews for ',
-	          this.state.currentSubscription.name
+	          'ul',
+	          { className: 'nav nav-tabs list-inline', role: 'tablist' },
+	          React.createElement(
+	            'li',
+	            { key: '1', className: this.state.showReviews ? "active" : "" },
+	            React.createElement(
+	              'a',
+	              { onClick: this.showReviews },
+	              'Reviews'
+	            )
+	          ),
+	          React.createElement(
+	            'li',
+	            { key: '2', className: this.state.showCharts ? "active" : "" },
+	            React.createElement(
+	              'a',
+	              { onClick: this.showCharts },
+	              'Charts'
+	            )
+	          )
 	        ),
 	        React.createElement(
-	          'ul',
-	          { className: 'container subscription-review-ul' },
-	          this.state.reviews.sort(function (a, b) {
-	            return new Date(b.updated_at) - new Date(a.updated_at);
-	          }).map(function (review) {
-	            return React.createElement(ReviewShowComponent, { review: review });
-	          })
+	          'div',
+	          { className: 'container tab-content subscription-show-container' },
+	          input
 	        )
 	      );
 	    }
@@ -53666,28 +53716,8 @@
 	var Chart = React.createClass({
 	  displayName: "Chart",
 	
-	  getInitialState: function () {
-	    return {
-	      subscription: SubscriptionStore.findById(1),
-	      reviews: ReviewStore.findBySubscriptionId(1)
-	    };
-	  },
-	  componentDidMount: function () {
-	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.onChange);
-	    this.reviewListenerToken = ReviewStore.addListener(this.onChange);
-	  },
-	  componentWillUnmount: function () {
-	    this.subscriptionListenerToken.remove();
-	    this.reviewListenerToken.remove();
-	  },
-	  onChange: function () {
-	    this.setState({
-	      subscription: SubscriptionStore.findById(1),
-	      reviews: ReviewStore.findBySubscriptionId(1)
-	    });
-	  },
 	  render: function () {
-	    if (this.state.reviews === undefined || this.state.subscription === undefined || this.state.reviews.length === 0 || this.state.subscription.length === 0) {
+	    if (this.props.reviews === undefined || this.props.subscription === undefined || this.props.reviews.length === 0 || this.props.subscription.length === 0) {
 	      return React.createElement(
 	        "div",
 	        null,
@@ -53695,7 +53725,7 @@
 	      );
 	    } else {
 	      var ratingFrequencies = [0, 0, 0, 0, 0];
-	      this.state.reviews.forEach(function (review) {
+	      this.props.reviews.forEach(function (review) {
 	        ratingFrequencies[review.rating - 1] += 1;
 	      });
 	
@@ -53704,37 +53734,73 @@
 	        return freq / total * 100;
 	      });
 	
-	      var data = [{
+	      var labels = ["★".repeat(1), "★".repeat(2), "★".repeat(3), "★".repeat(4), "★".repeat(5)];
+	
+	      var lineData = {
+	        labels: labels,
+	        datasets: [{
+	          label: "Ratings",
+	          fillColor: "rgba(220,220,220,0.2)",
+	          strokeColor: "rgba(220,220,220,1)",
+	          pointColor: "rgba(220,220,220,1)",
+	          pointStrokeColor: "#fff",
+	          pointHighlightFill: "#fff",
+	          pointHighlightStroke: "rgba(220,220,220,1)",
+	          data: ratingFrequencies
+	        }]
+	      };
+	
+	      var barData = {
+	        labels: labels,
+	        datasets: [{
+	          label: "Ratings",
+	          fillColor: "rgba(220,220,220,0.5)",
+	          strokeColor: "rgba(220,220,220,0.8)",
+	          highlightFill: "rgba(220,220,220,0.75)",
+	          highlightStroke: "rgba(220,220,220,1)",
+	          data: ratingFrequencies
+	        }]
+	      };
+	
+	      var donutData = [{
 	        value: ratingFrequencies[0],
 	        color: "#ff6666",
 	        highlight: "#ff0000",
-	        label: "1 Star"
+	        label: labels[0]
 	      }, {
 	        value: ratingFrequencies[1],
 	        color: "#ffb366",
 	        highlight: "#ff8000",
-	        label: "2 Stars"
+	        label: labels[1]
 	      }, {
 	        value: ratingFrequencies[2],
 	        color: "#ffff66",
 	        highlight: "#ffff00",
-	        label: "3 Stars"
+	        label: labels[2]
 	      }, {
 	        value: ratingFrequencies[3],
 	        color: "#d9ff66",
 	        highlight: "#bfff00",
-	        label: "4 Stars"
+	        label: labels[3]
 	      }, {
 	        value: ratingFrequencies[4],
 	        color: "#8cff66",
 	        highlight: "#40ff00",
-	        label: "5 Stars"
+	        label: labels[4]
 	      }];
 	
 	      return React.createElement(
 	        "div",
 	        { className: "col-md-8 col-md-offset-2" },
-	        React.createElement(DonutChart, { data: data, options: { responsive: true } })
+	        React.createElement(
+	          "h2",
+	          { className: "chart-title" },
+	          this.props.subscription.name,
+	          " Ratings"
+	        ),
+	        React.createElement(DonutChart, { data: donutData, options: { responsive: true, segmentStrokeColor: "#fff", segmentStrokeWidth: 2 } }),
+	        React.createElement(BarChart, { data: barData, options: { responsive: true } }),
+	        React.createElement(LineChart, { data: lineData, options: { responsive: true } })
 	      );
 	    }
 	  }

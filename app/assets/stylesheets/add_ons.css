@@ -2,10 +2,6 @@ input{
   outline: none;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: green;
-}
-
 ul {
   padding: 0;
   display: block;
@@ -137,6 +133,15 @@ a {
 .subscription-logo {
   box-shadow: 2px 2px;
   /*border: 1px grey solid;*/
+}
+
+.subscription-show-container {
+  border: 1px #bfbfbf solid;
+}
+
+.chart-title {
+  text-align: center;
+  color: green;
 }
 
 .subscription-review-ul {

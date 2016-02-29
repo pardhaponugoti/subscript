@@ -11,33 +11,13 @@ function add(a, b) {
 }
 
 var Chart = React.createClass({
-  getInitialState: function() {
-    return {
-      subscription: SubscriptionStore.findById(1),
-      reviews: ReviewStore.findBySubscriptionId(1)
-    };
-  },
-  componentDidMount: function() {
-    this.subscriptionListenerToken = SubscriptionStore.addListener(this.onChange);
-    this.reviewListenerToken = ReviewStore.addListener(this.onChange);
-  },
-  componentWillUnmount: function() {
-    this.subscriptionListenerToken.remove();
-    this.reviewListenerToken.remove();
-  },
-  onChange: function() {
-    this.setState({
-      subscription: SubscriptionStore.findById(1),
-      reviews: ReviewStore.findBySubscriptionId(1)
-    });
-  },
   render: function() {
-    if (this.state.reviews === undefined || this.state.subscription === undefined ||
-    this.state.reviews.length === 0 || this.state.subscription.length === 0) {
+    if (this.props.reviews === undefined || this.props.subscription === undefined ||
+    this.props.reviews.length === 0 || this.props.subscription.length === 0) {
       return <div>CHART GOES HERE</div>;
     } else {
       var ratingFrequencies = [0, 0, 0, 0, 0];
-      this.state.reviews.forEach(function(review) {
+      this.props.reviews.forEach(function(review) {
         ratingFrequencies[review.rating-1] += 1;
       });
 
@@ -46,41 +26,76 @@ var Chart = React.createClass({
         return freq/total * 100;
       });
 
-      var data = [
+      var labels =  ["★".repeat(1), "★".repeat(2), "★".repeat(3), "★".repeat(4), "★".repeat(5)];
+
+      var lineData = {
+          labels: labels,
+          datasets: [
+            {
+              label: "Ratings",
+              fillColor: "rgba(220,220,220,0.2)",
+              strokeColor: "rgba(220,220,220,1)",
+              pointColor: "rgba(220,220,220,1)",
+              pointStrokeColor: "#fff",
+              pointHighlightFill: "#fff",
+              pointHighlightStroke: "rgba(220,220,220,1)",
+              data: ratingFrequencies
+            }
+          ]
+      };
+
+      var barData = {
+        labels: labels,
+        datasets: [
+            {
+                label: "Ratings",
+                fillColor: "rgba(220,220,220,0.5)",
+                strokeColor: "rgba(220,220,220,0.8)",
+                highlightFill: "rgba(220,220,220,0.75)",
+                highlightStroke: "rgba(220,220,220,1)",
+                data: ratingFrequencies
+            }
+          ]
+      };
+
+      var donutData = [
         {
           value: ratingFrequencies[0],
           color:  "#ff6666",
           highlight: "#ff0000",
-          label: "1 Star"
+          label: labels[0]
         },
         {
           value: ratingFrequencies[1],
           color:  "#ffb366",
           highlight: "#ff8000",
-          label: "2 Stars"
+          label: labels[1]
         },
         {
           value: ratingFrequencies[2],
           color:  "#ffff66",
           highlight: "#ffff00",
-          label: "3 Stars"
+          label: labels[2]
         },
         {
           value: ratingFrequencies[3],
           color:  "#d9ff66",
           highlight: "#bfff00",
-          label: "4 Stars"
+          label: labels[3]
         },
         {
           value: ratingFrequencies[4],
           color:  "#8cff66",
           highlight: "#40ff00",
-          label: "5 Stars"
+          label: labels[4]
         },
       ];
 
       return <div className="col-md-8 col-md-offset-2">
-        <DonutChart data={data}  options={{responsive: true}}/>
+        <h2 className="chart-title">{this.props.subscription.name} Ratings</h2>
+        <DonutChart data={donutData}  options={{responsive: true, segmentStrokeColor : "#fff", segmentStrokeWidth : 2}}/>
+        <BarChart data={barData} options={{responsive: true}}/>
+        <LineChart data={lineData} options={{responsive: true}} />
       </div>;
       }
   }

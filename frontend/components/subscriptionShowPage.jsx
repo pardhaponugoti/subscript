@@ -5,6 +5,7 @@ var ReviewStore = require('../stores/review.js');
 var SubscriptionStore = require('../stores/subscription.js');
 
 var ReviewShowComponent = require('./reviewShowComponent.jsx');
+var Chart = require('./chart.jsx');
 
 function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
 
@@ -12,7 +13,9 @@ var SubscriptionShowPage = React.createClass({
   getInitialState: function() {
     return {
       currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId)),
-      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId))
+      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)),
+      showReviews: true,
+      showCharts: false
     };
   },
   componentWillUnmount: function() {
@@ -48,26 +51,59 @@ var SubscriptionShowPage = React.createClass({
     });
   },
 
+  reviewsUl: function() {
+    return <ul className="container-fluid subscription-review-ul" >
+      {this.state.reviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
+        return <ReviewShowComponent review={review} />;
+      })}
+    </ul>;
+  },
+
+  showReviews: function(e) {
+    e.preventDefault();
+    // e.target.toggleClass("active");
+    this.setState({
+      showReviews: true,
+      showCharts: false
+    });
+  },
+  showCharts: function(e) {
+    e.preventDefault();
+    // e.target.toggleClass("active");
+    this.setState({
+      showCharts: true,
+      showReviews: false
+    });
+  },
+
+
   render: function() {
     if(this.state.currentSubscription.name === undefined) {
       // INSERT LOADING SYMBOL HERE
       return <div>WAITING-FOR-LOAD</div>;
     } else {
+      var input;
+      if (this.state.showReviews) {
+        input = this.reviewsUl();
+      } else if (this.state.showCharts) {
+        input= <Chart subscription={this.state.currentSubscription} reviews={this.state.reviews}/>;
+      }
       return <div className="container">
         <div className="row">
           <div className="col-md-4"><h1><img className="subscription-logo" src={this.state.currentSubscription.logo} height="256"/></h1></div>
           <div>
             <h1>{this.state.currentSubscription.name}</h1>
-            <h4><a href={this.state.currentSubscription.url}>{this.state.currentSubscription.url}</a></h4>
+            <h4><a href={"http://" + this.state.currentSubscription.url}>{this.state.currentSubscription.url}</a></h4>
             <h5>{this.state.currentSubscription.description}</h5>
           </div>
         </div>
-        <h4>Reviews for {this.state.currentSubscription.name}</h4>
-        <ul className="container subscription-review-ul" >
-          {this.state.reviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
-            return <ReviewShowComponent review={review} />;
-          })}
+        <ul className="nav nav-tabs list-inline" role="tablist">
+          <li key="1" className={this.state.showReviews ? "active" : ""}><a onClick={this.showReviews}>Reviews</a></li>
+          <li key="2" className={this.state.showCharts ? "active" : ""}><a onClick={this.showCharts}>Charts</a></li>
         </ul>
+        <div className="container tab-content subscription-show-container">
+          {input}
+        </div>
       </div>;
     }
   }
