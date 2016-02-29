@@ -61,48 +61,55 @@ var ReviewShowComponent = React.createClass({
           <div className="col-md-3">
             <img src={this.state.author.image} onClick={this.openAuthorPage}
               className="profile-link-img" height="125" width="125"></img>
-            <div><a onClick={this.openAuthorPage}>{ this.state.author.first_name + " " + this.state.author.last_name }</a></div>
+            <div><h4>{ this.state.author.first_name + " " + this.state.author.last_name }</h4></div>
             <div>Uses Service: {FREQUENCY[this.props.review.frequency]}</div>
+            { parseInt(this.props.userId) === parseInt(this.props.currentUser.id) ?
+              <div className="row-fluid">
+                <div>
+                  <button className="btn btn-default btn-sm edit-review-btn" onClick={this.toggleEditReviewModal}>Edit Review</button>
+                  </div>
+                  <div>
+                  <button className="btn btn-sm delete-review-btn" onClick={this.deleteReview.bind(this, this.props.review.id)}>Delete Review</button>
+                </div>
+                <Modal show={this.state.editReviewModalIsOpen} onHide={this.closeEditReviewModal}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Edit Review</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <EditReviewForm review={this.props.review} currentUser={this.props.currentUser}
+                      closeModalCallback={this.closeEditReviewModal}/>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button onClick={this.closeEditReviewModal}>Never Mind</Button>
+                  </Modal.Footer>
+                </Modal>
+              </div> : null }
           </div>
           <div className="col-md-9">
-            <div><a onClick={this.openSubscriptionPage}>{this.state.subscription.name}</a></div>
+            <div><h4><a className="subscription-name-link" onClick={this.openSubscriptionPage}>{this.state.subscription.name}</a></h4></div>
             <div>{"★".repeat(this.props.review.rating)}</div>
             <div className="review-comment">{"\"" + this.props.review.comment + "\""}</div>
           </div>
         </div>
-          <br/>
-          { parseInt(this.props.userId) === parseInt(this.props.currentUser.id) ?
-            <div className="row-fluid">
-              <span>
-                <button className="btn btn-default btn-sm" onClick={this.toggleEditReviewModal}>Edit Review</button>
-                <button className="btn btn-default btn-sm" onClick={this.deleteReview.bind(this, this.props.review.id)}>Delete Review</button>
-              </span>
-              <Modal show={this.state.editReviewModalIsOpen} onHide={this.closeEditReviewModal}>
-                <Modal.Header closeButton>
-                  <Modal.Title>Edit Review</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <EditReviewForm review={this.props.review} currentUser={this.props.currentUser}
-                    closeModalCallback={this.closeEditReviewModal}/>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button onClick={this.closeEditReviewModal}>Never Mind</Button>
-                </Modal.Footer>
-              </Modal>
-          </div> : null }
       </li>;
     } else {
       return <li className="review-show container-fluid" key={this.props.review.id}>
         <div className="col-md-3">
           <img src={this.state.author.image} onClick={this.openAuthorPage}
             className="profile-link-img" height="125" width="125"></img>
-          <div><a onClick={this.openAuthorPage}>{ this.state.author.first_name + " " + this.state.author.last_name }</a></div>
+          <div><h4><a className="subscription-name-link" onClick={this.openAuthorPage}>
+            { this.state.author.first_name + " " + this.state.author.last_name }
+          </a></h4></div>
           <div>Uses Service: {FREQUENCY[this.props.review.frequency]}</div>
         </div>
         <div className="col-md-9">
-          <div><a onClick={this.openSubscriptionPage}>{this.state.subscription.name}</a></div>
+          <div><h4><a className="subscription-name-link" onClick={this.openSubscriptionPage}>
+            {this.state.subscription.name}
+          </a></h4></div>
           <div>{"★".repeat(this.props.review.rating)}</div>
-          <div className="review-comment">{"\"" + this.props.review.comment + "\""}</div>
+          <div className="review-comment">
+              { this.props.review.comment ? "\"" + this.props.review.comment + "\"" : "" }
+          </div>
         </div>
       </li>;
     }

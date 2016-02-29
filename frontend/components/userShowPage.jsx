@@ -109,17 +109,17 @@ var UserShowPage = React.createClass({
     } else {
       var self = this;
       return <div>
-        <div className="col-md-4 container-fluid">
-          <img src={this.state.currentShowUser.image} className="img-center"></img>
+        <div className="col-md-3 col-md-offset-1 container-fluid">
+          <img src={this.state.currentShowUser.image} className="profile-img"></img>
           <br/>
-          <ul><h4>Subscriptions</h4>
+          <ul><h3>Subscriptions</h3>
             {this.state.currentShowUserReviews.map(function(review) {
-              return <li key={review.id}><Link to={"/subscriptions/" + review.subscription_id}>
+              return <li key={review.id}><Link className="subscription-name-link" to={"/subscriptions/" + review.subscription_id}>
                 {SubscriptionStore.findById(review.subscription_id).name}</Link></li>;
             })}
           </ul>
         </div>
-        <div className="col-md-8 container-fluid">
+        <div className="col-md-7 container-fluid profile-info">
           <div className="profile-name">{this.state.currentShowUser.first_name + " " + this.state.currentShowUser.last_name}
           </div>
             { parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ?
@@ -130,7 +130,7 @@ var UserShowPage = React.createClass({
           <div>Date of Birth: {this.state.currentShowUser.date_of_birth}</div>
           <br/>
             { parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ?
-              <button className="btn btn-default btn-sm" onClick={this.toggleNewReviewModal}>Create New Review</button> : "" }
+              <button className="btn create-review-btn btn-sm" onClick={this.toggleNewReviewModal}>Create New Review</button> : "" }
             <Modal show={this.state.newReviewModalIsOpen} onHide={this.closeNewReviewModal}>
               <Modal.Header closeButton>
                 <Modal.Title>Write a New Review</Modal.Title>
@@ -145,7 +145,8 @@ var UserShowPage = React.createClass({
           <br/>
           <br/>
           <br/>
-          <ul><h4>Reviews</h4>
+          <h3>Reviews</h3>
+          <ul className="profile-reviews-ul container-fluid">
             { this.state.currentShowUserReviews.sort(function(a, b)
               {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(userReview) {
                 return <ReviewShowComponent userId={self.props.params.userId} currentUser={self.props.currentUser}

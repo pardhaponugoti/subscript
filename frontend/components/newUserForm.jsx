@@ -9,7 +9,8 @@ var NewUserForm = React.createClass({
       password : "" ,
       confirmPassword : "",
       firstName: "",
-      lastName: ""
+      lastName: "",
+      inputEnabled: true
     };
   },
   firstNameChange: function(e) {
@@ -43,28 +44,28 @@ var NewUserForm = React.createClass({
 
     if (length < 8 && length > 0) {
       passwordErrors.push(<li key="1"><strong><font color="red">
-        Password must be at least 8 characters long
+        ✗ Password must be at least 8 characters long
       </font></strong></li>);
     } else if (length > 0){
       passwordErrors.push(<li key="2"><font color="green">
-        Password must be at least 8 characters long
+        ✔ Password must be at least 8 characters long
       </font></li>);
     }
 
     if (length > 0 && containsNumber(this.state.password)) {
       passwordErrors.push(<li key="3"><font color="green">
-        Password must contain a number
+        ✔ Password must contain a number
       </font></li>);
     } else if (length > 0){
       passwordErrors.push(<li key="4"><strong><font color="red">
-        Password must contain a number
+        ✗ Password must contain a number
       </font></strong></li>);
     }
 
     if (passwordErrors.length === 0) {
       return ;
     } else {
-      return <ul>
+      return <ul className="password-errors-ul">
         {passwordErrors.map(function(error){
           return error;
         })}
@@ -75,11 +76,11 @@ var NewUserForm = React.createClass({
     if (this.state.password !== "" && this.state.password.length > 7 && containsNumber(this.state.password)) {
       if (this.state.password !== this.state.confirmPassword && this.state.confirmPassword !== "") {
         return <div><strong><font color="red">
-          Passwords do not match!
+          ✗ Passwords do not match!
         </font></strong></div>;
       } else if (this.state.confirmPassword !== "" && this.state.confirmPassword === this.state.password) {
         return <div><font color="green">
-          Passwords match!
+          ✔ Passwords match!
         </font></div>;
       }
     } else {
@@ -119,7 +120,7 @@ var NewUserForm = React.createClass({
             placeholder="Confirm Password*" onChange={this.confirmPasswordChange} />
         {this.matchedPassword()}
         <br/>
-        <input className = "btn btn-default" type="submit" value="Sign Up"/>
+        <input className="btn btn-default" type="submit" value="Sign Up" disabled={!this.state.inputEnabled}/>
       </form>
     </div>;
   }

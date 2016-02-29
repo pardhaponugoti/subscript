@@ -24878,7 +24878,7 @@
 	    if (this.props.loggedIn) {
 	      return React.createElement(
 	        'div',
-	        { className: 'btn-group nav navbar-nav navbar-right' },
+	        { className: 'btn-group nav navbar-nav navbar-right header-dropdown' },
 	        React.createElement(
 	          'button',
 	          { className: 'btn btn-default btn-sm dropdown-toggle', type: 'button', 'data-toggle': 'dropdown' },
@@ -24942,11 +24942,11 @@
 	      }
 	      return React.createElement(
 	        'div',
-	        { className: 'nav navbar-nav navbar-right btn-group' },
+	        { className: 'nav navbar-nav navbar-right btn-group header-dropdown' },
 	        React.createElement(
 	          'button',
 	          { className: 'btn btn-default btn-sm', onClick: this.toggleModal },
-	          'Sign In'
+	          inputs.header
 	        ),
 	        React.createElement(
 	          Modal,
@@ -24968,7 +24968,7 @@
 	          React.createElement(
 	            Modal.Footer,
 	            null,
-	            inputs.string,
+	            inputs.string + " ",
 	            inputs.button
 	          )
 	        )
@@ -24978,10 +24978,10 @@
 	  render: function () {
 	    return React.createElement(
 	      'nav',
-	      { className: 'navbar navbar-default navbar-fixed-top' },
+	      { className: 'navbar navbar-fixed-top' },
 	      React.createElement(
 	        'div',
-	        { className: 'navbar-header btn-group' },
+	        { className: 'navbar-header btn-group header-home' },
 	        React.createElement(
 	          'a',
 	          { onClick: this.renderRoot, className: 'btn btn-default btn-sm' },
@@ -49563,7 +49563,8 @@
 	      password: "",
 	      confirmPassword: "",
 	      firstName: "",
-	      lastName: ""
+	      lastName: "",
+	      inputEnabled: true
 	    };
 	  },
 	  firstNameChange: function (e) {
@@ -49605,7 +49606,7 @@
 	          React.createElement(
 	            'font',
 	            { color: 'red' },
-	            'Password must be at least 8 characters long'
+	            '✗ Password must be at least 8 characters long'
 	          )
 	        )
 	      ));
@@ -49616,7 +49617,7 @@
 	        React.createElement(
 	          'font',
 	          { color: 'green' },
-	          'Password must be at least 8 characters long'
+	          '✔ Password must be at least 8 characters long'
 	        )
 	      ));
 	    }
@@ -49628,7 +49629,7 @@
 	        React.createElement(
 	          'font',
 	          { color: 'green' },
-	          'Password must contain a number'
+	          '✔ Password must contain a number'
 	        )
 	      ));
 	    } else if (length > 0) {
@@ -49641,7 +49642,7 @@
 	          React.createElement(
 	            'font',
 	            { color: 'red' },
-	            'Password must contain a number'
+	            '✗ Password must contain a number'
 	          )
 	        )
 	      ));
@@ -49652,7 +49653,7 @@
 	    } else {
 	      return React.createElement(
 	        'ul',
-	        null,
+	        { className: 'password-errors-ul' },
 	        passwordErrors.map(function (error) {
 	          return error;
 	        })
@@ -49671,7 +49672,7 @@
 	            React.createElement(
 	              'font',
 	              { color: 'red' },
-	              'Passwords do not match!'
+	              '✗ Passwords do not match!'
 	            )
 	          )
 	        );
@@ -49682,7 +49683,7 @@
 	          React.createElement(
 	            'font',
 	            { color: 'green' },
-	            'Passwords match!'
+	            '✔ Passwords match!'
 	          )
 	        );
 	      }
@@ -49724,7 +49725,7 @@
 	          placeholder: 'Confirm Password*', onChange: this.confirmPasswordChange }),
 	        this.matchedPassword(),
 	        React.createElement('br', null),
-	        React.createElement('input', { className: 'btn btn-default', type: 'submit', value: 'Sign Up' })
+	        React.createElement('input', { className: 'btn btn-default', type: 'submit', value: 'Sign Up', disabled: !this.state.inputEnabled })
 	      )
 	    );
 	  }
@@ -50356,14 +50357,14 @@
 	        null,
 	        React.createElement(
 	          'div',
-	          { className: 'col-md-4 container-fluid' },
-	          React.createElement('img', { src: this.state.currentShowUser.image, className: 'img-center' }),
+	          { className: 'col-md-3 col-md-offset-1 container-fluid' },
+	          React.createElement('img', { src: this.state.currentShowUser.image, className: 'profile-img' }),
 	          React.createElement('br', null),
 	          React.createElement(
 	            'ul',
 	            null,
 	            React.createElement(
-	              'h4',
+	              'h3',
 	              null,
 	              'Subscriptions'
 	            ),
@@ -50373,7 +50374,7 @@
 	                { key: review.id },
 	                React.createElement(
 	                  Link,
-	                  { to: "/subscriptions/" + review.subscription_id },
+	                  { className: 'subscription-name-link', to: "/subscriptions/" + review.subscription_id },
 	                  SubscriptionStore.findById(review.subscription_id).name
 	                )
 	              );
@@ -50382,7 +50383,7 @@
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'col-md-8 container-fluid' },
+	          { className: 'col-md-7 container-fluid profile-info' },
 	          React.createElement(
 	            'div',
 	            { className: 'profile-name' },
@@ -50419,7 +50420,7 @@
 	          React.createElement('br', null),
 	          parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ? React.createElement(
 	            'button',
-	            { className: 'btn btn-default btn-sm', onClick: this.toggleNewReviewModal },
+	            { className: 'btn create-review-btn btn-sm', onClick: this.toggleNewReviewModal },
 	            'Create New Review'
 	          ) : "",
 	          React.createElement(
@@ -50453,13 +50454,13 @@
 	          React.createElement('br', null),
 	          React.createElement('br', null),
 	          React.createElement(
-	            'ul',
+	            'h3',
 	            null,
-	            React.createElement(
-	              'h4',
-	              null,
-	              'Reviews'
-	            ),
+	            'Reviews'
+	          ),
+	          React.createElement(
+	            'ul',
+	            { className: 'profile-reviews-ul container-fluid' },
 	            this.state.currentShowUserReviews.sort(function (a, b) {
 	              return new Date(b.updated_at) - new Date(a.updated_at);
 	            }).map(function (userReview) {
@@ -50573,8 +50574,8 @@
 	              'div',
 	              null,
 	              React.createElement(
-	                'a',
-	                { onClick: this.openAuthorPage },
+	                'h4',
+	                null,
 	                this.state.author.first_name + " " + this.state.author.last_name
 	              )
 	            ),
@@ -50583,7 +50584,57 @@
 	              null,
 	              'Uses Service: ',
 	              FREQUENCY[this.props.review.frequency]
-	            )
+	            ),
+	            parseInt(this.props.userId) === parseInt(this.props.currentUser.id) ? React.createElement(
+	              'div',
+	              { className: 'row-fluid' },
+	              React.createElement(
+	                'div',
+	                null,
+	                React.createElement(
+	                  'button',
+	                  { className: 'btn btn-default btn-sm edit-review-btn', onClick: this.toggleEditReviewModal },
+	                  'Edit Review'
+	                )
+	              ),
+	              React.createElement(
+	                'div',
+	                null,
+	                React.createElement(
+	                  'button',
+	                  { className: 'btn btn-sm delete-review-btn', onClick: this.deleteReview.bind(this, this.props.review.id) },
+	                  'Delete Review'
+	                )
+	              ),
+	              React.createElement(
+	                Modal,
+	                { show: this.state.editReviewModalIsOpen, onHide: this.closeEditReviewModal },
+	                React.createElement(
+	                  Modal.Header,
+	                  { closeButton: true },
+	                  React.createElement(
+	                    Modal.Title,
+	                    null,
+	                    'Edit Review'
+	                  )
+	                ),
+	                React.createElement(
+	                  Modal.Body,
+	                  null,
+	                  React.createElement(EditReviewForm, { review: this.props.review, currentUser: this.props.currentUser,
+	                    closeModalCallback: this.closeEditReviewModal })
+	                ),
+	                React.createElement(
+	                  Modal.Footer,
+	                  null,
+	                  React.createElement(
+	                    Button,
+	                    { onClick: this.closeEditReviewModal },
+	                    'Never Mind'
+	                  )
+	                )
+	              )
+	            ) : null
 	          ),
 	          React.createElement(
 	            'div',
@@ -50592,9 +50643,13 @@
 	              'div',
 	              null,
 	              React.createElement(
-	                'a',
-	                { onClick: this.openSubscriptionPage },
-	                this.state.subscription.name
+	                'h4',
+	                null,
+	                React.createElement(
+	                  'a',
+	                  { className: 'subscription-name-link', onClick: this.openSubscriptionPage },
+	                  this.state.subscription.name
+	                )
 	              )
 	            ),
 	            React.createElement(
@@ -50608,54 +50663,7 @@
 	              "\"" + this.props.review.comment + "\""
 	            )
 	          )
-	        ),
-	        React.createElement('br', null),
-	        parseInt(this.props.userId) === parseInt(this.props.currentUser.id) ? React.createElement(
-	          'div',
-	          { className: 'row-fluid' },
-	          React.createElement(
-	            'span',
-	            null,
-	            React.createElement(
-	              'button',
-	              { className: 'btn btn-default btn-sm', onClick: this.toggleEditReviewModal },
-	              'Edit Review'
-	            ),
-	            React.createElement(
-	              'button',
-	              { className: 'btn btn-default btn-sm', onClick: this.deleteReview.bind(this, this.props.review.id) },
-	              'Delete Review'
-	            )
-	          ),
-	          React.createElement(
-	            Modal,
-	            { show: this.state.editReviewModalIsOpen, onHide: this.closeEditReviewModal },
-	            React.createElement(
-	              Modal.Header,
-	              { closeButton: true },
-	              React.createElement(
-	                Modal.Title,
-	                null,
-	                'Edit Review'
-	              )
-	            ),
-	            React.createElement(
-	              Modal.Body,
-	              null,
-	              React.createElement(EditReviewForm, { review: this.props.review, currentUser: this.props.currentUser,
-	                closeModalCallback: this.closeEditReviewModal })
-	            ),
-	            React.createElement(
-	              Modal.Footer,
-	              null,
-	              React.createElement(
-	                Button,
-	                { onClick: this.closeEditReviewModal },
-	                'Never Mind'
-	              )
-	            )
-	          )
-	        ) : null
+	        )
 	      );
 	    } else {
 	      return React.createElement(
@@ -50670,9 +50678,13 @@
 	            'div',
 	            null,
 	            React.createElement(
-	              'a',
-	              { onClick: this.openAuthorPage },
-	              this.state.author.first_name + " " + this.state.author.last_name
+	              'h4',
+	              null,
+	              React.createElement(
+	                'a',
+	                { className: 'subscription-name-link', onClick: this.openAuthorPage },
+	                this.state.author.first_name + " " + this.state.author.last_name
+	              )
 	            )
 	          ),
 	          React.createElement(
@@ -50689,9 +50701,13 @@
 	            'div',
 	            null,
 	            React.createElement(
-	              'a',
-	              { onClick: this.openSubscriptionPage },
-	              this.state.subscription.name
+	              'h4',
+	              null,
+	              React.createElement(
+	                'a',
+	                { className: 'subscription-name-link', onClick: this.openSubscriptionPage },
+	                this.state.subscription.name
+	              )
 	            )
 	          ),
 	          React.createElement(
@@ -50702,7 +50718,7 @@
 	          React.createElement(
 	            'div',
 	            { className: 'review-comment' },
-	            "\"" + this.props.review.comment + "\""
+	            this.props.review.comment ? "\"" + this.props.review.comment + "\"" : ""
 	          )
 	        )
 	      );
@@ -51242,73 +51258,99 @@
 	        'form',
 	        { id: 'user-edit-form', onSubmit: this.handleSubmit },
 	        React.createElement(
-	          'label',
-	          null,
-	          'First Name',
-	          React.createElement('input', { type: 'string', name: 'user[first_name]', value: this.state.firstName,
-	            onChange: this.firstNameChange })
-	        ),
-	        React.createElement('br', null),
-	        React.createElement(
-	          'label',
-	          null,
-	          'Last Name',
-	          React.createElement('input', { type: 'string', name: 'user[last_name]', value: this.state.lastName,
-	            onChange: this.lastNameChange })
-	        ),
-	        React.createElement('br', null),
-	        React.createElement(
-	          'label',
-	          null,
-	          'Email',
-	          React.createElement('input', { type: 'string', name: 'user[email]', value: this.state.email,
-	            onChange: this.emailChange })
-	        ),
-	        React.createElement('br', null),
-	        React.createElement(
-	          'label',
-	          null,
-	          'Location',
-	          React.createElement('input', { type: 'string', name: 'user[location]', value: this.state.location,
-	            onChange: this.locationChange })
-	        ),
-	        React.createElement('br', null),
-	        React.createElement(
-	          'label',
-	          null,
-	          'Date of Birth',
-	          React.createElement('input', { type: 'date', name: 'user[date_of_birth]', value: this.state.dateOfBirth,
-	            onChange: this.DOBChange })
-	        ),
-	        React.createElement('br', null),
-	        React.createElement(
-	          'label',
-	          null,
-	          ' Current Profile Picture:',
+	          'div',
+	          { className: 'col-md-4 col-md-offset-2' },
+	          React.createElement(
+	            'label',
+	            null,
+	            'First Name',
+	            React.createElement('br', null),
+	            React.createElement('input', { type: 'string', name: 'user[first_name]', value: this.state.firstName,
+	              onChange: this.firstNameChange })
+	          ),
 	          React.createElement('br', null),
-	          React.createElement('img', { src: this.state.image }),
+	          React.createElement(
+	            'label',
+	            null,
+	            'Last Name',
+	            React.createElement('br', null),
+	            React.createElement('input', { type: 'string', name: 'user[last_name]', value: this.state.lastName,
+	              onChange: this.lastNameChange })
+	          ),
+	          React.createElement('br', null),
+	          React.createElement(
+	            'label',
+	            null,
+	            'Email',
+	            React.createElement('br', null),
+	            React.createElement('input', { type: 'string', name: 'user[email]', value: this.state.email,
+	              onChange: this.emailChange })
+	          ),
+	          React.createElement('br', null),
+	          React.createElement(
+	            'label',
+	            null,
+	            'Location',
+	            React.createElement('br', null),
+	            React.createElement('input', { type: 'string', name: 'user[location]', value: this.state.location,
+	              onChange: this.locationChange })
+	          ),
+	          React.createElement('br', null),
+	          React.createElement(
+	            'label',
+	            null,
+	            'Date of Birth',
+	            React.createElement('br', null),
+	            React.createElement('input', { type: 'date', name: 'user[date_of_birth]', value: this.state.dateOfBirth,
+	              onChange: this.DOBChange })
+	          )
+	        ),
+	        React.createElement(
+	          'div',
+	          { classname: 'col-md-4' },
+	          React.createElement(
+	            'label',
+	            null,
+	            ' Profile Picture Preview:',
+	            React.createElement('br', null),
+	            React.createElement('img', { src: this.state.image }),
+	            React.createElement('br', null),
+	            React.createElement('br', null),
+	            React.createElement(
+	              'button',
+	              { className: 'btn btn-default btn-sm', onClick: this.openCloudinaryWidget },
+	              'Change Profile Picture'
+	            ),
+	            React.createElement('div', { id: 'my-widget-container' })
+	          )
+	        ),
+	        React.createElement('br', null),
+	        React.createElement('br', null),
+	        React.createElement(
+	          'div',
+	          { className: 'row-fluid edit-profile-buttons' },
+	          React.createElement(
+	            'div',
+	            null,
+	            React.createElement('input', { value: 'Update My Profile', type: 'submit', className: 'btn create-review-btn' })
+	          ),
+	          React.createElement('br', null),
+	          React.createElement(
+	            'div',
+	            null,
+	            React.createElement(
+	              'button',
+	              { className: 'btn btn-default', onClick: this.cancelUpdate },
+	              'Cancel'
+	            )
+	          ),
 	          React.createElement('br', null),
 	          React.createElement('br', null),
 	          React.createElement(
 	            'button',
-	            { onClick: this.openCloudinaryWidget },
-	            'Update Profile Picture'
-	          ),
-	          React.createElement('div', { id: 'my-widget-container' })
-	        ),
-	        React.createElement('br', null),
-	        React.createElement('input', { type: 'submit', className: 'btn' }),
-	        React.createElement(
-	          'button',
-	          { className: 'btn', onClick: this.cancelUpdate },
-	          'Cancel'
-	        ),
-	        React.createElement('br', null),
-	        React.createElement('br', null),
-	        React.createElement(
-	          'button',
-	          { className: 'btn', onClick: this.deleteUser },
-	          'Delete My Account'
+	            { className: 'btn delete-review-btn', onClick: this.deleteUser },
+	            'Delete My Account'
+	          )
 	        )
 	      )
 	    );
@@ -51424,14 +51466,14 @@
 	          )
 	        ),
 	        React.createElement(
+	          'h4',
+	          null,
+	          'Reviews for ',
+	          this.state.currentSubscription.name
+	        ),
+	        React.createElement(
 	          'ul',
 	          { className: 'container subscription-review-ul' },
-	          React.createElement(
-	            'h4',
-	            null,
-	            'Reviews for ',
-	            this.state.currentSubscription.name
-	          ),
 	          this.state.reviews.sort(function (a, b) {
 	            return new Date(b.updated_at) - new Date(a.updated_at);
 	          }).map(function (review) {
@@ -51491,7 +51533,6 @@
 	    );
 	  },
 	  render: function () {
-	    console.log("reviewFeedRender");
 	    if (this.state.reviews === undefined) {
 	      return React.createElement(
 	        'div',
@@ -52693,15 +52734,24 @@
 	      ),
 	      React.createElement(
 	        'ul',
-	        { className: 'subscription-list' },
-	        this.state.subscriptions.map(function (subscription) {
+	        { className: 'subscription-list col-md-offset-2' },
+	        this.state.subscriptions.sort(function (a, b) {
+	          var textA = a.name.toUpperCase();
+	          var textB = b.name.toUpperCase();
+	          return textA < textB ? -1 : textA > textB ? 1 : 0;
+	        }).map(function (subscription) {
 	          return React.createElement(
 	            'li',
-	            null,
+	            { className: 'subscription-index-li' },
 	            React.createElement(
 	              Link,
-	              { to: "/subscriptions/" + subscription.id },
-	              subscription.name
+	              { className: 'subscription-name-link', to: "/subscriptions/" + subscription.id },
+	              React.createElement('img', { className: 'subscription-logo-thumbnail', src: subscription.logo, height: '50' }),
+	              React.createElement(
+	                'text',
+	                null,
+	                subscription.name
+	              )
 	            )
 	          );
 	        })

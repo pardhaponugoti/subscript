@@ -35,7 +35,6 @@ var ReviewFeed = React.createClass({
     </div>;
   },
   render: function() {
-    console.log("reviewFeedRender");
     if (this.state.reviews === undefined) {
       return <div>STAY TUNED</div>;
     } else {

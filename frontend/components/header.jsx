@@ -72,7 +72,7 @@ var Header = React.createClass({
 
   userDropdown: function() {
     if (this.props.loggedIn) {
-      return <div className="btn-group nav navbar-nav navbar-right">
+      return <div className="btn-group nav navbar-nav navbar-right header-dropdown">
         <button className="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
           <img src={this.props.currentUser.image} height="20" width="20"/>
           {" " + this.props.currentUser.first_name + " " + this.props.currentUser.last_name} <span className="caret"></span>
@@ -96,8 +96,8 @@ var Header = React.createClass({
         inputs.string = "Already a user?";
         inputs.button = <Button onClick={this.openSignInForm}>Sign In</Button>;
       }
-      return <div className="nav navbar-nav navbar-right btn-group">
-        <button className="btn btn-default btn-sm" onClick={this.toggleModal}>Sign In</button>
+      return <div className="nav navbar-nav navbar-right btn-group header-dropdown">
+        <button className="btn btn-default btn-sm" onClick={this.toggleModal}>{inputs.header}</button>
         <Modal show={this.state.modalIsOpen} onHide={this.close}>
           <Modal.Header closeButton>
             <Modal.Title>{inputs.header}</Modal.Title>
@@ -106,7 +106,7 @@ var Header = React.createClass({
             {inputs.form}
           </Modal.Body>
           <Modal.Footer>
-            {inputs.string}
+            {inputs.string + " "}
             {inputs.button}
           </Modal.Footer>
         </Modal>
@@ -114,8 +114,8 @@ var Header = React.createClass({
     }
   },
   render: function() {
-    return <nav className="navbar navbar-default navbar-fixed-top">
-      <div className="navbar-header btn-group">
+    return <nav className="navbar navbar-fixed-top">
+      <div className="navbar-header btn-group header-home">
         <a onClick={this.renderRoot} className="btn btn-default btn-sm">WebSiteName</a>
       </div>
       <HeaderSearchComponent />

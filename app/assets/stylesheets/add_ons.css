@@ -1,6 +1,10 @@
-.btn-group { padding: 10px 10px 10px 0px; }
+input{
+  outline: none;
+}
 
-input {outline: none;}
+h1, h2, h3, h4, h5, h6 {
+  color: green;
+}
 
 ul {
   padding: 0;
@@ -18,61 +22,21 @@ a {
   cursor: pointer;
 }
 
-.profile-link-img {
-  cursor: pointer;
+.password-errors-ul {
+  margin: 0px;
 }
 
-.profile-name {
-  font-size: 24px;
+.navbar {
+  background-color: #e63900;
+  box-shadow: 0px 1px;
 }
 
-.subscription-logo {
-  border: 1px grey solid;
+.header-home {
+  padding: 10px;
 }
 
-/*.subscription-review-ul {
-  text-align: center;
-}*/
-
-.review-show {
-  margin: 10px;
-  border-bottom: 1px gray solid;
-  /*border: 1px gray solid;*/
-}
-
-.review-comment {
-  font-style: italic;
-}
-
-.review-feed {
-  margin: 0 auto;
-  position: relative;
-}
-
-.review-feed h2{
-  text-align: center;
-}
-
-.subscription-index h2{
-  text-align: center;
-}
-
-#App {
-  position: relative;
-}
-
-#root {
-  width: 100%;
-}
-
-.subscription-search-ul {
-  position: absolute;
-}
-
-.subscription-search-li {
-  width: 150px;
-  background-color: #e6e6e6;
-  color: black;
+.header-dropdown {
+  padding: 10px;
 }
 
 .header-search-ul {
@@ -91,4 +55,124 @@ a {
 
 .header-search-box {
   position: relative;
+}
+
+.btn-group {
+  padding: 10px;
+}
+
+.profile-link-img {
+  cursor: pointer;
+  background-color: white;
+  border-radius: 4px;
+}
+
+.profile-name {
+  font-size: 24px;
+}
+
+.profile-img {
+  box-shadow: 2px 2px;
+}
+
+.profile-reviews-ul {
+  /*background-color: #ffe6e6;*/
+}
+
+.edit-profile-buttons {
+  text-align: center;
+}
+
+.create-review-btn {
+  background-color: #99e699;
+}
+
+.create-review-btn:hover {
+  background-color: #47d147;
+}
+
+.subscription-name-link {
+  color: black;
+}
+
+.subscription-name-link:hover {
+  color: black;
+  font-style: underline;
+}
+
+.subscription-logo {
+  box-shadow: 2px 2px;
+  /*border: 1px grey solid;*/
+}
+
+.subscription-review-ul {
+  /*background-color: #ffe6e6;*/
+}
+
+.review-show {
+  margin: 10px;
+  padding: 10px;
+  border-bottom: 1px #bfbfbf solid;
+  background-color: #ffe6e6;
+  /*border: 1px gray solid;*/
+}
+
+.review-comment {
+  font-style: italic;
+}
+
+.review-feed {
+  margin: 0 auto;
+  position: relative;
+}
+
+.review-feed h2{
+  text-align: center;
+}
+
+.edit-review-btn {
+  padding: 5px;
+  margin: 5px;
+}
+
+.delete-review-btn {
+  background-color: #ffb3b3;
+  padding: 5px;
+  margin: 5px;
+}
+
+.delete-review-btn:hover {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+.subscription-index h2{
+  text-align: center;
+}
+
+#App {
+  position: relative;
+}
+
+#root {
+  width: 100%;
+}
+
+.subscription-index-li {
+  padding: 10px;
+}
+
+.subscription-logo-thumbnail {
+  /*border: 1px #d9d9d9 solid;*/
+  margin: 5px;
+}
+
+.subscription-search-ul {
+  position: absolute;
+}
+
+.subscription-search-li {
+  width: 150px;
+  background-color: #e6e6e6;
+  color: black;
 }

@@ -24,9 +24,18 @@ var SubscriptionIndex = React.createClass({
   render: function() {
     return <div className="subscription-index">
       <h2>All Subscriptions</h2>
-      <ul className="subscription-list">
-        {this.state.subscriptions.map(function(subscription) {
-          return <li><Link to={"/subscriptions/" + subscription.id}>{subscription.name}</Link></li>;
+      <ul className="subscription-list col-md-offset-2">
+        {this.state.subscriptions.sort(function(a, b) {
+            var textA = a.name.toUpperCase();
+            var textB = b.name.toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        }).map(function(subscription) {
+          return <li className="subscription-index-li">
+            <Link className="subscription-name-link" to={"/subscriptions/" + subscription.id}>
+              <img className="subscription-logo-thumbnail" src={subscription.logo} height="50"/>
+              <text>{subscription.name}</text>
+            </Link>
+        </li>;
         })}
       </ul>
     </div>;
