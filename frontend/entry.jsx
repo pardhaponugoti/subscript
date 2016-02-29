@@ -20,7 +20,6 @@ var HeaderSearchComponent = require('./components/headerSearchComponent');
 var routes = (
   <Route path="/" component={App}>
     <IndexRoute component={ReviewFeed} />
-    <Route path="feed" component={ReviewFeed}></Route>
     <Route path="users/:userId" component={UserShowPage}></Route>
     <Route path="users/:userId/edit" component={UserEditPage}></Route>
     <Route path="subscriptions" component={SubscriptionIndex}></Route>

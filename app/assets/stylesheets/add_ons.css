@@ -96,13 +96,14 @@ a {
 }
 
 .subscription-grid-component {
-
+  margin: 10px 0px;
+  border: 1px black solid;
 }
 
 .example-enter {
   opacity: 0.01;
   transform:   translate(-250px, 250px);
-  transform: translate3d(-250px, 250px);
+  transform: translate3d(-250px, 250px, 0);
 }
 
 .example-enter.example-enter-active {
@@ -185,6 +186,10 @@ a {
 
 #App {
   position: relative;
+  transition: 600ms -webkit-filter linear;
+  /*transition: 1s -o-filter linear;
+  transition: 1s -moz-filter linear;
+  transition: 1s filter linear;*/
 }
 
 #root {

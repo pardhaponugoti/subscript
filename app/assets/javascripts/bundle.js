@@ -67,7 +67,6 @@
 	  Route,
 	  { path: '/', component: App },
 	  React.createElement(IndexRoute, { component: ReviewFeed }),
-	  React.createElement(Route, { path: 'feed', component: ReviewFeed }),
 	  React.createElement(Route, { path: 'users/:userId', component: UserShowPage }),
 	  React.createElement(Route, { path: 'users/:userId/edit', component: UserEditPage }),
 	  React.createElement(Route, { path: 'subscriptions', component: SubscriptionIndex }),
@@ -24783,6 +24782,11 @@
 	        React.createElement(Header, { currentUser: this.state.currentUser, loggedIn: this.state.loggedIn })
 	      ),
 	      React.createElement(
+	        'button',
+	        { onClick: this.linkToTest },
+	        'test'
+	      ),
+	      React.createElement(
 	        'div',
 	        null,
 	        this.props.children && React.cloneElement(this.props.children, {
@@ -24793,8 +24797,6 @@
 	    );
 	  }
 	});
-	
-	// <button onClick={this.linkToTest}>test</button>
 	
 	module.exports = App;
 
@@ -24839,10 +24841,10 @@
 	  },
 	
 	  toggleModal: function () {
-	    $("#App").css("filter", "blur(10px)");
-	    $("#App").css("-webkit-filter", "blur(10px)");
-	    $("#App").css("-o-filter", "blur(10px)");
-	    $("#App").css("-moz-filter", "blur(10px)");
+	    $("#App").css("filter", "blur(5px)");
+	    $("#App").css("-webkit-filter", "blur(5px)");
+	    $("#App").css("-o-filter", "blur(5px)");
+	    $("#App").css("-moz-filter", "blur(5px)");
 	    this.setState({
 	      modalIsOpen: !this.state.modalIsOpen
 	    });
@@ -24993,7 +24995,7 @@
 	        React.createElement(
 	          'a',
 	          { onClick: this.renderRoot, className: 'btn btn-default btn-sm' },
-	          'WebSiteName'
+	          'Σ'
 	        )
 	      ),
 	      React.createElement(HeaderSearchComponent, null),
@@ -50577,10 +50579,10 @@
 	  },
 	
 	  toggleEditReviewModal: function () {
-	    $("#App").css("filter", "blur(10px)");
-	    $("#App").css("-webkit-filter", "blur(10px)");
-	    $("#App").css("-o-filter", "blur(10px)");
-	    $("#App").css("-moz-filter", "blur(10px)");
+	    $("#App").css("filter", "blur(5px)");
+	    $("#App").css("-webkit-filter", "blur(5px)");
+	    $("#App").css("-o-filter", "blur(5px)");
+	    $("#App").css("-moz-filter", "blur(5px)");
 	    this.setState({
 	      editReviewModalIsOpen: !this.state.editReviewModalIsOpen
 	    });
@@ -52753,16 +52755,21 @@
 	
 	  getInitialState: function () {
 	    return {
-	      subscriptions: SubscriptionStore.all(),
-	      transitionAppear: true
+	      subscriptions: []
 	    };
 	  },
 	  componentDidMount: function () {
 	    console.log("subscriptionIndexMounting");
+	    this.setState({
+	      subscriptions: SubscriptionStore.all()
+	    });
 	    this.listenerToken = SubscriptionStore.addListener(this.onChange);
 	  },
 	  componentWillUnmount: function () {
 	    console.log("subscriptionIndexUnmounting");
+	    this.setState({
+	      subscriptions: []
+	    });
 	    this.listenerToken.remove();
 	  },
 	  onChange: function () {
@@ -52785,14 +52792,14 @@
 	        { className: 'col-md-offset-1 col-md-10' },
 	        React.createElement(
 	          TransitionGroup,
-	          { transitionName: 'example', transitionAppear: this.state.transitionAppear,
-	            transitionEnterTimeout: 500, transitionLeaveTimeout: 300 },
+	          { transitionName: 'example', transitionAppear: true, transitionAppearTimeout: 100000,
+	            transitionEnterTimeout: 1000000, transitionLeaveTimeout: 300 },
 	          this.state.subscriptions.sort(function (a, b) {
 	            var textA = a.name.toUpperCase();
 	            var textB = b.name.toUpperCase();
 	            return textA < textB ? -1 : textA > textB ? 1 : 0;
 	          }).map(function (subscription) {
-	            return React.createElement(SubscriptionGridComponent, { subscription: subscription });
+	            return React.createElement(SubscriptionGridComponent, { key: subscription.id, subscription: subscription });
 	          })
 	        )
 	      )
@@ -52815,7 +52822,7 @@
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      { className: 'col-lg-3 col-md-4 col-sm-4 col-xs-6 subscription-grid-component' },
+	      { className: 'col-md-4 col-sm-6 col-xs-6 subscription-grid-component' },
 	      React.createElement(
 	        Link,
 	        { className: 'subscription-name-link', to: "/subscriptions/" + this.props.subscription.id },
@@ -52827,12 +52834,20 @@
 	        React.createElement(
 	          'div',
 	          { className: 'row' },
-	          this.props.subscription.name
+	          React.createElement(
+	            'h4',
+	            null,
+	            this.props.subscription.name
+	          )
 	        )
 	      )
 	    );
 	  }
 	});
+	
+	// <div className="row">
+	//   <h6>{this.props.subscription.description}</h6>
+	// </div>
 	
 	module.exports = SubscriptionGridComponent;
 

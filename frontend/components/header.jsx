@@ -33,10 +33,10 @@ var Header = React.createClass({
   },
 
   toggleModal: function() {
-    $("#App").css("filter", "blur(10px)");
-    $("#App").css("-webkit-filter", "blur(10px)");
-    $("#App").css("-o-filter", "blur(10px)");
-    $("#App").css("-moz-filter", "blur(10px)");
+    $("#App").css("filter", "blur(5px)");
+    $("#App").css("-webkit-filter", "blur(5px)");
+    $("#App").css("-o-filter", "blur(5px)");
+    $("#App").css("-moz-filter", "blur(5px)");
     this.setState({
       modalIsOpen: !this.state.modalIsOpen
     });
@@ -124,7 +124,7 @@ var Header = React.createClass({
   render: function() {
     return <nav className="navbar navbar-fixed-top">
       <div className="navbar-header btn-group header-home">
-        <a onClick={this.renderRoot} className="btn btn-default btn-sm">WebSiteName</a>
+        <a onClick={this.renderRoot} className="btn btn-default btn-sm">Σ</a>
       </div>
       <HeaderSearchComponent />
       <div id="navbarCollapse" className="collapse navbar-collapse">

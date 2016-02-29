@@ -59,6 +59,7 @@ var App = React.createClass({
     console.log("AppRender");
     return <div id='App'>
       <div><Header currentUser={this.state.currentUser} loggedIn={this.state.loggedIn} /></div>
+      <button onClick={this.linkToTest}>test</button>
       <div>{this.props.children && React.cloneElement(this.props.children, {
                loggedIn: this.state.loggedIn,
                currentUser: this.state.currentUser
@@ -67,7 +68,6 @@ var App = React.createClass({
   }
 });
 
-// <button onClick={this.linkToTest}>test</button>
 
 
 

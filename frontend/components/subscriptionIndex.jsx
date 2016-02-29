@@ -9,16 +9,21 @@ var SubscriptionGridComponent = require('./subscriptionGridComponent');
 var SubscriptionIndex = React.createClass({
   getInitialState: function() {
     return {
-      subscriptions: SubscriptionStore.all(),
-      transitionAppear: true
+      subscriptions: []
     };
   },
   componentDidMount: function() {
     console.log("subscriptionIndexMounting");
+    this.setState({
+      subscriptions: SubscriptionStore.all()
+    });
     this.listenerToken = SubscriptionStore.addListener(this.onChange);
   },
   componentWillUnmount: function() {
     console.log("subscriptionIndexUnmounting");
+    this.setState({
+      subscriptions: []
+    });
     this.listenerToken.remove();
   },
   onChange: function() {
@@ -31,14 +36,14 @@ var SubscriptionIndex = React.createClass({
     return <div className="subscription-index">
       <h2>All Subscriptions</h2>
       <div className="col-md-offset-1 col-md-10">
-        <TransitionGroup transitionName="example" transitionAppear={this.state.transitionAppear}
-          transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+        <TransitionGroup transitionName="example" transitionAppear={true} transitionAppearTimeout={100000}
+          transitionEnterTimeout={1000000} transitionLeaveTimeout={300}>
           {this.state.subscriptions.sort(function(a, b) {
             var textA = a.name.toUpperCase();
             var textB = b.name.toUpperCase();
             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
           }).map(function(subscription) {
-            return <SubscriptionGridComponent subscription={subscription}/>;
+            return <SubscriptionGridComponent key={subscription.id} subscription={subscription}/>;
           })}
         </TransitionGroup>
       </div>

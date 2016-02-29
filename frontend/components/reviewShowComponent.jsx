@@ -39,10 +39,10 @@ var ReviewShowComponent = React.createClass({
   },
 
   toggleEditReviewModal: function() {
-    $("#App").css("filter", "blur(10px)");
-    $("#App").css("-webkit-filter", "blur(10px)");
-    $("#App").css("-o-filter", "blur(10px)");
-    $("#App").css("-moz-filter", "blur(10px)");
+    $("#App").css("filter", "blur(5px)");
+    $("#App").css("-webkit-filter", "blur(5px)");
+    $("#App").css("-o-filter", "blur(5px)");
+    $("#App").css("-moz-filter", "blur(5px)");
     this.setState({
       editReviewModalIsOpen: !this.state.editReviewModalIsOpen
     });
