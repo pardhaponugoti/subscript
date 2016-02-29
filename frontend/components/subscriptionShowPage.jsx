@@ -55,7 +55,7 @@ var SubscriptionShowPage = React.createClass({
     } else {
       return <div className="container">
         <div className="row">
-          <div className="col-md-3"><h1><img className="subscription-logo" src={this.state.currentSubscription.logo} height="256"/></h1></div>
+          <div className="col-md-4"><h1><img className="subscription-logo" src={this.state.currentSubscription.logo} height="256"/></h1></div>
           <div>
             <h1>{this.state.currentSubscription.name}</h1>
             <h4><a href={this.state.currentSubscription.url}>{this.state.currentSubscription.url}</a></h4>

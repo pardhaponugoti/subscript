@@ -33,6 +33,10 @@ var Header = React.createClass({
   },
 
   toggleModal: function() {
+    $("#App").css("filter", "blur(10px)");
+    $("#App").css("-webkit-filter", "blur(10px)");
+    $("#App").css("-o-filter", "blur(10px)");
+    $("#App").css("-moz-filter", "blur(10px)");
     this.setState({
       modalIsOpen: !this.state.modalIsOpen
     });
@@ -48,6 +52,10 @@ var Header = React.createClass({
     });
   },
   close: function() {
+    $("#App").css("filter", "blur(0px)");
+    $("#App").css("-webkit-filter", "blur(0px)");
+    $("#App").css("-o-filter", "blur(0px)");
+    $("#App").css("-moz-filter", "blur(0px)");
     this.setState({
       modalIsOpen: false
     });

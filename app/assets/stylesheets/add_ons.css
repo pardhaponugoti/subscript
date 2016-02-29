@@ -22,6 +22,10 @@ a {
   cursor: pointer;
 }
 
+.modal-backdrop {
+  opacity: 0.8;
+}
+
 .password-errors-ul {
   margin: 0px;
 }
@@ -91,7 +95,36 @@ a {
   background-color: #47d147;
 }
 
+.subscription-grid-component {
+
+}
+
+.example-enter {
+  opacity: 0.01;
+  transform:   translate(-250px, 250px);
+  transform: translate3d(-250px, 250px);
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+  transform:   translate(0,0);
+  transform: translate3d(0,0,0);
+  transition-property: transform, opacity;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.175, 0.665, 0.320, 1), linear;
+}
+
+.example-leave {
+  opacity: 1;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
 .subscription-name-link {
+  text-align: center;
   color: black;
 }
 
@@ -113,7 +146,7 @@ a {
   margin: 10px;
   padding: 10px;
   border-bottom: 1px #bfbfbf solid;
-  background-color: #ffe6e6;
+  background-color: #f2f2f2;
   /*border: 1px gray solid;*/
 }
 

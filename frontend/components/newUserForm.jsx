@@ -120,6 +120,7 @@ var NewUserForm = React.createClass({
             placeholder="Confirm Password*" onChange={this.confirmPasswordChange} />
         {this.matchedPassword()}
         <br/>
+        <br/>
         <input className="btn btn-default" type="submit" value="Sign Up" disabled={!this.state.inputEnabled}/>
       </form>
     </div>;

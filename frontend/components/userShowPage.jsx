@@ -20,6 +20,21 @@ var EditReviewForm = require('./editReviewForm.jsx');
 
 function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
 
+var backDropStyles = {
+  base: {
+    background: 'rgba(0, 0, 0, .7)',
+    opacity: 0,
+    visibility: 'hidden',
+    transition: 'all 0.4s',
+    overflowX: 'hidden',
+    overflowY: 'auto'
+  },
+  open: {
+    opacity: 1,
+    visibility: 'visible'
+  }
+};
+
 var UserShowPage = React.createClass({
   getInitialState: function() {
     return {
@@ -74,11 +89,19 @@ var UserShowPage = React.createClass({
   },
 
   toggleNewReviewModal: function() {
+    $("#App").css("filter", "blur(10px)");
+    $("#App").css("-webkit-filter", "blur(10px)");
+    $("#App").css("-o-filter", "blur(10px)");
+    $("#App").css("-moz-filter", "blur(10px)");
     this.setState({
       newReviewModalIsOpen: !this.state.newReviewModalIsOpen
     });
   },
   closeNewReviewModal: function() {
+    $("#App").css("filter", "blur(0px)");
+    $("#App").css("-webkit-filter", "blur(0px)");
+    $("#App").css("-o-filter", "blur(0px)");
+    $("#App").css("-moz-filter", "blur(0px)");
     this.setState({
       newReviewModalIsOpen: false
     });
@@ -131,7 +154,9 @@ var UserShowPage = React.createClass({
           <br/>
             { parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ?
               <button className="btn create-review-btn btn-sm" onClick={this.toggleNewReviewModal}>Create New Review</button> : "" }
-            <Modal show={this.state.newReviewModalIsOpen} onHide={this.closeNewReviewModal}>
+            <Modal
+              show={this.state.newReviewModalIsOpen}
+              onHide={this.closeNewReviewModal}>
               <Modal.Header closeButton>
                 <Modal.Title>Write a New Review</Modal.Title>
               </Modal.Header>

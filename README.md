@@ -60,9 +60,9 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 
 **Objective:** Existing pages (including signup/signin) will look good.
 
-- [ ] create a basic style guide
-- [ ] position elements on the page
-- [ ] add basic colors & styles
+- [x] create a basic style guide
+- [x] position elements on the page
+- [x] add basic colors & styles
 
 ### Phase 4: Subscriptions (0.5 days)
 
@@ -97,7 +97,7 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 for subscriptions or their friends
 
 - [x] auto-populates suggestions based on what the user has typed in so far
-- [ ] when user presses enter it redirects to a search results page
+- [x] when user clicks on an element it redirects to the page
 
 ### Phase 8: Styling Cleanup and Seeding (2 days)
 
@@ -114,6 +114,7 @@ for subscriptions or their friends
 - [ ] add a backend query to subscriptionSearch
 
 ### Bonus Features (TBD)
+- [ ] Add upvote model to reviews
 - [ ] Add charts to show patterns for the ratings
 - [ ] Add infinite scroll
 - [ ] Add multiple session capability
