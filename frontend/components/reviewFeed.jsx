@@ -41,7 +41,7 @@ var ReviewFeed = React.createClass({
     } else {
       return <div className="review-feed">
         <h2>Review Feed</h2>
-          <ul>
+          <ul className="container">
             {this.state.reviews.map(function(review) {
               return <ReviewShowComponent review={review} key={review.id}/>;
             })}

@@ -50,11 +50,11 @@ var EditReviewForm = React.createClass({
   },
 
   render: function() {
-    return <form>
-      <div className="col-md-4">
-        <div>{this.state.subscription.name}</div>
-      </div>
-      <div className="col-md-8">
+    return <form className="container-fluid">
+      <div>
+        Subscription: {this.state.subscription.name}
+        <br/>
+        <br/>
           How often do you use this service?
         <br/>
           <label className="radio-inline"><input type="radio" value="5"
@@ -99,9 +99,9 @@ var EditReviewForm = React.createClass({
         <br/>
         Comments:
         <br/>
-        <input type="textarea" cols="40" rows="5" valueLink={this.linkState("comment")}/>
+        <textarea cols="40" rows="5" valueLink={this.linkState("comment")}/>
         <br/>
-        <input type="submit" onClick={this.submitEditedReview}/>
+        <input className="btn btn-default" type="submit" onClick={this.submitEditedReview}/>
       </div>
     </form>;
   }

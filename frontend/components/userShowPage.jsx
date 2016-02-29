@@ -109,26 +109,25 @@ var UserShowPage = React.createClass({
     } else {
       var self = this;
       return <div>
-        <div className="col-md-4">
+        <div className="col-md-4 container-fluid">
           <img src={this.state.currentShowUser.image} className="img-center"></img>
           <br/>
-          <ul>Subscriptions
+          <ul><h4>Subscriptions</h4>
             {this.state.currentShowUserReviews.map(function(review) {
               return <li key={review.id}><Link to={"/subscriptions/" + review.subscription_id}>
                 {SubscriptionStore.findById(review.subscription_id).name}</Link></li>;
             })}
           </ul>
-          <div>LEFT 1/3</div>
         </div>
-        <div className="col-md-8">
-          <div className="lead">{this.state.currentShowUser.first_name + " " + this.state.currentShowUser.last_name}
-            { parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ?
-              <span className="small"><Link to={"/users/" + this.props.params.userId + "/edit"}>Edit</Link></span> : "" }
+        <div className="col-md-8 container-fluid">
+          <div className="profile-name">{this.state.currentShowUser.first_name + " " + this.state.currentShowUser.last_name}
           </div>
+            { parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ?
+              <div className="small"><Link to={"/users/" + this.props.params.userId + "/edit"}>Edit Profile</Link></div> : "" }
+          <br/>
           <div>Location: {this.state.currentShowUser.location}</div>
           <div>Email: {this.state.currentShowUser.email}</div>
           <div>Date of Birth: {this.state.currentShowUser.date_of_birth}</div>
-          <div>RIGHT 2/3</div>
           <br/>
             { parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ?
               <button className="btn btn-default btn-sm" onClick={this.toggleNewReviewModal}>Create New Review</button> : "" }
@@ -146,7 +145,7 @@ var UserShowPage = React.createClass({
           <br/>
           <br/>
           <br/>
-          <ul>
+          <ul><h4>Reviews</h4>
             { this.state.currentShowUserReviews.sort(function(a, b)
               {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(userReview) {
                 return <ReviewShowComponent userId={self.props.params.userId} currentUser={self.props.currentUser}

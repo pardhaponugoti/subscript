@@ -62,7 +62,7 @@ var SubscriptionShowPage = React.createClass({
             <h5>{this.state.currentSubscription.description}</h5>
           </div>
         </div>
-        <ul className="container subscription-review-ul" >Reviews for {this.state.currentSubscription.name}
+        <ul className="container subscription-review-ul" ><h4>Reviews for {this.state.currentSubscription.name}</h4>
           {this.state.reviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
             return <ReviewShowComponent review={review} />;
           })}

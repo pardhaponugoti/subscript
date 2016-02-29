@@ -56,9 +56,10 @@ var SubscriptionSearch = React.createClass({
       if(this.state.selected || this.state.searchString.length === 0) {
         subUl = null;
       } else {
-        subUl = <ul>
+        subUl = <ul className="subscription-search-ul">
           { subs.map(function(sub){
-            return <li key={sub.id} onClick={self.updateForm.bind(self, sub.id, sub.name)}>{sub.name}</li>;
+            return <li className="subscription-search-li" key={sub.id}
+              onClick={self.updateForm.bind(self, sub.id, sub.name)}>{sub.name}</li>;
             }) }
         </ul>;
       }

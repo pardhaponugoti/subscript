@@ -80,11 +80,11 @@ var HeaderSearchComponent = React.createClass({
           { elements.map(function(element){
             if (element.email === undefined) {
               return <li className="header-search-li list-group-item" onClick={self.updateForm.bind(self, element)}>
-                <img className="header-search-img" src={element.logo} height="35"/>{element.name}
+                <img className="header-search-img" src={element.logo} />{element.name}
               </li>;
               } else {
                 return <li className="header-search-li list-group-item" onClick={self.updateForm.bind(self, element)}>
-                  <img className="header-search-img" src={element.image} height="35"/>{element.first_name + " " + element.last_name}
+                  <img className="header-search-img" src={element.image} />{element.first_name + " " + element.last_name}
                 </li>;
               }
             })
@@ -93,9 +93,9 @@ var HeaderSearchComponent = React.createClass({
       }
 
       return <form role="search" className="navbar-form navbar-left">
-        <div className = "form-group header-search-box">
+        <div className = "form-group">
         <input type="text" value={this.state.searchString} onChange={this.handleChange}
-          placeholder="Search" className="form-control"/>
+          placeholder="Search" className="form-control header-search-box"/>
         { elementUl }
         </div>
       </form>;

@@ -56,45 +56,54 @@ var ReviewShowComponent = React.createClass({
   render: function() {
     // two cases -- if the currentUser has been passed down or if not
     if (this.props.currentUser) {
-      return <li className="review-show" key={this.props.review.id}>
-          <img src={this.state.author.image} onClick={this.openAuthorPage}
-            className="profile-link-img" height="125" width="125"></img>
-          <span>{"★".repeat(this.props.review.rating)}</span>
-          <span>{FREQUENCY[this.props.review.frequency]}</span>
-          <span><a onClick={this.openSubscriptionPage}>{this.state.subscription.name}</a></span>
+      return <li className="review-show container-fluid" key={this.props.review.id}>
+        <div className="row-fluid">
+          <div className="col-md-3">
+            <img src={this.state.author.image} onClick={this.openAuthorPage}
+              className="profile-link-img" height="125" width="125"></img>
+            <div><a onClick={this.openAuthorPage}>{ this.state.author.first_name + " " + this.state.author.last_name }</a></div>
+            <div>Uses Service: {FREQUENCY[this.props.review.frequency]}</div>
+          </div>
+          <div className="col-md-9">
+            <div><a onClick={this.openSubscriptionPage}>{this.state.subscription.name}</a></div>
+            <div>{"★".repeat(this.props.review.rating)}</div>
+            <div className="review-comment">{"\"" + this.props.review.comment + "\""}</div>
+          </div>
+        </div>
           <br/>
-          <div><a onClick={this.openAuthorPage}>{ this.state.author.first_name + " " + this.state.author.last_name }</a></div>
-          <div>{this.props.review.comment}</div>
-            { parseInt(this.props.userId) === parseInt(this.props.currentUser.id) ?
-              <div>
-                <span>
-                  <button className="btn btn-default btn-sm" onClick={this.toggleEditReviewModal}>Edit Review</button>
-                  <button className="btn btn-default btn-sm" onClick={this.deleteReview.bind(this, this.props.review.id)}>Delete Review</button>
-                </span>
-                <Modal show={this.state.editReviewModalIsOpen} onHide={this.closeEditReviewModal}>
-                  <Modal.Header closeButton>
-                    <Modal.Title>Edit Review</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <EditReviewForm review={this.props.review} currentUser={this.props.currentUser}
-                      closeModalCallback={this.closeEditReviewModal}/>
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button onClick={this.closeEditReviewModal}>Never Mind</Button>
-                  </Modal.Footer>
-                </Modal>
-            </div> : null }
+          { parseInt(this.props.userId) === parseInt(this.props.currentUser.id) ?
+            <div className="row-fluid">
+              <span>
+                <button className="btn btn-default btn-sm" onClick={this.toggleEditReviewModal}>Edit Review</button>
+                <button className="btn btn-default btn-sm" onClick={this.deleteReview.bind(this, this.props.review.id)}>Delete Review</button>
+              </span>
+              <Modal show={this.state.editReviewModalIsOpen} onHide={this.closeEditReviewModal}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Edit Review</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <EditReviewForm review={this.props.review} currentUser={this.props.currentUser}
+                    closeModalCallback={this.closeEditReviewModal}/>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button onClick={this.closeEditReviewModal}>Never Mind</Button>
+                </Modal.Footer>
+              </Modal>
+          </div> : null }
       </li>;
     } else {
-      return <li className="review-show" key={this.props.review.id}>
-        <img src={this.state.author.image} onClick={this.openAuthorPage}
-          className="profile-link-img" height="125" width="125"></img>
-        <span>{"★".repeat(this.props.review.rating)}</span>
-        <span>{FREQUENCY[this.props.review.frequency]}</span>
-        <span><a onClick={this.openSubscriptionPage}>{this.state.subscription.name}</a></span>
-        <br/>
-        <div><a onClick={this.openAuthorPage}>{ this.state.author.first_name + " " + this.state.author.last_name }</a></div>
-        <div>{this.props.review.comment}</div>
+      return <li className="review-show container-fluid" key={this.props.review.id}>
+        <div className="col-md-3">
+          <img src={this.state.author.image} onClick={this.openAuthorPage}
+            className="profile-link-img" height="125" width="125"></img>
+          <div><a onClick={this.openAuthorPage}>{ this.state.author.first_name + " " + this.state.author.last_name }</a></div>
+          <div>Uses Service: {FREQUENCY[this.props.review.frequency]}</div>
+        </div>
+        <div className="col-md-9">
+          <div><a onClick={this.openSubscriptionPage}>{this.state.subscription.name}</a></div>
+          <div>{"★".repeat(this.props.review.rating)}</div>
+          <div className="review-comment">{"\"" + this.props.review.comment + "\""}</div>
+        </div>
       </li>;
     }
   }

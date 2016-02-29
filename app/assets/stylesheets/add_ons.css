@@ -3,14 +3,15 @@
 input {outline: none;}
 
 ul {
+  padding: 0;
   display: block;
   list-style-type: none;
-  border: 1px red solid;
+  /*border: 1px red solid;*/
 }
 
 li {
   display: block;
-  border: 1px green solid;
+  /*border: 1px green solid;*/
 }
 
 a {
@@ -19,6 +20,10 @@ a {
 
 .profile-link-img {
   cursor: pointer;
+}
+
+.profile-name {
+  font-size: 24px;
 }
 
 .subscription-logo {
@@ -30,11 +35,16 @@ a {
 }*/
 
 .review-show {
-  height: 200px;
+  margin: 10px;
+  border-bottom: 1px gray solid;
+  /*border: 1px gray solid;*/
+}
+
+.review-comment {
+  font-style: italic;
 }
 
 .review-feed {
-  width: 640px;
   margin: 0 auto;
   position: relative;
 }
@@ -55,6 +65,16 @@ a {
   width: 100%;
 }
 
+.subscription-search-ul {
+  position: absolute;
+}
+
+.subscription-search-li {
+  width: 150px;
+  background-color: #e6e6e6;
+  color: black;
+}
+
 .header-search-ul {
   position: absolute;
   width: 187px;
@@ -71,8 +91,4 @@ a {
 
 .header-search-box {
   position: relative;
-}
-
-ul {
-  padding: 0;
 }

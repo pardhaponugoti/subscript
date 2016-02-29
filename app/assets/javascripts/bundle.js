@@ -24783,11 +24783,6 @@
 	        React.createElement(Header, { currentUser: this.state.currentUser, loggedIn: this.state.loggedIn })
 	      ),
 	      React.createElement(
-	        'button',
-	        { onClick: this.linkToTest },
-	        'test'
-	      ),
-	      React.createElement(
 	        'div',
 	        null,
 	        this.props.children && React.cloneElement(this.props.children, {
@@ -24798,6 +24793,8 @@
 	    );
 	  }
 	});
+	
+	// <button onClick={this.linkToTest}>test</button>
 	
 	module.exports = App;
 
@@ -42179,14 +42176,14 @@
 	            return React.createElement(
 	              'li',
 	              { className: 'header-search-li list-group-item', onClick: self.updateForm.bind(self, element) },
-	              React.createElement('img', { className: 'header-search-img', src: element.logo, height: '35' }),
+	              React.createElement('img', { className: 'header-search-img', src: element.logo }),
 	              element.name
 	            );
 	          } else {
 	            return React.createElement(
 	              'li',
 	              { className: 'header-search-li list-group-item', onClick: self.updateForm.bind(self, element) },
-	              React.createElement('img', { className: 'header-search-img', src: element.image, height: '35' }),
+	              React.createElement('img', { className: 'header-search-img', src: element.image }),
 	              element.first_name + " " + element.last_name
 	            );
 	          }
@@ -42199,9 +42196,9 @@
 	      { role: 'search', className: 'navbar-form navbar-left' },
 	      React.createElement(
 	        'div',
-	        { className: 'form-group header-search-box' },
+	        { className: 'form-group' },
 	        React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange,
-	          placeholder: 'Search', className: 'form-control' }),
+	          placeholder: 'Search', className: 'form-control header-search-box' }),
 	        elementUl
 	      )
 	    );
@@ -50359,13 +50356,17 @@
 	        null,
 	        React.createElement(
 	          'div',
-	          { className: 'col-md-4' },
+	          { className: 'col-md-4 container-fluid' },
 	          React.createElement('img', { src: this.state.currentShowUser.image, className: 'img-center' }),
 	          React.createElement('br', null),
 	          React.createElement(
 	            'ul',
 	            null,
-	            'Subscriptions',
+	            React.createElement(
+	              'h4',
+	              null,
+	              'Subscriptions'
+	            ),
 	            this.state.currentShowUserReviews.map(function (review) {
 	              return React.createElement(
 	                'li',
@@ -50377,30 +50378,26 @@
 	                )
 	              );
 	            })
-	          ),
-	          React.createElement(
-	            'div',
-	            null,
-	            'LEFT 1/3'
 	          )
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'col-md-8' },
+	          { className: 'col-md-8 container-fluid' },
 	          React.createElement(
 	            'div',
-	            { className: 'lead' },
-	            this.state.currentShowUser.first_name + " " + this.state.currentShowUser.last_name,
-	            parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ? React.createElement(
-	              'span',
-	              { className: 'small' },
-	              React.createElement(
-	                Link,
-	                { to: "/users/" + this.props.params.userId + "/edit" },
-	                'Edit'
-	              )
-	            ) : ""
+	            { className: 'profile-name' },
+	            this.state.currentShowUser.first_name + " " + this.state.currentShowUser.last_name
 	          ),
+	          parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ? React.createElement(
+	            'div',
+	            { className: 'small' },
+	            React.createElement(
+	              Link,
+	              { to: "/users/" + this.props.params.userId + "/edit" },
+	              'Edit Profile'
+	            )
+	          ) : "",
+	          React.createElement('br', null),
 	          React.createElement(
 	            'div',
 	            null,
@@ -50418,11 +50415,6 @@
 	            null,
 	            'Date of Birth: ',
 	            this.state.currentShowUser.date_of_birth
-	          ),
-	          React.createElement(
-	            'div',
-	            null,
-	            'RIGHT 2/3'
 	          ),
 	          React.createElement('br', null),
 	          parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ? React.createElement(
@@ -50463,6 +50455,11 @@
 	          React.createElement(
 	            'ul',
 	            null,
+	            React.createElement(
+	              'h4',
+	              null,
+	              'Reviews'
+	            ),
 	            this.state.currentShowUserReviews.sort(function (a, b) {
 	              return new Date(b.updated_at) - new Date(a.updated_at);
 	            }).map(function (userReview) {
@@ -50563,46 +50560,59 @@
 	    if (this.props.currentUser) {
 	      return React.createElement(
 	        'li',
-	        { className: 'review-show', key: this.props.review.id },
-	        React.createElement('img', { src: this.state.author.image, onClick: this.openAuthorPage,
-	          className: 'profile-link-img', height: '125', width: '125' }),
+	        { className: 'review-show container-fluid', key: this.props.review.id },
 	        React.createElement(
-	          'span',
-	          null,
-	          "★".repeat(this.props.review.rating)
-	        ),
-	        React.createElement(
-	          'span',
-	          null,
-	          FREQUENCY[this.props.review.frequency]
-	        ),
-	        React.createElement(
-	          'span',
-	          null,
+	          'div',
+	          { className: 'row-fluid' },
 	          React.createElement(
-	            'a',
-	            { onClick: this.openSubscriptionPage },
-	            this.state.subscription.name
+	            'div',
+	            { className: 'col-md-3' },
+	            React.createElement('img', { src: this.state.author.image, onClick: this.openAuthorPage,
+	              className: 'profile-link-img', height: '125', width: '125' }),
+	            React.createElement(
+	              'div',
+	              null,
+	              React.createElement(
+	                'a',
+	                { onClick: this.openAuthorPage },
+	                this.state.author.first_name + " " + this.state.author.last_name
+	              )
+	            ),
+	            React.createElement(
+	              'div',
+	              null,
+	              'Uses Service: ',
+	              FREQUENCY[this.props.review.frequency]
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'col-md-9' },
+	            React.createElement(
+	              'div',
+	              null,
+	              React.createElement(
+	                'a',
+	                { onClick: this.openSubscriptionPage },
+	                this.state.subscription.name
+	              )
+	            ),
+	            React.createElement(
+	              'div',
+	              null,
+	              "★".repeat(this.props.review.rating)
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'review-comment' },
+	              "\"" + this.props.review.comment + "\""
+	            )
 	          )
 	        ),
 	        React.createElement('br', null),
-	        React.createElement(
-	          'div',
-	          null,
-	          React.createElement(
-	            'a',
-	            { onClick: this.openAuthorPage },
-	            this.state.author.first_name + " " + this.state.author.last_name
-	          )
-	        ),
-	        React.createElement(
-	          'div',
-	          null,
-	          this.props.review.comment
-	        ),
 	        parseInt(this.props.userId) === parseInt(this.props.currentUser.id) ? React.createElement(
 	          'div',
-	          null,
+	          { className: 'row-fluid' },
 	          React.createElement(
 	            'span',
 	            null,
@@ -50650,42 +50660,50 @@
 	    } else {
 	      return React.createElement(
 	        'li',
-	        { className: 'review-show', key: this.props.review.id },
-	        React.createElement('img', { src: this.state.author.image, onClick: this.openAuthorPage,
-	          className: 'profile-link-img', height: '125', width: '125' }),
-	        React.createElement(
-	          'span',
-	          null,
-	          "★".repeat(this.props.review.rating)
-	        ),
-	        React.createElement(
-	          'span',
-	          null,
-	          FREQUENCY[this.props.review.frequency]
-	        ),
-	        React.createElement(
-	          'span',
-	          null,
-	          React.createElement(
-	            'a',
-	            { onClick: this.openSubscriptionPage },
-	            this.state.subscription.name
-	          )
-	        ),
-	        React.createElement('br', null),
+	        { className: 'review-show container-fluid', key: this.props.review.id },
 	        React.createElement(
 	          'div',
-	          null,
+	          { className: 'col-md-3' },
+	          React.createElement('img', { src: this.state.author.image, onClick: this.openAuthorPage,
+	            className: 'profile-link-img', height: '125', width: '125' }),
 	          React.createElement(
-	            'a',
-	            { onClick: this.openAuthorPage },
-	            this.state.author.first_name + " " + this.state.author.last_name
+	            'div',
+	            null,
+	            React.createElement(
+	              'a',
+	              { onClick: this.openAuthorPage },
+	              this.state.author.first_name + " " + this.state.author.last_name
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            'Uses Service: ',
+	            FREQUENCY[this.props.review.frequency]
 	          )
 	        ),
 	        React.createElement(
 	          'div',
-	          null,
-	          this.props.review.comment
+	          { className: 'col-md-9' },
+	          React.createElement(
+	            'div',
+	            null,
+	            React.createElement(
+	              'a',
+	              { onClick: this.openSubscriptionPage },
+	              this.state.subscription.name
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            null,
+	            "★".repeat(this.props.review.rating)
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'review-comment' },
+	            "\"" + this.props.review.comment + "\""
+	          )
 	        )
 	      );
 	    }
@@ -50754,19 +50772,14 @@
 	  render: function () {
 	    return React.createElement(
 	      'form',
-	      null,
+	      { className: 'container-fluid' },
 	      React.createElement(
 	        'div',
-	        { className: 'col-md-4' },
-	        React.createElement(
-	          'div',
-	          null,
-	          this.state.subscription.name
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'col-md-8' },
+	        null,
+	        'Subscription: ',
+	        this.state.subscription.name,
+	        React.createElement('br', null),
+	        React.createElement('br', null),
 	        'How often do you use this service?',
 	        React.createElement('br', null),
 	        React.createElement(
@@ -50857,9 +50870,9 @@
 	        React.createElement('br', null),
 	        'Comments:',
 	        React.createElement('br', null),
-	        React.createElement('input', { type: 'textarea', cols: '40', rows: '5', valueLink: this.linkState("comment") }),
+	        React.createElement('textarea', { cols: '40', rows: '5', valueLink: this.linkState("comment") }),
 	        React.createElement('br', null),
-	        React.createElement('input', { type: 'submit', onClick: this.submitEditedReview })
+	        React.createElement('input', { className: 'btn btn-default', type: 'submit', onClick: this.submitEditedReview })
 	      )
 	    );
 	  }
@@ -50933,11 +50946,12 @@
 	    } else {
 	      subUl = React.createElement(
 	        'ul',
-	        null,
+	        { className: 'subscription-search-ul' },
 	        subs.map(function (sub) {
 	          return React.createElement(
 	            'li',
-	            { key: sub.id, onClick: self.updateForm.bind(self, sub.id, sub.name) },
+	            { className: 'subscription-search-li', key: sub.id,
+	              onClick: self.updateForm.bind(self, sub.id, sub.name) },
 	            sub.name
 	          );
 	        })
@@ -51019,15 +51033,12 @@
 	  render: function () {
 	    return React.createElement(
 	      'form',
-	      null,
+	      { className: 'container-fluid' },
 	      React.createElement(
 	        'div',
-	        { className: 'col-md-4' },
-	        React.createElement(SubscriptionSearch, { updateFormCallback: this.updateFormCallback })
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'col-md-8' },
+	        null,
+	        React.createElement(SubscriptionSearch, { updateFormCallback: this.updateFormCallback }),
+	        React.createElement('br', null),
 	        'How often do you use this service?',
 	        React.createElement('br', null),
 	        React.createElement(
@@ -51118,9 +51129,9 @@
 	        React.createElement('br', null),
 	        'Comments:',
 	        React.createElement('br', null),
-	        React.createElement('input', { type: 'textarea', cols: '40', rows: '5', valueLink: this.linkState("comment") }),
+	        React.createElement('textarea', { cols: '40', rows: '5', valueLink: this.linkState("comment") }),
 	        React.createElement('br', null),
-	        React.createElement('input', { type: 'submit', onClick: this.submitNewReview })
+	        React.createElement('input', { className: 'btn btn-default', type: 'submit', onClick: this.submitNewReview })
 	      )
 	    );
 	  }
@@ -51415,8 +51426,12 @@
 	        React.createElement(
 	          'ul',
 	          { className: 'container subscription-review-ul' },
-	          'Reviews for ',
-	          this.state.currentSubscription.name,
+	          React.createElement(
+	            'h4',
+	            null,
+	            'Reviews for ',
+	            this.state.currentSubscription.name
+	          ),
 	          this.state.reviews.sort(function (a, b) {
 	            return new Date(b.updated_at) - new Date(a.updated_at);
 	          }).map(function (review) {
@@ -51494,7 +51509,7 @@
 	        ),
 	        React.createElement(
 	          'ul',
-	          null,
+	          { className: 'container' },
 	          this.state.reviews.map(function (review) {
 	            return React.createElement(ReviewShowComponent, { review: review, key: review.id });
 	          })

@@ -51,11 +51,10 @@ var NewReviewForm = React.createClass({
   },
 
   render: function() {
-    return <form>
-      <div className="col-md-4">
+    return <form className="container-fluid">
+      <div>
         <SubscriptionSearch updateFormCallback={this.updateFormCallback} />
-      </div>
-      <div className="col-md-8">
+        <br/>
           How often do you use this service?
         <br/>
           <label className="radio-inline"><input type="radio" value="5"
@@ -100,9 +99,9 @@ var NewReviewForm = React.createClass({
         <br/>
         Comments:
         <br/>
-        <input type="textarea" cols="40" rows="5" valueLink={this.linkState("comment")}/>
+        <textarea cols="40" rows="5" valueLink={this.linkState("comment")}/>
         <br/>
-        <input type="submit" onClick={this.submitNewReview}/>
+        <input className="btn btn-default" type="submit" onClick={this.submitNewReview}/>
       </div>
     </form>;
   }
