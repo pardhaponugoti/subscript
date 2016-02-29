@@ -186,10 +186,7 @@ a {
 
 #App {
   position: relative;
-  transition: 600ms -webkit-filter linear;
-  /*transition: 1s -o-filter linear;
-  transition: 1s -moz-filter linear;
-  transition: 1s filter linear;*/
+  transition: all 500ms;
 }
 
 #root {
