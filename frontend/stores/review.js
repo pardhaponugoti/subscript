@@ -94,11 +94,11 @@ ReviewStore.sortedByAge = function() {
 };
 
 ReviewStore.all = function() {
-  var reviews = [];
-  for (var id in _reviews) {
-    reviews.push(_reviews[id]);
-  }
-  return reviews;
+  // var reviews = [];
+  // for (var id in _reviews) {
+  //   reviews.push(_reviews[id]);
+  // }
+  return _reviewsArray;
 };
 
 module.exports = ReviewStore;

@@ -6,15 +6,16 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-# first_name, last_name, email, password, location, date_of_birth,
+# first_name, last_name, email, password, location, image, date_of_birth
 
 user_list = [
-  ["Boba", "Fett", "bobafett@bountyhuntersanonymous.com", "password1", "Kamino"],
-  ["Darth", "Vader", "darthvader@darkside.com", "password1", "Tatooine"],
-  ["Admiral", "Ackbar", "itsatrap@itsatrap.com", "password1", "Mon Cala"],
+  ["Boba", "Fett", "bobafett@bountyhuntersanonymous.com", "password1", "Kamino", "http://res.cloudinary.com/pardha/image/upload/v1456507629/bp4dkfghaibo0mvcbqnl.jpg"],
+  ["Darth", "Vader", "darthvader@darkside.com", "password1", "Tatooine", "http://res.cloudinary.com/pardha/image/upload/v1456507761/gnus7aomcy8lkoe8qfmb.jpg"],
+  ["Admiral", "Ackbar", "itsatrap@itsatrap.com", "password1", "Mon Cala",
+  "http://res.cloudinary.com/pardha/image/upload/v1456367336/qfuxbnkhb1vo7n6bki3s.jpg"],
   ["Luke", "Skywalker", "luke@jedi.com", "password1", "Tatooine"],
   ["Mace", "Windu", "mace@jedi.com", "password1", "Haruun Kal"],
-  ["Master", "Yoda", "yoda@jedi.com", "password1", "Dagobah"],
+  ["Master", "Yoda", "yoda@jedi.com", "password1", "Dagobah", "http://res.cloudinary.com/pardha/image/upload/v1456508772/uizx7rpwjutkp8aechxk.jpg"],
   ["Obi-Wan", "Kenobe", "obi-wan@jedi.com", "password1", "Stewjon"],
   ["R2", "D2", "beepboop@droid.com", "password1", "Naboo"],
   ["Han", "Solo", "hansolo@bountyhuntersanonymous.com", "password1", "Corellia"],

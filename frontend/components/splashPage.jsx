@@ -10,7 +10,7 @@ var SplashPage = React.createClass({
       <h2>subscript</h2>
       <br/>
       <h5>rate your paid subscriptions and services</h5>
-      <div className="blank-space"></div>
+      <div className="blank-space-2"></div>
     </div>;
   }
 });

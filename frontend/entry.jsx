@@ -17,6 +17,7 @@ var SubscriptionIndex = require('./components/subscriptionIndex.jsx');
 //test components
 var HeaderSearchComponent = require('./components/headerSearchComponent');
 var Chart = require('./components/chart.jsx');
+var AnalyticsPage = require('./components/analyticsPage.jsx');
 
 var routes = (
   <Route path="/" component={App}>
@@ -25,7 +26,7 @@ var routes = (
     <Route path="users/:userId/edit" component={UserEditPage}></Route>
     <Route path="subscriptions" component={SubscriptionIndex}></Route>
     <Route path="subscriptions/:subscriptionId" component={SubscriptionShowPage}></Route>
-    <Route path="test" component={Chart}></Route>
+    <Route path="test" component={AnalyticsPage}></Route>
     <Route path="*" component={ReviewFeed} ></Route>
   </Route>
 );

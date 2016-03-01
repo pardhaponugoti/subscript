@@ -74,6 +74,12 @@ var Header = React.createClass({
   renderRoot: function() {
     BrowserHistory.push("/");
   },
+  openSubscriptionsIndex: function() {
+    BrowserHistory.push("/subscriptions");
+  },
+  openAnalyticsPage: function() {
+    BrowserHistory.push("/test");
+  },
   showCurrentUserPage: function() {
     BrowserHistory.push("/"+this.currentUserUrl());
   },
@@ -133,14 +139,15 @@ var Header = React.createClass({
   },
   render: function() {
     return <nav className="navbar navbar-fixed-top">
-      <div className="navbar-header btn-group header-home">
-        <a onClick={this.renderRoot} className="btn btn-default btn-sm">Σ</a>
+      <div className="navbar-header header-home">
+        <a onClick={this.renderRoot} className="navbar-brand white-text">Σ</a>
       </div>
       <HeaderSearchComponent />
       <div id="navbarCollapse" className="collapse navbar-collapse">
         {this.userDropdown()}
-        <div className="navbar-right btn-group">
-          <Link to="/subscriptions/" className="btn btn-default btn-sm">Services</Link>
+        <div className="navbar-right">
+          <a onClick={this.openAnalyticsPage} className="navbar-text white-text">Analytics<sup>Beta</sup></a>
+          <a onClick={this.openSubscriptionsIndex} className="navbar-text white-text">Services</a>
         </div>
       </div>
     </nav>;

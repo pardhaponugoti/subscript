@@ -44,6 +44,8 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var ReactDOM = __webpack_require__(158);
 	var Router = __webpack_require__(159).Router;
@@ -63,6 +65,7 @@
 	//test components
 	var HeaderSearchComponent = __webpack_require__(462);
 	var Chart = __webpack_require__(517);
+	var AnalyticsPage = __webpack_require__(552);
 	
 	var routes = React.createElement(
 	  Route,
@@ -72,7 +75,7 @@
 	  React.createElement(Route, { path: 'users/:userId/edit', component: UserEditPage }),
 	  React.createElement(Route, { path: 'subscriptions', component: SubscriptionIndex }),
 	  React.createElement(Route, { path: 'subscriptions/:subscriptionId', component: SubscriptionShowPage }),
-	  React.createElement(Route, { path: 'test', component: Chart }),
+	  React.createElement(Route, { path: 'test', component: AnalyticsPage }),
 	  React.createElement(Route, { path: '*', component: ReviewFeed })
 	);
 	
@@ -24714,6 +24717,8 @@
 /* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
@@ -24739,26 +24744,26 @@
 	var App = React.createClass({
 	  displayName: 'App',
 	
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      currentUser: SessionStore.currentUser(),
 	      loggedIn: SessionStore.loggedIn()
 	    };
 	  },
-	  componentWillMount: function () {
+	  componentWillMount: function componentWillMount() {
 	    SessionBackendActions.checkForUser();
 	  },
-	  componentDidMount: function () {
+	  componentDidMount: function componentDidMount() {
 	    this.listenerToken = SessionStore.addListener(this.onSessionChange);
 	    UserBackendActions.fetchAllUsers();
 	    SubscriptionBackendActions.fetchAllSubscriptions();
 	    ReviewBackendActions.fetchAllReviews();
 	  },
-	  componentWillUnmount: function () {
+	  componentWillUnmount: function componentWillUnmount() {
 	    this.listenerToken.remove();
 	  },
 	
-	  onSessionChange: function () {
+	  onSessionChange: function onSessionChange() {
 	    this.setState({
 	      currentUser: SessionStore.currentUser(),
 	      loggedIn: SessionStore.loggedIn()
@@ -24767,12 +24772,12 @@
 	  // componentWillUnmount: function() {
 	  //   console.log("AppUnmounting");
 	  // },
-	  linkToTest: function (e) {
+	  linkToTest: function linkToTest(e) {
 	    e.preventDefault();
 	    BrowserHistory.push("/test");
 	  },
 	
-	  render: function () {
+	  render: function render() {
 	    console.log("AppRender");
 	    return React.createElement(
 	      'div',
@@ -24800,6 +24805,8 @@
 /* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	var Alert = __webpack_require__(218).Alert;
@@ -24816,7 +24823,7 @@
 	var Header = React.createClass({
 	  displayName: 'Header',
 	
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      modalIsOpen: false,
 	      signInOpen: true
@@ -24829,14 +24836,14 @@
 	  //   console.log(newProps.loggedIn);
 	  // },
 	
-	  currentUserUrl: function () {
+	  currentUserUrl: function currentUserUrl() {
 	    return "users/" + this.props.currentUser.id;
 	  },
-	  editUserUrl: function () {
+	  editUserUrl: function editUserUrl() {
 	    return this.currentUserUrl() + "/edit";
 	  },
 	
-	  toggleModal: function () {
+	  toggleModal: function toggleModal() {
 	    $("#App").css({
 	      "-webkit-filter": "blur(5px)",
 	      "filter": "blur(5px)",
@@ -24847,23 +24854,23 @@
 	      modalIsOpen: !this.state.modalIsOpen
 	    });
 	  },
-	  openSignInForm: function () {
+	  openSignInForm: function openSignInForm() {
 	    this.setState({
 	      signInOpen: true
 	    });
 	  },
-	  openSignUpForm: function () {
+	  openSignUpForm: function openSignUpForm() {
 	    this.setState({
 	      signInOpen: false
 	    });
 	  },
-	  openSignUpFormAndModal: function () {
+	  openSignUpFormAndModal: function openSignUpFormAndModal() {
 	    this.setState({
 	      signInOpen: false,
 	      modalIsOpen: true
 	    });
 	  },
-	  close: function () {
+	  close: function close() {
 	    $("#App").css({
 	      "-webkit-filter": "blur(0px)",
 	      "filter": "blur(0px)",
@@ -24875,22 +24882,28 @@
 	    });
 	  },
 	
-	  renderRoot: function () {
+	  renderRoot: function renderRoot() {
 	    BrowserHistory.push("/");
 	  },
-	  showCurrentUserPage: function () {
+	  openSubscriptionsIndex: function openSubscriptionsIndex() {
+	    BrowserHistory.push("/subscriptions");
+	  },
+	  openAnalyticsPage: function openAnalyticsPage() {
+	    BrowserHistory.push("/test");
+	  },
+	  showCurrentUserPage: function showCurrentUserPage() {
 	    BrowserHistory.push("/" + this.currentUserUrl());
 	  },
-	  showEditUserPage: function () {
+	  showEditUserPage: function showEditUserPage() {
 	    BrowserHistory.push("/" + this.editUserUrl());
 	  },
-	  signOut: function () {
+	  signOut: function signOut() {
 	    SessionBackendActions.signOutUser(function () {
 	      BrowserHistory.push("/");
 	    });
 	  },
 	
-	  userDropdown: function () {
+	  userDropdown: function userDropdown() {
 	    if (this.props.loggedIn) {
 	      return React.createElement(
 	        'div',
@@ -24991,16 +25004,16 @@
 	      );
 	    }
 	  },
-	  render: function () {
+	  render: function render() {
 	    return React.createElement(
 	      'nav',
 	      { className: 'navbar navbar-fixed-top' },
 	      React.createElement(
 	        'div',
-	        { className: 'navbar-header btn-group header-home' },
+	        { className: 'navbar-header header-home' },
 	        React.createElement(
 	          'a',
-	          { onClick: this.renderRoot, className: 'btn btn-default btn-sm' },
+	          { onClick: this.renderRoot, className: 'navbar-brand white-text' },
 	          'Σ'
 	        )
 	      ),
@@ -25011,10 +25024,20 @@
 	        this.userDropdown(),
 	        React.createElement(
 	          'div',
-	          { className: 'navbar-right btn-group' },
+	          { className: 'navbar-right' },
 	          React.createElement(
-	            Link,
-	            { to: '/subscriptions/', className: 'btn btn-default btn-sm' },
+	            'a',
+	            { onClick: this.openAnalyticsPage, className: 'navbar-text white-text' },
+	            'Analytics',
+	            React.createElement(
+	              'sup',
+	              null,
+	              'Beta'
+	            )
+	          ),
+	          React.createElement(
+	            'a',
+	            { onClick: this.openSubscriptionsIndex, className: 'navbar-text white-text' },
 	            'Services'
 	          )
 	        )
@@ -42104,6 +42127,8 @@
 /* 462 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
@@ -42115,7 +42140,7 @@
 	var HeaderSearchComponent = React.createClass({
 	  displayName: 'HeaderSearchComponent',
 	
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      selected: false,
 	      searchString: '',
@@ -42123,27 +42148,27 @@
 	      users: UserStore.all()
 	    };
 	  },
-	  componentDidMount: function () {
+	  componentDidMount: function componentDidMount() {
 	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.subscriptionChange);
 	    this.userListenerToken = UserStore.addListener(this.userChange);
 	  },
-	  componentWillUnmount: function () {
+	  componentWillUnmount: function componentWillUnmount() {
 	    this.subscriptionListenerToken.remove();
 	    this.userListenerToken.remove();
 	  },
 	
-	  subscriptionChange: function () {
+	  subscriptionChange: function subscriptionChange() {
 	    this.setState({
 	      subscriptions: SubscriptionStore.all()
 	    });
 	  },
-	  userChange: function () {
+	  userChange: function userChange() {
 	    this.setState({
 	      users: UserStore.all()
 	    });
 	  },
 	
-	  handleChange: function (e) {
+	  handleChange: function handleChange(e) {
 	    e.preventDefault();
 	    this.setState({
 	      searchString: e.target.value,
@@ -42151,7 +42176,7 @@
 	    });
 	  },
 	
-	  updateForm: function (element) {
+	  updateForm: function updateForm(element) {
 	    if (element.email === undefined) {
 	      BrowserHistory.push("/subscriptions/" + element.id);
 	    } else {
@@ -42164,7 +42189,7 @@
 	    });
 	  },
 	
-	  render: function () {
+	  render: function render() {
 	    var elements = this.state.subscriptions.concat(this.state.users);
 	    var self = this;
 	
@@ -42457,6 +42482,8 @@
 /* 467 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var Store = __webpack_require__(468).Store;
 	var AppDispatcher = __webpack_require__(486);
 	var UserStore = new Store(AppDispatcher);
@@ -49021,6 +49048,8 @@
 /* 486 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var Dispatcher = __webpack_require__(487).Dispatcher;
 	module.exports = new Dispatcher();
 
@@ -49281,6 +49310,8 @@
 /* 489 */
 /***/ function(module, exports) {
 
+	"use strict";
+	
 	var UserConstants = {
 	  RECEIVE_ALL_USERS: "RECEIVE_ALL_USERS",
 	  UPDATE_USER: "UPDATE_USER",
@@ -49293,6 +49324,8 @@
 /* 490 */
 /***/ function(module, exports) {
 
+	"use strict";
+	
 	var SessionConstants = {
 	  USER_SIGN_IN: "USER_SIGN_IN",
 	  USER_SIGN_UP: "USER_SIGN_UP",
@@ -49305,6 +49338,8 @@
 /* 491 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var Store = __webpack_require__(468).Store;
 	var AppDispatcher = __webpack_require__(486);
 	var SubscriptionStore = new Store(AppDispatcher);
@@ -49363,6 +49398,8 @@
 /* 492 */
 /***/ function(module, exports) {
 
+	"use strict";
+	
 	var SubscriptionConstants = {
 	  RECEIVE_ALL_SUBSCRIPTIONS: "RECEIVE_ALL_SUBSCRIPTIONS"
 	};
@@ -49373,24 +49410,26 @@
 /* 493 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var SessionUtil = __webpack_require__(494);
 	
 	var SessionBackendActions = {
 	  // on site load
-	  checkForUser: function () {
+	  checkForUser: function checkForUser() {
 	    SessionUtil.checkForSignIn();
 	  },
 	
 	  // session create, users create
-	  signInUser: function (userParams, callback) {
+	  signInUser: function signInUser(userParams, callback) {
 	    SessionUtil.signInUser(userParams, callback);
 	  },
-	  signUpUser: function (userParams, callback) {
+	  signUpUser: function signUpUser(userParams, callback) {
 	    SessionUtil.signUpUser(userParams, callback);
 	  },
 	
 	  //session destroy
-	  signOutUser: function (callback) {
+	  signOutUser: function signOutUser(callback) {
 	    SessionUtil.signOutUser(callback);
 	  }
 	
@@ -49402,15 +49441,17 @@
 /* 494 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+	
 	var SessionFrontendActions = __webpack_require__(495);
 	
 	var SessionUtil = {
 	  // on page load
-	  checkForSignIn: function (callback) {
+	  checkForSignIn: function checkForSignIn(callback) {
 	    $.ajax({
 	      url: "/api/session/new",
 	      type: "GET",
-	      success: function (data) {
+	      success: function success(data) {
 	        SessionFrontendActions.receiveUserSignIn(data);
 	        if (callback) {
 	          callback();
@@ -49420,12 +49461,12 @@
 	  },
 	
 	  // session create and users create
-	  signUpUser: function (userParams, callback) {
+	  signUpUser: function signUpUser(userParams, callback) {
 	    $.ajax({
 	      url: "/api/users",
 	      type: "POST",
 	      data: userParams,
-	      success: function (data) {
+	      success: function success(data) {
 	        SessionFrontendActions.receiveUserSignUp(data);
 	        if (callback) {
 	          callback(data.id);
@@ -49433,12 +49474,12 @@
 	      }
 	    });
 	  },
-	  signInUser: function (userParams, callback) {
+	  signInUser: function signInUser(userParams, callback) {
 	    $.ajax({
 	      url: "/api/session",
 	      type: "POST",
 	      data: userParams,
-	      success: function (data) {
+	      success: function success(data) {
 	        SessionFrontendActions.receiveUserSignIn(data);
 	        if (callback) {
 	          callback(data.id);
@@ -49448,11 +49489,11 @@
 	  },
 	
 	  // session destroy
-	  signOutUser: function (callback) {
+	  signOutUser: function signOutUser(callback) {
 	    $.ajax({
 	      url: "/api/session",
 	      type: "DELETE",
-	      success: function (data) {
+	      success: function success(data) {
 	        if (callback) {
 	          callback();
 	        }
@@ -49469,12 +49510,14 @@
 /* 495 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var AppDispatcher = __webpack_require__(486);
 	var SessionConstants = __webpack_require__(490);
 	
 	var SessionFrontendActions = {
 	  // session create
-	  receiveUserSignIn: function (userData) {
+	  receiveUserSignIn: function receiveUserSignIn(userData) {
 	    AppDispatcher.dispatch({
 	      actionType: SessionConstants.USER_SIGN_IN,
 	      data: userData
@@ -49482,7 +49525,7 @@
 	  },
 	
 	  // users create
-	  receiveUserSignUp: function (userData) {
+	  receiveUserSignUp: function receiveUserSignUp(userData) {
 	    AppDispatcher.dispatch({
 	      actionType: SessionConstants.USER_SIGN_UP,
 	      data: userData
@@ -49490,7 +49533,7 @@
 	  },
 	
 	  // session destroy
-	  signOutUser: function () {
+	  signOutUser: function signOutUser() {
 	    AppDispatcher.dispatch({
 	      actionType: SessionConstants.USER_SIGN_OUT
 	    });
@@ -49503,6 +49546,8 @@
 /* 496 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
@@ -49511,23 +49556,23 @@
 	var NewSessionForm = React.createClass({
 	  displayName: 'NewSessionForm',
 	
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      email: "",
 	      password: ""
 	    };
 	  },
-	  emailChange: function (e) {
+	  emailChange: function emailChange(e) {
 	    this.setState({
 	      email: e.target.value
 	    });
 	  },
-	  passwordChange: function (e) {
+	  passwordChange: function passwordChange(e) {
 	    this.setState({
 	      password: e.target.value
 	    });
 	  },
-	  handleSubmit: function (e) {
+	  handleSubmit: function handleSubmit(e) {
 	    e.preventDefault();
 	    this.props.closeModalCallback();
 	    SessionBackendActions.signInUser({ user: { email: this.state.email,
@@ -49536,7 +49581,7 @@
 	    });
 	  },
 	
-	  submitButtonDisabled: function () {
+	  submitButtonDisabled: function submitButtonDisabled() {
 	    if (this.state.email.length === 0 || this.state.password.length < 8) {
 	      return true;
 	    } else {
@@ -49544,7 +49589,7 @@
 	    }
 	  },
 	
-	  render: function () {
+	  render: function render() {
 	    return React.createElement(
 	      'div',
 	      null,
@@ -49575,6 +49620,8 @@
 /* 497 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var SessionBackendActions = __webpack_require__(493);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
@@ -49582,7 +49629,7 @@
 	var NewUserForm = React.createClass({
 	  displayName: 'NewUserForm',
 	
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      email: "",
 	      password: "",
@@ -49592,32 +49639,32 @@
 	      inputEnabled: true
 	    };
 	  },
-	  firstNameChange: function (e) {
+	  firstNameChange: function firstNameChange(e) {
 	    this.setState({
 	      firstName: e.target.value
 	    });
 	  },
-	  lastNameChange: function (e) {
+	  lastNameChange: function lastNameChange(e) {
 	    this.setState({
 	      lastName: e.target.value
 	    });
 	  },
-	  emailChange: function (e) {
+	  emailChange: function emailChange(e) {
 	    this.setState({
 	      email: e.target.value
 	    });
 	  },
-	  passwordChange: function (e) {
+	  passwordChange: function passwordChange(e) {
 	    this.setState({
 	      password: e.target.value
 	    });
 	  },
-	  confirmPasswordChange: function (e) {
+	  confirmPasswordChange: function confirmPasswordChange(e) {
 	    this.setState({
 	      confirmPassword: e.target.value
 	    });
 	  },
-	  passwordUl: function () {
+	  passwordUl: function passwordUl() {
 	    var passwordErrors = [];
 	    var length = this.state.password.length;
 	    this.validPassword = true;
@@ -49688,7 +49735,7 @@
 	      );
 	    }
 	  },
-	  matchedPassword: function () {
+	  matchedPassword: function matchedPassword() {
 	    this.passwordMatch = true;
 	    if (this.state.password !== "" && this.state.password.length > 7 && containsNumber(this.state.password)) {
 	      if (this.state.password !== this.state.confirmPassword && this.state.confirmPassword !== "") {
@@ -49722,7 +49769,7 @@
 	    }
 	  },
 	
-	  submitButtonDisabled: function () {
+	  submitButtonDisabled: function submitButtonDisabled() {
 	    if (this.state.firstName.length === 0 || this.state.lastName.length === 0 || this.state.email.length === 0 || this.state.password.length === 0 || this.state.confirmPassword.length === 0 || !this.validPassword || !this.passwordMatch) {
 	      return true;
 	    } else {
@@ -49730,7 +49777,7 @@
 	    }
 	  },
 	
-	  handleSubmit: function (e) {
+	  handleSubmit: function handleSubmit(e) {
 	    e.preventDefault();
 	    this.props.closeModalCallback();
 	    SessionBackendActions.signUpUser({ user: { email: this.state.email,
@@ -49740,7 +49787,7 @@
 	      BrowserHistory.push("/users/" + id + "/edit");
 	    });
 	  },
-	  render: function () {
+	  render: function render() {
 	    return React.createElement(
 	      'div',
 	      null,
@@ -49791,6 +49838,8 @@
 /* 498 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var Store = __webpack_require__(468).Store;
 	var AppDispatcher = __webpack_require__(486);
 	
@@ -49851,6 +49900,8 @@
 /* 499 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var Store = __webpack_require__(468).Store;
 	var AppDispatcher = __webpack_require__(486);
 	
@@ -49949,11 +50000,11 @@
 	};
 	
 	ReviewStore.all = function () {
-	  var reviews = [];
-	  for (var id in _reviews) {
-	    reviews.push(_reviews[id]);
-	  }
-	  return reviews;
+	  // var reviews = [];
+	  // for (var id in _reviews) {
+	  //   reviews.push(_reviews[id]);
+	  // }
+	  return _reviewsArray;
 	};
 	
 	module.exports = ReviewStore;
@@ -49962,6 +50013,8 @@
 /* 500 */
 /***/ function(module, exports) {
 
+	"use strict";
+	
 	var ReviewConstants = {
 	  RECEIVE_ALL_REVIEWS: "RECEIVE_ALL_REVIEWS",
 	  RECEIVE_NEW_REVIEW: "RECEIVE_NEW_REVIEW",
@@ -49975,16 +50028,18 @@
 /* 501 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var UserUtil = __webpack_require__(502);
 	
 	var UserBackendActions = {
-	  fetchAllUsers: function () {
+	  fetchAllUsers: function fetchAllUsers() {
 	    UserUtil.fetchAllUsers();
 	  },
-	  updateUser: function (userData, callback) {
+	  updateUser: function updateUser(userData, callback) {
 	    UserUtil.updateUser(userData, callback);
 	  },
-	  deleteUser: function (userId, callback) {
+	  deleteUser: function deleteUser(userId, callback) {
 	    UserUtil.deleteUser(userId, callback);
 	  }
 	};
@@ -49995,25 +50050,27 @@
 /* 502 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+	
 	var UserFrontendActions = __webpack_require__(503);
 	
 	var UserUtil = {
 	  // on page load
-	  fetchAllUsers: function () {
+	  fetchAllUsers: function fetchAllUsers() {
 	    $.ajax({
 	      url: "/api/users",
 	      type: "GET",
-	      success: function (data) {
+	      success: function success(data) {
 	        UserFrontendActions.receiveAllUsers(data);
 	      }
 	    });
 	  },
-	  updateUser: function (userData, callback) {
+	  updateUser: function updateUser(userData, callback) {
 	    $.ajax({
 	      url: "/api/users/" + userData.id,
 	      type: 'PATCH',
 	      data: userData,
-	      success: function (data) {
+	      success: function success(data) {
 	        UserFrontendActions.updateCurrentUser(data);
 	        if (callback) {
 	          callback();
@@ -50021,12 +50078,12 @@
 	      }
 	    });
 	  },
-	  deleteUser: function (userId, callback) {
+	  deleteUser: function deleteUser(userId, callback) {
 	    $.ajax({
 	      url: "/api/users/" + userId,
 	      type: 'DELETE',
 	      data: { id: userId },
-	      success: function (data) {
+	      success: function success(data) {
 	        UserFrontendActions.deleteCurrentUser(data);
 	        if (callback) {
 	          callback();
@@ -50043,12 +50100,14 @@
 /* 503 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var AppDispatcher = __webpack_require__(486);
 	var UserConstants = __webpack_require__(489);
 	
 	var UserFrontendActions = {
 	  // On Load, User Create
-	  receiveAllUsers: function (usersData) {
+	  receiveAllUsers: function receiveAllUsers(usersData) {
 	    AppDispatcher.dispatch({
 	      actionType: UserConstants.RECEIVE_ALL_USERS,
 	      data: usersData
@@ -50056,7 +50115,7 @@
 	  },
 	
 	  // User update
-	  updateCurrentUser: function (userData) {
+	  updateCurrentUser: function updateCurrentUser(userData) {
 	    AppDispatcher.dispatch({
 	      actionType: UserConstants.UPDATE_USER,
 	      data: userData
@@ -50064,7 +50123,7 @@
 	  },
 	
 	  // User delete
-	  deleteCurrentUser: function (data) {
+	  deleteCurrentUser: function deleteCurrentUser(data) {
 	    AppDispatcher.dispatch({
 	      actionType: UserConstants.DELETE_USER,
 	      data: data
@@ -50079,16 +50138,18 @@
 /* 504 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var SubscriptionUtil = __webpack_require__(505);
 	
 	var SubscriptionBackendActions = {
 	  // on site load
-	  fetchAllSubscriptions: function () {
+	  fetchAllSubscriptions: function fetchAllSubscriptions() {
 	    SubscriptionUtil.fetchAllSubscriptions();
 	  },
 	
 	  // subscription create
-	  createSubscription: function (subscriptionParams, callback) {
+	  createSubscription: function createSubscription(subscriptionParams, callback) {
 	    SubscriptionUtil.createSubscription(subscriptionParams, callback);
 	  }
 	
@@ -50100,14 +50161,16 @@
 /* 505 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+	
 	var SubscriptionFrontendActions = __webpack_require__(506);
 	
 	var SubscriptionUtil = {
-	  fetchAllSubscriptions: function () {
+	  fetchAllSubscriptions: function fetchAllSubscriptions() {
 	    $.ajax({
 	      url: "/api/subscriptions",
 	      type: "GET",
-	      success: function (data) {
+	      success: function success(data) {
 	        SubscriptionFrontendActions.receiveAllSubscriptions(data);
 	      }
 	    });
@@ -50120,11 +50183,13 @@
 /* 506 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var AppDispatcher = __webpack_require__(486);
 	var SubscriptionConstants = __webpack_require__(492);
 	
 	var SubscriptionFrontendActions = {
-	  receiveAllSubscriptions: function (data) {
+	  receiveAllSubscriptions: function receiveAllSubscriptions(data) {
 	    AppDispatcher.dispatch({
 	      actionType: SubscriptionConstants.RECEIVE_ALL_SUBSCRIPTIONS,
 	      data: data
@@ -50138,26 +50203,28 @@
 /* 507 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var ReviewUtil = __webpack_require__(508);
 	
 	var ReviewBackendActions = {
 	  // create Review
-	  createReview: function (reviewParams, callback) {
+	  createReview: function createReview(reviewParams, callback) {
 	    ReviewUtil.createReview(reviewParams, callback);
 	  },
 	
 	  // edit Review
-	  editReview: function (reviewParams, callback) {
+	  editReview: function editReview(reviewParams, callback) {
 	    ReviewUtil.editReview(reviewParams, callback);
 	  },
 	
 	  // delete Review
-	  deleteReview: function (reviewId, callback) {
+	  deleteReview: function deleteReview(reviewId, callback) {
 	    ReviewUtil.deleteReview(reviewId, callback);
 	  },
 	
 	  // all reviews
-	  fetchAllReviews: function (callback) {
+	  fetchAllReviews: function fetchAllReviews(callback) {
 	    ReviewUtil.fetchAllReviews(callback);
 	  }
 	
@@ -50169,16 +50236,18 @@
 /* 508 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+	
 	var ReviewFrontendActions = __webpack_require__(509);
 	
 	var ReviewUtil = {
 	  // create new review
-	  createReview: function (reviewParams, callback) {
+	  createReview: function createReview(reviewParams, callback) {
 	    $.ajax({
 	      url: "/api/reviews",
 	      type: "POST",
 	      data: reviewParams,
-	      success: function (data) {
+	      success: function success(data) {
 	        if (callback) {
 	          callback();
 	        }
@@ -50188,12 +50257,12 @@
 	  },
 	
 	  //edit review
-	  editReview: function (reviewParams, callback) {
+	  editReview: function editReview(reviewParams, callback) {
 	    $.ajax({
 	      url: "/api/reviews/" + reviewParams.id,
 	      type: "PATCH",
 	      data: reviewParams,
-	      success: function (data) {
+	      success: function success(data) {
 	        if (callback) {
 	          callback();
 	        }
@@ -50203,12 +50272,12 @@
 	  },
 	
 	  // delete Review
-	  deleteReview: function (reviewId, callback) {
+	  deleteReview: function deleteReview(reviewId, callback) {
 	    $.ajax({
 	      url: "/api/reviews/" + reviewId,
 	      type: "DELETE",
 	      data: { id: reviewId },
-	      success: function (data) {
+	      success: function success(data) {
 	        if (callback) {
 	          callback();
 	        }
@@ -50218,11 +50287,11 @@
 	  },
 	
 	  // all reviews (on app load)
-	  fetchAllReviews: function (callback) {
+	  fetchAllReviews: function fetchAllReviews(callback) {
 	    $.ajax({
 	      url: "/api/reviews",
 	      type: "GET",
-	      success: function (data) {
+	      success: function success(data) {
 	        if (callback) {
 	          callback();
 	        }
@@ -50238,12 +50307,14 @@
 /* 509 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var AppDispatcher = __webpack_require__(486);
 	var ReviewConstants = __webpack_require__(500);
 	
 	var ReviewFrontendActions = {
 	  // review create
-	  receiveNewReview: function (reviewData) {
+	  receiveNewReview: function receiveNewReview(reviewData) {
 	    AppDispatcher.dispatch({
 	      actionType: ReviewConstants.RECEIVE_NEW_REVIEW,
 	      data: reviewData
@@ -50251,7 +50322,7 @@
 	  },
 	
 	  // update Review
-	  updateReview: function (reviewData) {
+	  updateReview: function updateReview(reviewData) {
 	    AppDispatcher.dispatch({
 	      actionType: ReviewConstants.RECEIVE_ALL_REVIEWS,
 	      data: reviewData
@@ -50259,7 +50330,7 @@
 	  },
 	
 	  //delete Review
-	  deleteReview: function (reviewsData) {
+	  deleteReview: function deleteReview(reviewsData) {
 	    AppDispatcher.dispatch({
 	      actionType: ReviewConstants.RECEIVE_ALL_REVIEWS,
 	      data: reviewsData
@@ -50267,7 +50338,7 @@
 	  },
 	
 	  // all reviews
-	  receiveAllReviews: function (reviewsData) {
+	  receiveAllReviews: function receiveAllReviews(reviewsData) {
 	    AppDispatcher.dispatch({
 	      actionType: ReviewConstants.RECEIVE_ALL_REVIEWS,
 	      data: reviewsData
@@ -50281,6 +50352,8 @@
 /* 510 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	var Link = __webpack_require__(159).Link;
@@ -50322,7 +50395,7 @@
 	var UserShowPage = React.createClass({
 	  displayName: 'UserShowPage',
 	
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      currentShowUser: UserStore.findById(this.props.params.userId),
 	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId),
@@ -50330,23 +50403,23 @@
 	      editReviewModalIsOpen: false
 	    };
 	  },
-	  componentDidMount: function () {
+	  componentDidMount: function componentDidMount() {
 	    this.userListenerToken = UserStore.addListener(this.userChange);
 	    this.reviewListenerToken = ReviewStore.addListener(this.reviewChange);
 	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.subscriptionChange);
 	  },
-	  componentWillUnmount: function () {
+	  componentWillUnmount: function componentWillUnmount() {
 	    this.userListenerToken.remove();
 	    this.reviewListenerToken.remove();
 	  },
-	  componentWillReceiveProps: function (newProps) {
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
 	    if (!isNumeric(newProps.params.userId)) {
 	      BrowserHistory.push("/");
 	    } else {
 	      this.onUserChange(newProps);
 	    }
 	  },
-	  onUserChange: function (newProps) {
+	  onUserChange: function onUserChange(newProps) {
 	    this.setState({
 	      currentShowUser: UserStore.findById(newProps.params.userId),
 	      currentShowUserReviews: ReviewStore.findByUserId(newProps.params.userId),
@@ -50355,25 +50428,25 @@
 	    });
 	  },
 	
-	  userChange: function () {
+	  userChange: function userChange() {
 	    console.log("userShowPageRenderFromUserStoreChange");
 	    this.setState({
 	      currentShowUser: UserStore.findById(this.props.params.userId)
 	    });
 	  },
-	  reviewChange: function () {
+	  reviewChange: function reviewChange() {
 	    console.log("setting state for user show page");
 	    this.setState({
 	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
 	    });
 	  },
-	  subscriptionChange: function () {
+	  subscriptionChange: function subscriptionChange() {
 	    this.setState({
 	      newReviewModalIsOpen: false
 	    });
 	  },
 	
-	  toggleNewReviewModal: function () {
+	  toggleNewReviewModal: function toggleNewReviewModal() {
 	    $("#App").css({
 	      "-webkit-filter": "blur(5px)",
 	      "filter": "blur(5px)",
@@ -50384,7 +50457,7 @@
 	      newReviewModalIsOpen: !this.state.newReviewModalIsOpen
 	    });
 	  },
-	  closeNewReviewModal: function () {
+	  closeNewReviewModal: function closeNewReviewModal() {
 	    $("#App").css({
 	      "-webkit-filter": "blur(0px)",
 	      "filter": "blur(0px)",
@@ -50409,11 +50482,11 @@
 	  //   ReviewBackendActions.deleteReview(reviewId);
 	  // },
 	
-	  openSubscriptionPage: function (id) {
+	  openSubscriptionPage: function openSubscriptionPage(id) {
 	    BrowserHistory.push("/subscriptions/" + id);
 	  },
 	
-	  render: function () {
+	  render: function render() {
 	    console.log("render show page");
 	    if (this.state.currentShowUser === undefined || this.state.currentShowUserReviews === undefined) {
 	      // Insert Loading Symbol Here -- waiting for the userstore to update
@@ -50570,6 +50643,8 @@
 /* 511 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	var Modal = __webpack_require__(218).Modal;
@@ -50596,7 +50671,7 @@
 	var ReviewShowComponent = React.createClass({
 	  displayName: 'ReviewShowComponent',
 	
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      author: UserStore.findById(this.props.review.author_id),
 	      subscription: SubscriptionStore.findById(this.props.review.subscription_id),
@@ -50605,14 +50680,14 @@
 	    };
 	  },
 	
-	  openSubscriptionPage: function () {
+	  openSubscriptionPage: function openSubscriptionPage() {
 	    BrowserHistory.push("/subscriptions/" + this.state.subscription.id);
 	  },
-	  openAuthorPage: function () {
+	  openAuthorPage: function openAuthorPage() {
 	    BrowserHistory.push("/users/" + this.state.author.id);
 	  },
 	
-	  toggleEditReviewModal: function () {
+	  toggleEditReviewModal: function toggleEditReviewModal() {
 	    $("#App").css({
 	      "-webkit-filter": "blur(0px)",
 	      "filter": "blur(0px)",
@@ -50623,7 +50698,7 @@
 	      editReviewModalIsOpen: !this.state.editReviewModalIsOpen
 	    });
 	  },
-	  closeEditReviewModal: function () {
+	  closeEditReviewModal: function closeEditReviewModal() {
 	    $("#App").css({
 	      "-webkit-filter": "blur(0px)",
 	      "filter": "blur(0px)",
@@ -50634,11 +50709,11 @@
 	      editReviewModalIsOpen: false
 	    });
 	  },
-	  deleteReview: function (reviewId) {
+	  deleteReview: function deleteReview(reviewId) {
 	    ReviewBackendActions.deleteReview(reviewId);
 	  },
 	
-	  render: function () {
+	  render: function render() {
 	    // two cases -- if the currentUser has been passed down or if not
 	    if (this.props.currentUser) {
 	      return React.createElement(
@@ -50814,6 +50889,8 @@
 /* 512 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	
 	var Input = __webpack_require__(218).Input;
@@ -50831,7 +50908,7 @@
 	  displayName: 'EditReviewForm',
 	
 	  mixins: [LinkedStateMixin],
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      subscriptionId: this.props.review.subscription_id,
 	      subscription: SubscriptionStore.findById(this.props.review.subscription_id),
@@ -50841,7 +50918,7 @@
 	    };
 	  },
 	
-	  submitEditedReview: function (e) {
+	  submitEditedReview: function submitEditedReview(e) {
 	    e.preventDefault();
 	    this.props.closeModalCallback();
 	    ReviewBackendActions.editReview({
@@ -50856,18 +50933,18 @@
 	    });
 	  },
 	
-	  updateFrequency: function (e) {
+	  updateFrequency: function updateFrequency(e) {
 	    this.setState({
 	      frequency: e.target.value
 	    });
 	  },
-	  updateRating: function (e) {
+	  updateRating: function updateRating(e) {
 	    this.setState({
 	      rating: e.target.value
 	    });
 	  },
 	
-	  render: function () {
+	  render: function render() {
 	    return React.createElement(
 	      'form',
 	      { className: 'container-fluid' },
@@ -50982,6 +51059,8 @@
 /* 513 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	
 	var SubscriptionStore = __webpack_require__(491);
@@ -50989,27 +51068,27 @@
 	var SubscriptionSearch = React.createClass({
 	  displayName: 'SubscriptionSearch',
 	
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      selected: false,
 	      searchString: '',
 	      subscriptions: SubscriptionStore.all()
 	    };
 	  },
-	  componentDidMount: function () {
+	  componentDidMount: function componentDidMount() {
 	    this.listenerToken = SubscriptionStore.addListener(this.subscriptionChange);
 	  },
-	  componentWillUnmount: function () {
+	  componentWillUnmount: function componentWillUnmount() {
 	    this.listenerToken.remove();
 	  },
 	
-	  subscriptionChange: function () {
+	  subscriptionChange: function subscriptionChange() {
 	    this.setState({
 	      subscriptions: SubscriptionStore.all()
 	    });
 	  },
 	
-	  handleChange: function (e) {
+	  handleChange: function handleChange(e) {
 	    e.preventDefault();
 	    this.setState({
 	      searchString: e.target.value,
@@ -51017,7 +51096,7 @@
 	    });
 	  },
 	
-	  updateForm: function (id, name) {
+	  updateForm: function updateForm(id, name) {
 	    if (this.props.updateFormCallback) {
 	      this.props.updateFormCallback(id);
 	    }
@@ -51027,7 +51106,7 @@
 	    });
 	  },
 	
-	  render: function () {
+	  render: function render() {
 	    var subs = this.state.subscriptions;
 	    var self = this;
 	
@@ -51074,6 +51153,8 @@
 /* 514 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	
 	var Input = __webpack_require__(218).Input;
@@ -51088,7 +51169,7 @@
 	  displayName: 'NewReviewForm',
 	
 	  mixins: [LinkedStateMixin],
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      subscriptionId: null,
 	      rating: 5,
@@ -51097,13 +51178,13 @@
 	    };
 	  },
 	
-	  updateFormCallback: function (id) {
+	  updateFormCallback: function updateFormCallback(id) {
 	    this.setState({
 	      subscriptionId: id
 	    });
 	  },
 	
-	  submitNewReview: function (e) {
+	  submitNewReview: function submitNewReview(e) {
 	    e.preventDefault();
 	    this.props.closeModalCallback();
 	    ReviewBackendActions.createReview({
@@ -51117,18 +51198,18 @@
 	    });
 	  },
 	
-	  updateFrequency: function (e) {
+	  updateFrequency: function updateFrequency(e) {
 	    this.setState({
 	      frequency: e.target.value
 	    });
 	  },
-	  updateRating: function (e) {
+	  updateRating: function updateRating(e) {
 	    this.setState({
 	      rating: e.target.value
 	    });
 	  },
 	
-	  submitButtonDisabled: function () {
+	  submitButtonDisabled: function submitButtonDisabled() {
 	    if (this.state.subscriptionId === null) {
 	      return true;
 	    } else {
@@ -51136,7 +51217,7 @@
 	    }
 	  },
 	
-	  render: function () {
+	  render: function render() {
 	    return React.createElement(
 	      'form',
 	      { className: 'container-fluid' },
@@ -51259,6 +51340,8 @@
 /* 515 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
@@ -51268,7 +51351,7 @@
 	var UserEditPage = React.createClass({
 	  displayName: 'UserEditPage',
 	
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      firstName: this.props.currentUser.first_name,
 	      lastName: this.props.currentUser.last_name,
@@ -51278,7 +51361,7 @@
 	      image: this.props.currentUser.image
 	    };
 	  },
-	  openCloudinaryWidget: function (e) {
+	  openCloudinaryWidget: function openCloudinaryWidget(e) {
 	    e.preventDefault();
 	    var self = this;
 	    cloudinary.openUploadWidget({
@@ -51295,47 +51378,47 @@
 	    });
 	  },
 	
-	  firstNameChange: function (e) {
+	  firstNameChange: function firstNameChange(e) {
 	    this.setState({
 	      firstName: e.target.value
 	    });
 	  },
-	  lastNameChange: function (e) {
+	  lastNameChange: function lastNameChange(e) {
 	    this.setState({
 	      lastName: e.target.value
 	    });
 	  },
-	  emailChange: function (e) {
+	  emailChange: function emailChange(e) {
 	    this.setState({
 	      email: e.target.value
 	    });
 	  },
-	  locationChange: function (e) {
+	  locationChange: function locationChange(e) {
 	    this.setState({
 	      location: e.target.value
 	    });
 	  },
-	  DOBChange: function (e) {
+	  DOBChange: function DOBChange(e) {
 	    this.setState({
 	      dateOfBirth: e.target.value
 	    });
 	  },
 	
-	  cancelUpdate: function (e) {
+	  cancelUpdate: function cancelUpdate(e) {
 	    e.preventDefault();
 	    BrowserHistory.push("/users/" + this.props.currentUser.id);
 	  },
-	  deleteUser: function (e) {
+	  deleteUser: function deleteUser(e) {
 	    e.preventDefault();
 	    UserBackendActions.deleteUser(this.props.currentUser.id, function () {
 	      BrowserHistory.push("/");
 	    });
 	  },
 	
-	  handleSubmit: function (e) {
+	  handleSubmit: function handleSubmit(e) {
 	    e.preventDefault();
 	    var id = this.props.currentUser.id;
-	    var callback = function () {
+	    var callback = function callback() {
 	      BrowserHistory.push("/users/" + id);
 	    };
 	    UserBackendActions.updateUser({
@@ -51350,7 +51433,7 @@
 	      }
 	    }, callback);
 	  },
-	  render: function () {
+	  render: function render() {
 	    return React.createElement(
 	      'div',
 	      { className: 'user-edit-page' },
@@ -51463,6 +51546,8 @@
 /* 516 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
@@ -51479,7 +51564,7 @@
 	var SubscriptionShowPage = React.createClass({
 	  displayName: 'SubscriptionShowPage',
 	
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId)),
 	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)),
@@ -51487,15 +51572,15 @@
 	      showCharts: false
 	    };
 	  },
-	  componentWillUnmount: function () {
+	  componentWillUnmount: function componentWillUnmount() {
 	    this.subscriptionListenerToken.remove();
 	    this.reviewListenerToken.remove();
 	  },
-	  componentDidMount: function () {
+	  componentDidMount: function componentDidMount() {
 	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.onSubscriptionChange);
 	    this.reviewListenerToken = ReviewStore.addListener(this.onReviewChange);
 	  },
-	  componentWillReceiveProps: function (newProps) {
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
 	    if (!isNumeric(newProps.params.subscriptionId)) {
 	      BrowserHistory.push("/");
 	    } else {
@@ -51503,25 +51588,25 @@
 	    }
 	  },
 	
-	  subscriptionChange: function (newProps) {
+	  subscriptionChange: function subscriptionChange(newProps) {
 	    this.setState({
 	      currentSubscription: SubscriptionStore.findById(parseInt(newProps.params.subscriptionId)),
 	      reviews: ReviewStore.findBySubscriptionId(parseInt(newProps.params.subscriptionId))
 	    });
 	  },
 	
-	  onSubscriptionChange: function () {
+	  onSubscriptionChange: function onSubscriptionChange() {
 	    this.setState({
 	      currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId))
 	    });
 	  },
-	  onReviewChange: function () {
+	  onReviewChange: function onReviewChange() {
 	    this.setState({
 	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId))
 	    });
 	  },
 	
-	  reviewsUl: function () {
+	  reviewsUl: function reviewsUl() {
 	    return React.createElement(
 	      'ul',
 	      { className: 'container-fluid subscription-review-ul' },
@@ -51534,7 +51619,7 @@
 	    );
 	  },
 	
-	  showReviews: function (e) {
+	  showReviews: function showReviews(e) {
 	    e.preventDefault();
 	    // e.target.toggleClass("active");
 	    this.setState({
@@ -51542,7 +51627,7 @@
 	      showCharts: false
 	    });
 	  },
-	  showCharts: function (e) {
+	  showCharts: function showCharts(e) {
 	    e.preventDefault();
 	    // e.target.toggleClass("active");
 	    this.setState({
@@ -51551,7 +51636,7 @@
 	    });
 	  },
 	
-	  render: function () {
+	  render: function render() {
 	    if (this.state.currentSubscription.name === undefined) {
 	      // INSERT LOADING SYMBOL HERE
 	      return React.createElement(
@@ -51649,6 +51734,8 @@
 /* 517 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+	
 	var React = __webpack_require__(1);
 	var LineChart = __webpack_require__(518).Line;
 	var BarChart = __webpack_require__(518).Bar;
@@ -51661,10 +51748,25 @@
 	  return a + b;
 	}
 	
+	function median(values) {
+	  values.sort(function (a, b) {
+	    return a - b;
+	  });
+	
+	  var half = Math.floor(values.length / 2);
+	
+	  if (values.length % 2) return values[half];else return (values[half - 1] + values[half]) / 2.0;
+	}
+	
 	var Chart = React.createClass({
 	  displayName: "Chart",
 	
-	  render: function () {
+	  render: function render() {
+	    var ratingFrequencies = [0, 0, 0, 0, 0];
+	    var avgRating = 0;
+	    var medianRating = 0;
+	    var ratings = [];
+	
 	    if (this.props.reviews === undefined || this.props.subscription === undefined || this.props.reviews.length === 0 || this.props.subscription.length === 0) {
 	      return React.createElement(
 	        "div",
@@ -51672,12 +51774,16 @@
 	        "NO CHART DATA"
 	      );
 	    } else {
-	      var ratingFrequencies = [0, 0, 0, 0, 0];
 	      this.props.reviews.forEach(function (review) {
+	        ratings.push(review.rating);
 	        ratingFrequencies[review.rating - 1] += 1;
+	        avgRating += review.rating;
 	      });
 	
 	      var total = ratingFrequencies.reduce(add, 0);
+	      avgRating = avgRating / total;
+	      medianRating = median(ratings);
+	
 	      ratingFrequencies = ratingFrequencies.map(function (freq) {
 	        return Math.round(freq / total * 100);
 	      });
@@ -51737,6 +51843,34 @@
 	        label: labels[4]
 	      }];
 	
+	      if (avgRating < 2) {
+	        var meancolor = "red";
+	      } else if (avgRating < 3) {
+	        var meancolor = "orange";
+	      } else if (avgRating < 4) {
+	        var meancolor = "#ace600";
+	      } else {
+	        var meancolor = "green";
+	      }
+	
+	      var meanStyle = {
+	        color: meancolor
+	      };
+	
+	      if (medianRating < 2) {
+	        var mediancolor = "red";
+	      } else if (medianRating < 3) {
+	        var mediancolor = "orange";
+	      } else if (medianRating < 4) {
+	        var mediancolor = "#ace600";
+	      } else {
+	        var mediancolor = "green";
+	      }
+	
+	      var medianStyle = {
+	        color: mediancolor
+	      };
+	
 	      return React.createElement(
 	        "div",
 	        { className: "col-md-8 col-md-offset-2 container-fluid" },
@@ -51746,13 +51880,52 @@
 	          this.props.subscription.name,
 	          " Ratings"
 	        ),
-	        React.createElement(DonutChart, { data: donutData, options: { responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>", segmentStrokeColor: "#fff", segmentStrokeWidth: 2 } }),
-	        React.createElement(BarChart, { data: barData, options: { responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>" } }),
-	        React.createElement(LineChart, { data: lineData, options: { responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>" } })
+	        React.createElement("br", null),
+	        React.createElement(
+	          "div",
+	          { className: "row" },
+	          React.createElement(
+	            "div",
+	            { className: "col-md-5" },
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Average Rating:"
+	            ),
+	            React.createElement(
+	              "h2",
+	              { style: meanStyle },
+	              avgRating
+	            ),
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Median Rating:"
+	            ),
+	            React.createElement(
+	              "h2",
+	              { style: medianStyle },
+	              medianRating
+	            )
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "col-md-7" },
+	            React.createElement(DonutChart, { data: donutData, options: { responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>", segmentStrokeColor: "#fff", segmentStrokeWidth: 2 } })
+	          )
+	        ),
+	        React.createElement(
+	          "div",
+	          null,
+	          "INSERT FILTERS HERE"
+	        )
 	      );
 	    }
 	  }
 	});
+	
+	// <BarChart data={barData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}}/>
+	// <LineChart data={lineData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}} />
 	
 	module.exports = Chart;
 
@@ -55454,6 +55627,8 @@
 /* 528 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var Infinite = __webpack_require__(529);
 	var TransitionGroup = __webpack_require__(542);
@@ -55466,7 +55641,7 @@
 	var ReviewFeed = React.createClass({
 	  displayName: 'ReviewFeed',
 	
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      unseenReviews: 0,
 	      newReviews: [],
@@ -55474,20 +55649,20 @@
 	      isInfiniteLoading: true
 	    };
 	  },
-	  componentDidMount: function () {
+	  componentDidMount: function componentDidMount() {
 	    this.listenerToken = ReviewStore.addListener(this.onReviewChange);
 	  },
-	  componentWillUnmount: function () {
+	  componentWillUnmount: function componentWillUnmount() {
 	    this.listenerToken.remove();
 	  },
 	
-	  onReviewChange: function () {
+	  onReviewChange: function onReviewChange() {
 	    this.setState({
 	      unSeenReviews: ReviewStore.all().length - this.state.reviews.length,
 	      reviews: ReviewStore.sortedByAge()
 	    });
 	  },
-	  infiniteScrollComponent: function () {
+	  infiniteScrollComponent: function infiniteScrollComponent() {
 	    return React.createElement(
 	      'div',
 	      null,
@@ -55496,7 +55671,7 @@
 	      })
 	    );
 	  },
-	  render: function () {
+	  render: function render() {
 	    // debugger;
 	    if (this.state.reviews === undefined) {
 	      return React.createElement(
@@ -57458,6 +57633,8 @@
 /* 549 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	
 	var Header = __webpack_require__(217);
@@ -57465,7 +57642,7 @@
 	var SplashPage = React.createClass({
 	  displayName: 'SplashPage',
 	
-	  render: function () {
+	  render: function render() {
 	    return React.createElement(
 	      'div',
 	      { className: 'splash-page-div' },
@@ -57486,7 +57663,7 @@
 	        null,
 	        'rate your paid subscriptions and services'
 	      ),
-	      React.createElement('div', { className: 'blank-space' })
+	      React.createElement('div', { className: 'blank-space-2' })
 	    );
 	  }
 	});
@@ -57497,6 +57674,8 @@
 /* 550 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
 	var TransitionGroup = __webpack_require__(542);
@@ -57508,32 +57687,32 @@
 	var SubscriptionIndex = React.createClass({
 	  displayName: 'SubscriptionIndex',
 	
-	  getInitialState: function () {
+	  getInitialState: function getInitialState() {
 	    return {
 	      subscriptions: []
 	    };
 	  },
-	  componentDidMount: function () {
+	  componentDidMount: function componentDidMount() {
 	    console.log("subscriptionIndexMounting");
 	    this.setState({
 	      subscriptions: SubscriptionStore.all()
 	    });
 	    this.listenerToken = SubscriptionStore.addListener(this.onChange);
 	  },
-	  componentWillUnmount: function () {
+	  componentWillUnmount: function componentWillUnmount() {
 	    console.log("subscriptionIndexUnmounting");
 	    this.setState({
 	      subscriptions: []
 	    });
 	    this.listenerToken.remove();
 	  },
-	  onChange: function () {
+	  onChange: function onChange() {
 	    this.setState({
 	      subscriptions: SubscriptionStore.all()
 	    });
 	  },
 	
-	  render: function () {
+	  render: function render() {
 	    return React.createElement(
 	      'div',
 	      { className: 'subscription-index' },
@@ -57567,13 +57746,15 @@
 /* 551 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
 	
 	var SubscriptionGridComponent = React.createClass({
 	  displayName: 'SubscriptionGridComponent',
 	
-	  render: function () {
+	  render: function render() {
 	    return React.createElement(
 	      'div',
 	      { className: 'col-md-4 col-sm-6 col-xs-6 subscription-grid-component' },
@@ -57613,6 +57794,188 @@
 	// </div>
 	
 	module.exports = SubscriptionGridComponent;
+
+/***/ },
+/* 552 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	var RadarChart = __webpack_require__(518).Radar;
+	var LineChart = __webpack_require__(518).Line;
+	var BarChart = __webpack_require__(518).Bar;
+	var DonutChart = __webpack_require__(518).Doughnut;
+	
+	var SubscriptionStore = __webpack_require__(491);
+	var ReviewStore = __webpack_require__(499);
+	
+	var ReviewsRadarChart = __webpack_require__(553);
+	
+	var AnalyticsPage = React.createClass({
+	  displayName: 'AnalyticsPage',
+	
+	  getInitialState: function getInitialState() {
+	    return {
+	      reviews: ReviewStore.all(),
+	      subscriptions: SubscriptionStore.all()
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.onSubscriptionChange);
+	    this.reviewListenerToken = ReviewStore.addListener(this.onReviewChange);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.subscriptionListenerToken.remove();
+	    this.reviewListenerToken.remove();
+	  },
+	
+	  onSubscriptionChange: function onSubscriptionChange() {
+	    this.setState({
+	      subscriptions: SubscriptionStore.all()
+	    });
+	  },
+	  onReviewChange: function onReviewChange() {
+	    this.setState({
+	      reviews: ReviewStore.all()
+	    });
+	  },
+	
+	  render: function render() {
+	    if (this.state.subscriptions === undefined || this.state.reviews === undefined || this.state.subscriptions.length === 0 || this.state.reviews.length === 0) {
+	      return React.createElement(
+	        'div',
+	        null,
+	        'WAITING-FOR-LOAD'
+	      );
+	    } else {
+	      var radarData = {};
+	      var labels = [];
+	      var dailyUsageData = [];
+	      var weeklyUsageData = [];
+	      var monthlyUsageData = [];
+	
+	      this.state.subscriptions.forEach(function (subscription) {
+	        var totalReviews = 0;
+	        var currentSubReviews = [];
+	        var currentSubDaily = [];
+	        var currentSubWeekly = [];
+	        var currentSubMonthly = [];
+	        var currentSubYearly = [];
+	        var currentSubNever = [];
+	
+	        radarData[subscription.id] = {};
+	        currentSubReviews = ReviewStore.findBySubscriptionId(parseInt(subscription.id));
+	        totalReviews = currentSubReviews.length;
+	
+	        if (totalReviews === 0) {
+	          return;
+	        }
+	
+	        currentSubDaily = currentSubReviews.filter(function (review) {
+	          return review.frequency === 5;
+	        });
+	        currentSubWeekly = currentSubReviews.filter(function (review) {
+	          return review.frequency === 4;
+	        });
+	        currentSubMonthly = currentSubReviews.filter(function (review) {
+	          return review.frequency === 3;
+	        });
+	        currentSubYearly = currentSubReviews.filter(function (review) {
+	          return review.frequency === 2;
+	        });
+	        currentSubNever = currentSubReviews.filter(function (review) {
+	          return review.frequency === 1;
+	        });
+	
+	        labels.push(subscription.name);
+	        dailyUsageData.push(currentSubDaily.length / totalReviews * 100);
+	        weeklyUsageData.push(currentSubWeekly.length / totalReviews * 100);
+	        monthlyUsageData.push(currentSubMonthly.length / totalReviews * 100);
+	        // radarData[subscription.id].pctDaily = currentSubDaily.length/totalReviews * 100;
+	        // radarData[subscription.id].pctWeekly = currentSubWeekly.length/totalReviews * 100;
+	        // radarData[subscription.id].pctMonthly = currentSubMonthly.length/totalReviews * 100;
+	        // radarData[subscription.id].pctYearly = currentSubYearly.length/totalReviews * 100;
+	        // radarData[subscription.id].pctNever = currentSubNever.length/totalReviews * 100;
+	      });
+	
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(ReviewsRadarChart, { dailyUsageData: dailyUsageData, weeklyUsageData: weeklyUsageData,
+	          monthlyUsageData: monthlyUsageData, labels: labels })
+	      );
+	    }
+	  }
+	});
+	
+	module.exports = AnalyticsPage;
+
+/***/ },
+/* 553 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	var RadarChart = __webpack_require__(518).Radar;
+	
+	var ReviewsRadarChart = React.createClass({
+	  displayName: 'ReviewsRadarChart',
+	
+	  render: function render() {
+	
+	    var data = {
+	      labels: this.props.labels,
+	      datasets: [{
+	        label: "Usage Rate (Daily)",
+	        fillColor: "rgba(144,238,144,0.2)",
+	        strokeColor: "rgba(144,238,144,1)",
+	        pointColor: "rgba(144,238,144,1)",
+	        pointStrokeColor: "#fff",
+	        pointHighlightFill: "#fff",
+	        pointHighlightStroke: "rgba(144,238,144,1)",
+	        data: this.props.dailyUsageData
+	      }, {
+	        label: "Usage Rate (Weekly)",
+	        fillColor: "rgba(151,187,205,0.2)",
+	        strokeColor: "rgba(151,187,205,1)",
+	        pointColor: "rgba(151,187,205,1)",
+	        pointStrokeColor: "#fff",
+	        pointHighlightFill: "#fff",
+	        pointHighlightStroke: "rgba(151,187,205,1)",
+	        data: this.props.weeklyUsageData
+	      }, {
+	        label: "Usage Rate (Monthly)",
+	        fillColor: "rgba(255,165,0,0.2)",
+	        strokeColor: "rgba(255,165,0,1)",
+	        pointColor: "rgba(255,165,0,1)",
+	        pointStrokeColor: "#fff",
+	        pointHighlightFill: "#fff",
+	        pointHighlightStroke: "rgba(151,187,205,1)",
+	        data: this.props.monthlyUsageData
+	      }]
+	    };
+	
+	    var chartOptions = {
+	      responsive: true,
+	      tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"
+	    };
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'col-md-10 col-md-offset-1 reviews-radar-chart' },
+	      React.createElement(
+	        'h2',
+	        null,
+	        ' Usage Rates '
+	      ),
+	      React.createElement(RadarChart, { data: data, options: chartOptions })
+	    );
+	  }
+	});
+	
+	module.exports = ReviewsRadarChart;
 
 /***/ }
 /******/ ]);
