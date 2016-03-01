@@ -2,7 +2,17 @@ var React = require('react');
 var RadarChart = require('react-chartjs').Radar;
 
 var ReviewsRadarChart = React.createClass({
+  // componentDidMount: function() {
+  //   if (this.refs.radarChart) {
+  //     var legend = this.refs.radarChart.getChart().generateLegend();
+  //
+  //     this.setState({
+  //       legend: legend
+  //     });
+  //   }
+  // },
   render: function() {
+    // var legend = this.state && this.state.legend || '';
 
     var data = {
       labels: this.props.labels,
@@ -45,10 +55,13 @@ var ReviewsRadarChart = React.createClass({
       tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"
     };
 
-    
+
+    // <div dangerouslySetInnerHTML={{ __html: this.state.legend }} />
     return <div className="col-md-10 col-md-offset-1 reviews-radar-chart">
       <h2> Usage Rates </h2>
-      <RadarChart data={data} options={chartOptions}/>
+      <div className="col-md-8">
+        <RadarChart ref="radarChart" data={data} options={chartOptions}/>
+      </div>
     </div>;
   }
 });

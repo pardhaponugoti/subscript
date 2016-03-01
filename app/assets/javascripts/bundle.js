@@ -57923,7 +57923,17 @@
 	var ReviewsRadarChart = React.createClass({
 	  displayName: 'ReviewsRadarChart',
 	
+	  // componentDidMount: function() {
+	  //   if (this.refs.radarChart) {
+	  //     var legend = this.refs.radarChart.getChart().generateLegend();
+	  //
+	  //     this.setState({
+	  //       legend: legend
+	  //     });
+	  //   }
+	  // },
 	  render: function render() {
+	    // var legend = this.state && this.state.legend || '';
 	
 	    var data = {
 	      labels: this.props.labels,
@@ -57962,6 +57972,7 @@
 	      tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"
 	    };
 	
+	    // <div dangerouslySetInnerHTML={{ __html: this.state.legend }} />
 	    return React.createElement(
 	      'div',
 	      { className: 'col-md-10 col-md-offset-1 reviews-radar-chart' },
@@ -57970,7 +57981,11 @@
 	        null,
 	        ' Usage Rates '
 	      ),
-	      React.createElement(RadarChart, { data: data, options: chartOptions })
+	      React.createElement(
+	        'div',
+	        { className: 'col-md-8' },
+	        React.createElement(RadarChart, { ref: 'radarChart', data: data, options: chartOptions })
+	      )
 	    );
 	  }
 	});
