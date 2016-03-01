@@ -25,6 +25,16 @@ user_list = [
   ["Rey", "Skywalker?", "rey@awesome.com", "password1", "Jakku"]
 ]
 
+user_list.each do |first_name, last_name, email, password, location|
+  User.create({
+    first_name: first_name,
+    last_name: last_name,
+    email: email,
+    password: password,
+    location: location
+    })
+end
+
 # name, url, description, logo
 subscription_list = [
   ["Uber",
@@ -95,6 +105,17 @@ subscription_list = [
      "https://lh3.googleusercontent.com/iDxpSf9chsQCXYMmxxyexkjMjgMcw-w8FUwnO_Uv97ye-tGPtSetQjUWOeaMJ-lZZEo=w300"]
 
 ]
+
+subscription_list.each do |name, url, description, logo|
+  Subscription.create({
+    name: name,
+    url: url,
+    description: description,
+    logo: logo
+    })
+end
+
+
 
 bimodal = [1, 1, 1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5, 5, 5]
 uniform = [1, 2, 3, 4, 5]
