@@ -24837,10 +24837,12 @@
 	  },
 	
 	  toggleModal: function () {
-	    $("#App").css("filter", "blur(5px)");
-	    $("#App").css("-webkit-filter", "blur(5px)");
-	    $("#App").css("-o-filter", "blur(5px)");
-	    $("#App").css("-moz-filter", "blur(5px)");
+	    $("#App").css({
+	      "-webkit-filter": "blur(5px)",
+	      "filter": "blur(5px)",
+	      "-o-filter": "blur(5px)",
+	      "-moz-filter": "blur(5px)"
+	    });
 	    this.setState({
 	      modalIsOpen: !this.state.modalIsOpen
 	    });
@@ -24855,11 +24857,19 @@
 	      signInOpen: false
 	    });
 	  },
+	  openSignUpFormAndModal: function () {
+	    this.setState({
+	      signInOpen: false,
+	      modalIsOpen: true
+	    });
+	  },
 	  close: function () {
-	    $("#App").css("filter", "blur(0px)");
-	    $("#App").css("-webkit-filter", "blur(0px)");
-	    $("#App").css("-o-filter", "blur(0px)");
-	    $("#App").css("-moz-filter", "blur(0px)");
+	    $("#App").css({
+	      "-webkit-filter": "blur(0px)",
+	      "filter": "blur(0px)",
+	      "-o-filter": "blur(0px)",
+	      "-moz-filter": "blur(0px)"
+	    });
 	    this.setState({
 	      modalIsOpen: false
 	    });
@@ -25005,7 +25015,7 @@
 	          React.createElement(
 	            Link,
 	            { to: '/subscriptions/', className: 'btn btn-default btn-sm' },
-	            'Companies'
+	            'Services'
 	          )
 	        )
 	      )
@@ -49531,7 +49541,7 @@
 	      null,
 	      React.createElement(
 	        'form',
-	        { action: '/session', method: 'post', className: 'form', onSubmit: this.handleSubmit },
+	        { action: '/session', method: 'post', className: 'form new-session-form', onSubmit: this.handleSubmit },
 	        React.createElement(
 	          'div',
 	          { className: 'form-group' },
@@ -49601,8 +49611,10 @@
 	  passwordUl: function () {
 	    var passwordErrors = [];
 	    var length = this.state.password.length;
+	    this.validPassword = true;
 	
 	    if (length < 8 && length > 0) {
+	      this.validPassword = false;
 	      passwordErrors.push(React.createElement(
 	        'li',
 	        { key: '1' },
@@ -49639,6 +49651,7 @@
 	        )
 	      ));
 	    } else if (length > 0) {
+	      this.validPassword = false;
 	      passwordErrors.push(React.createElement(
 	        'li',
 	        { key: '4' },
@@ -49667,8 +49680,10 @@
 	    }
 	  },
 	  matchedPassword: function () {
+	    this.passwordMatch = true;
 	    if (this.state.password !== "" && this.state.password.length > 7 && containsNumber(this.state.password)) {
 	      if (this.state.password !== this.state.confirmPassword && this.state.confirmPassword !== "") {
+	        this.passwordMatch = false;
 	        return React.createElement(
 	          'div',
 	          null,
@@ -49697,6 +49712,15 @@
 	      return;
 	    }
 	  },
+	
+	  submitButtonDisabled: function () {
+	    if (this.state.firstName.length === 0 || this.state.lastName.length === 0 || this.state.email.length === 0 || this.state.password.length === 0 || this.state.confirmPassword.length === 0 || !this.validPassword || !this.passwordMatch) {
+	      return true;
+	    } else {
+	      return false;
+	    }
+	  },
+	
 	  handleSubmit: function (e) {
 	    e.preventDefault();
 	    this.props.closeModalCallback();
@@ -49732,7 +49756,7 @@
 	        this.matchedPassword(),
 	        React.createElement('br', null),
 	        React.createElement('br', null),
-	        React.createElement('input', { className: 'btn btn-default', type: 'submit', value: 'Sign Up', disabled: !this.state.inputEnabled })
+	        React.createElement('input', { className: 'btn btn-default', type: 'submit', value: 'Sign Up', disabled: this.submitButtonDisabled() })
 	      )
 	    );
 	  }
@@ -50341,19 +50365,23 @@
 	  },
 	
 	  toggleNewReviewModal: function () {
-	    $("#App").css("filter", "blur(10px)");
-	    $("#App").css("-webkit-filter", "blur(10px)");
-	    $("#App").css("-o-filter", "blur(10px)");
-	    $("#App").css("-moz-filter", "blur(10px)");
+	    $("#App").css({
+	      "-webkit-filter": "blur(5px)",
+	      "filter": "blur(5px)",
+	      "-o-filter": "blur(5px)",
+	      "-moz-filter": "blur(5px)"
+	    });
 	    this.setState({
 	      newReviewModalIsOpen: !this.state.newReviewModalIsOpen
 	    });
 	  },
 	  closeNewReviewModal: function () {
-	    $("#App").css("filter", "blur(0px)");
-	    $("#App").css("-webkit-filter", "blur(0px)");
-	    $("#App").css("-o-filter", "blur(0px)");
-	    $("#App").css("-moz-filter", "blur(0px)");
+	    $("#App").css({
+	      "-webkit-filter": "blur(0px)",
+	      "filter": "blur(0px)",
+	      "-o-filter": "blur(0px)",
+	      "-moz-filter": "blur(0px)"
+	    });
 	    this.setState({
 	      newReviewModalIsOpen: false
 	    });
@@ -50576,19 +50604,23 @@
 	  },
 	
 	  toggleEditReviewModal: function () {
-	    $("#App").css("filter", "blur(5px)");
-	    $("#App").css("-webkit-filter", "blur(5px)");
-	    $("#App").css("-o-filter", "blur(5px)");
-	    $("#App").css("-moz-filter", "blur(5px)");
+	    $("#App").css({
+	      "-webkit-filter": "blur(0px)",
+	      "filter": "blur(0px)",
+	      "-o-filter": "blur(0px)",
+	      "-moz-filter": "blur(0px)"
+	    });
 	    this.setState({
 	      editReviewModalIsOpen: !this.state.editReviewModalIsOpen
 	    });
 	  },
 	  closeEditReviewModal: function () {
-	    $("#App").css("filter", "blur(0px)");
-	    $("#App").css("-webkit-filter", "blur(0px)");
-	    $("#App").css("-o-filter", "blur(0px)");
-	    $("#App").css("-moz-filter", "blur(0px)");
+	    $("#App").css({
+	      "-webkit-filter": "blur(0px)",
+	      "filter": "blur(0px)",
+	      "-o-filter": "blur(0px)",
+	      "-moz-filter": "blur(0px)"
+	    });
 	    this.setState({
 	      editReviewModalIsOpen: false
 	    });
@@ -52843,7 +52875,7 @@
 	      React.createElement(
 	        'h2',
 	        null,
-	        'All Subscriptions'
+	        'All Services'
 	      ),
 	      React.createElement(
 	        'div',
@@ -52882,11 +52914,11 @@
 	      { className: 'col-md-4 col-sm-6 col-xs-6 subscription-grid-component' },
 	      React.createElement(
 	        Link,
-	        { className: 'subscription-name-link', to: "/subscriptions/" + this.props.subscription.id },
+	        { to: "/subscriptions/" + this.props.subscription.id },
 	        React.createElement(
 	          'div',
 	          null,
-	          React.createElement('img', { className: 'subscription-logo-thumbnail', src: this.props.subscription.logo, height: '256' })
+	          React.createElement('img', { className: 'subscription-logo', src: this.props.subscription.logo })
 	        ),
 	        React.createElement(
 	          'div',
@@ -52896,7 +52928,7 @@
 	            null,
 	            React.createElement(
 	              'a',
-	              null,
+	              { className: 'subscription-name-link' },
 	              this.props.subscription.name
 	            )
 	          ),
@@ -53798,7 +53830,7 @@
 	        label: labels[3]
 	      }, {
 	        value: ratingFrequencies[4],
-	        color: "#79ff4d",
+	        color: "#00e600",
 	        highlight: "#40ff00",
 	        label: labels[4]
 	      }];
@@ -57524,14 +57556,33 @@
 
 	var React = __webpack_require__(1);
 	
+	var Header = __webpack_require__(217);
+	
 	var SplashPage = React.createClass({
 	  displayName: 'SplashPage',
 	
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      null,
-	      'SPLASH PAGE GOES HERE'
+	      { className: 'splash-page-div' },
+	      React.createElement('div', { className: 'blank-space' }),
+	      React.createElement(
+	        'h1',
+	        { className: '' },
+	        'Σ'
+	      ),
+	      React.createElement(
+	        'h2',
+	        null,
+	        'subscript'
+	      ),
+	      React.createElement('br', null),
+	      React.createElement(
+	        'h5',
+	        null,
+	        'rate your paid subscriptions and services'
+	      ),
+	      React.createElement('div', { className: 'blank-space' })
 	    );
 	  }
 	});

@@ -41,8 +41,10 @@ var NewUserForm = React.createClass({
   passwordUl: function() {
     var passwordErrors = [];
     var length = this.state.password.length;
+    this.validPassword = true;
 
     if (length < 8 && length > 0) {
+      this.validPassword = false;
       passwordErrors.push(<li key="1"><strong><font color="red">
         ✗ Password must be at least 8 characters long
       </font></strong></li>);
@@ -57,6 +59,7 @@ var NewUserForm = React.createClass({
         ✔ Password must contain a number
       </font></li>);
     } else if (length > 0){
+      this.validPassword = false;
       passwordErrors.push(<li key="4"><strong><font color="red">
         ✗ Password must contain a number
       </font></strong></li>);
@@ -73,8 +76,10 @@ var NewUserForm = React.createClass({
     }
   },
   matchedPassword: function() {
+    this.passwordMatch = true;
     if (this.state.password !== "" && this.state.password.length > 7 && containsNumber(this.state.password)) {
       if (this.state.password !== this.state.confirmPassword && this.state.confirmPassword !== "") {
+        this.passwordMatch = false;
         return <div><strong><font color="red">
           ✗ Passwords do not match!
         </font></strong></div>;
@@ -88,6 +93,21 @@ var NewUserForm = React.createClass({
     }
 
   },
+
+  submitButtonDisabled: function() {
+    if(this.state.firstName.length === 0 ||
+      this.state.lastName.length === 0 ||
+      this.state.email.length === 0 ||
+      this.state.password.length === 0 ||
+      this.state.confirmPassword.length === 0 ||
+      !this.validPassword ||
+      !this.passwordMatch) {
+        return true;
+      } else {
+        return false;
+      }
+  },
+
   handleSubmit: function(e) {
     e.preventDefault();
     this.props.closeModalCallback();
@@ -121,7 +141,7 @@ var NewUserForm = React.createClass({
         {this.matchedPassword()}
         <br/>
         <br/>
-        <input className="btn btn-default" type="submit" value="Sign Up" disabled={!this.state.inputEnabled}/>
+        <input className="btn btn-default" type="submit" value="Sign Up" disabled={this.submitButtonDisabled()}/>
       </form>
     </div>;
   }

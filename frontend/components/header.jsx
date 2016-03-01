@@ -33,10 +33,12 @@ var Header = React.createClass({
   },
 
   toggleModal: function() {
-    $("#App").css("filter", "blur(5px)");
-    $("#App").css("-webkit-filter", "blur(5px)");
-    $("#App").css("-o-filter", "blur(5px)");
-    $("#App").css("-moz-filter", "blur(5px)");
+    $("#App").css({
+      "-webkit-filter": "blur(5px)",
+      "filter": "blur(5px)",
+      "-o-filter": "blur(5px)",
+      "-moz-filter": "blur(5px)"
+    });
     this.setState({
       modalIsOpen: !this.state.modalIsOpen
     });
@@ -51,11 +53,19 @@ var Header = React.createClass({
       signInOpen: false
     });
   },
+  openSignUpFormAndModal: function() {
+    this.setState({
+      signInOpen: false,
+      modalIsOpen: true
+    });
+  },
   close: function() {
-    $("#App").css("filter", "blur(0px)");
-    $("#App").css("-webkit-filter", "blur(0px)");
-    $("#App").css("-o-filter", "blur(0px)");
-    $("#App").css("-moz-filter", "blur(0px)");
+    $("#App").css({
+      "-webkit-filter": "blur(0px)",
+      "filter": "blur(0px)",
+      "-o-filter": "blur(0px)",
+      "-moz-filter": "blur(0px)"
+    });
     this.setState({
       modalIsOpen: false
     });
@@ -130,7 +140,7 @@ var Header = React.createClass({
       <div id="navbarCollapse" className="collapse navbar-collapse">
         {this.userDropdown()}
         <div className="navbar-right btn-group">
-          <Link to="/subscriptions/" className="btn btn-default btn-sm">Companies</Link>
+          <Link to="/subscriptions/" className="btn btn-default btn-sm">Services</Link>
         </div>
       </div>
     </nav>;

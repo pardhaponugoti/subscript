@@ -85,7 +85,7 @@ var Chart = React.createClass({
         },
         {
           value: ratingFrequencies[4],
-          color:  "#79ff4d",
+          color:  "#00e600",
           highlight: "#40ff00",
           label: labels[4]
         },
@@ -94,6 +94,9 @@ var Chart = React.createClass({
       return <div className="col-md-8 col-md-offset-2 container-fluid">
         <h2 className="chart-title">{this.props.subscription.name} Ratings</h2>
         <DonutChart data={donutData}  options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>", segmentStrokeColor : "#fff", segmentStrokeWidth : 2}}/>
+
+
+
         <BarChart data={barData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}}/>
         <LineChart data={lineData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}} />
       </div>;

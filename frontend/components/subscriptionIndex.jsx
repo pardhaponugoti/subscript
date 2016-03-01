@@ -34,7 +34,7 @@ var SubscriptionIndex = React.createClass({
 
   render: function() {
     return <div className="subscription-index">
-      <h2>All Subscriptions</h2>
+      <h2>All Services</h2>
       <div className="col-md-offset-1 col-md-10">
         <TransitionGroup transitionName="subscription-grid">
           {this.state.subscriptions.sort(function(a, b) {

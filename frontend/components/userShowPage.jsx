@@ -89,19 +89,23 @@ var UserShowPage = React.createClass({
   },
 
   toggleNewReviewModal: function() {
-    $("#App").css("filter", "blur(10px)");
-    $("#App").css("-webkit-filter", "blur(10px)");
-    $("#App").css("-o-filter", "blur(10px)");
-    $("#App").css("-moz-filter", "blur(10px)");
+    $("#App").css({
+      "-webkit-filter": "blur(5px)",
+      "filter": "blur(5px)",
+      "-o-filter": "blur(5px)",
+      "-moz-filter": "blur(5px)"
+    });
     this.setState({
       newReviewModalIsOpen: !this.state.newReviewModalIsOpen
     });
   },
   closeNewReviewModal: function() {
-    $("#App").css("filter", "blur(0px)");
-    $("#App").css("-webkit-filter", "blur(0px)");
-    $("#App").css("-o-filter", "blur(0px)");
-    $("#App").css("-moz-filter", "blur(0px)");
+    $("#App").css({
+      "-webkit-filter": "blur(0px)",
+      "filter": "blur(0px)",
+      "-o-filter": "blur(0px)",
+      "-moz-filter": "blur(0px)"
+    });
     this.setState({
       newReviewModalIsOpen: false
     });

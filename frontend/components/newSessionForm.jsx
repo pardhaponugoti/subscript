@@ -32,7 +32,7 @@ var NewSessionForm = React.createClass({
   },
   render: function() {
     return <div>
-      <form action="/session" method="post" className="form" onSubmit={this.handleSubmit} >
+      <form action="/session" method="post" className="form new-session-form" onSubmit={this.handleSubmit} >
         <div className="form-group">
         <input type="string" name="user[email]" placeholder="Email" value={this.state.email}
             onChange={this.emailChange} />
