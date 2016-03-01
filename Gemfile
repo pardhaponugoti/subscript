@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'newrelic_rpm'
 gem "therubyracer"
+gem "better_errors"
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem "twitter-bootstrap-rails"
 gem 'pry-rails'

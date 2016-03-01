@@ -2,6 +2,47 @@ var React = require('react');
 var RadarChart = require('react-chartjs').Radar;
 
 var ReviewsRadarChart = React.createClass({
+  getInitialState: function() {
+    return {
+      checked: [0,1,2]
+    };
+  },
+  componentWillReceiveProps: function() {
+    this.setState({
+      checked: [0,1,2]
+    });
+  },
+
+  handleClick: function(e) {
+    e.preventDefault();
+    debugger;
+    if (e.target.checked) {
+      debugger;
+      if( this.state.checked.includes(parseInt(e.target.value)) ){
+        console.log("already checked ---- error");
+      } else {
+        var checked = this.state.checked;
+        checked.push(parseInt(e.target.value));
+        debugger;
+        this.setState({
+          checked: checked
+        });
+      }
+    } else {
+      if( this.state.checked.includes(parseInt(e.target.value)) ){
+        var idx = this.state.checked.indexOf(parseInt(e.target.value));
+        if (idx > -1) {
+          var checked = this.state.checked;
+          checked.splice(idx, 1);
+          this.setState({
+            checked: checked
+          });
+        }
+      } else {
+        console.log("already unchecked --- error");
+      }
+    }
+  },
   // componentDidMount: function() {
   //   if (this.refs.radarChart) {
   //     var legend = this.refs.radarChart.getChart().generateLegend();
@@ -59,11 +100,26 @@ var ReviewsRadarChart = React.createClass({
     // <div dangerouslySetInnerHTML={{ __html: this.state.legend }} />
     return <div className="col-md-10 col-md-offset-1 reviews-radar-chart">
       <h2> Usage Rates </h2>
+      <br/>
       <div className="col-md-8">
         <RadarChart ref="radarChart" data={data} options={chartOptions}/>
+      </div>
+      <div className="col-md-4 reviews-radar-checkbox">
+        <form action="">
+          <input type="checkbox" name="vehicle" value="0" checked={this.state.checked.includes(0)} onChange={this.handleClick}/>
+            <text style={{color: data.datasets[0].strokeColor}}>Daily</text><br/>
+          <input type="checkbox" name="vehicle" value="1" checked={this.state.checked.includes(1)} onChange={this.handleClick}/>
+            <text style={{color: data.datasets[1].strokeColor}}>Weekly</text><br/>
+          <input type="checkbox" name="vehicle" value="2" checked={this.state.checked.includes(2)} onChange={this.handleClick}/>
+            <text style={{color: data.datasets[2].strokeColor}}>Monthly</text><br/>
+        </form>
       </div>
     </div>;
   }
 });
 
 module.exports = ReviewsRadarChart;
+
+
+// <input style={{color: data.datasets[3].strokeColor}} type="checkbox" name="vehicle" value="Yearly"/>Yearly<br/>
+// <input style={{color: data.datasets[4].strokeColor}} type="checkbox" name="vehicle" value="Never"/>Never<br/>

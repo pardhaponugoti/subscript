@@ -57773,7 +57773,7 @@
 	            'h4',
 	            null,
 	            React.createElement(
-	              'a',
+	              'text',
 	              { className: 'subscription-name-link' },
 	              this.props.subscription.name
 	            )
@@ -57889,9 +57889,9 @@
 	        });
 	
 	        labels.push(subscription.name);
-	        dailyUsageData.push(currentSubDaily.length / totalReviews * 100);
-	        weeklyUsageData.push(currentSubWeekly.length / totalReviews * 100);
-	        monthlyUsageData.push(currentSubMonthly.length / totalReviews * 100);
+	        dailyUsageData.push(Math.round(currentSubDaily.length / totalReviews * 100));
+	        weeklyUsageData.push(Math.round(currentSubWeekly.length / totalReviews * 100));
+	        monthlyUsageData.push(Math.round(currentSubMonthly.length / totalReviews * 100));
 	        // radarData[subscription.id].pctDaily = currentSubDaily.length/totalReviews * 100;
 	        // radarData[subscription.id].pctWeekly = currentSubWeekly.length/totalReviews * 100;
 	        // radarData[subscription.id].pctMonthly = currentSubMonthly.length/totalReviews * 100;
@@ -57923,6 +57923,47 @@
 	var ReviewsRadarChart = React.createClass({
 	  displayName: 'ReviewsRadarChart',
 	
+	  getInitialState: function getInitialState() {
+	    return {
+	      checked: [0, 1, 2]
+	    };
+	  },
+	  componentWillReceiveProps: function componentWillReceiveProps() {
+	    this.setState({
+	      checked: [0, 1, 2]
+	    });
+	  },
+	
+	  handleClick: function handleClick(e) {
+	    e.preventDefault();
+	    debugger;
+	    if (e.target.checked) {
+	      debugger;
+	      if (this.state.checked.includes(parseInt(e.target.value))) {
+	        console.log("already checked ---- error");
+	      } else {
+	        var checked = this.state.checked;
+	        checked.push(parseInt(e.target.value));
+	        debugger;
+	        this.setState({
+	          checked: checked
+	        });
+	      }
+	    } else {
+	      if (this.state.checked.includes(parseInt(e.target.value))) {
+	        var idx = this.state.checked.indexOf(parseInt(e.target.value));
+	        if (idx > -1) {
+	          var checked = this.state.checked;
+	          checked.splice(idx, 1);
+	          this.setState({
+	            checked: checked
+	          });
+	        }
+	      } else {
+	        console.log("already unchecked --- error");
+	      }
+	    }
+	  },
 	  // componentDidMount: function() {
 	  //   if (this.refs.radarChart) {
 	  //     var legend = this.refs.radarChart.getChart().generateLegend();
@@ -57981,16 +58022,49 @@
 	        null,
 	        ' Usage Rates '
 	      ),
+	      React.createElement('br', null),
 	      React.createElement(
 	        'div',
 	        { className: 'col-md-8' },
 	        React.createElement(RadarChart, { ref: 'radarChart', data: data, options: chartOptions })
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'col-md-4 reviews-radar-checkbox' },
+	        React.createElement(
+	          'form',
+	          { action: '' },
+	          React.createElement('input', { type: 'checkbox', name: 'vehicle', value: '0', checked: this.state.checked.includes(0), onChange: this.handleClick }),
+	          React.createElement(
+	            'text',
+	            { style: { color: data.datasets[0].strokeColor } },
+	            'Daily'
+	          ),
+	          React.createElement('br', null),
+	          React.createElement('input', { type: 'checkbox', name: 'vehicle', value: '1', checked: this.state.checked.includes(1), onChange: this.handleClick }),
+	          React.createElement(
+	            'text',
+	            { style: { color: data.datasets[1].strokeColor } },
+	            'Weekly'
+	          ),
+	          React.createElement('br', null),
+	          React.createElement('input', { type: 'checkbox', name: 'vehicle', value: '2', checked: this.state.checked.includes(2), onChange: this.handleClick }),
+	          React.createElement(
+	            'text',
+	            { style: { color: data.datasets[2].strokeColor } },
+	            'Monthly'
+	          ),
+	          React.createElement('br', null)
+	        )
 	      )
 	    );
 	  }
 	});
 	
 	module.exports = ReviewsRadarChart;
+	
+	// <input style={{color: data.datasets[3].strokeColor}} type="checkbox" name="vehicle" value="Yearly"/>Yearly<br/>
+	// <input style={{color: data.datasets[4].strokeColor}} type="checkbox" name="vehicle" value="Never"/>Never<br/>
 
 /***/ }
 /******/ ]);

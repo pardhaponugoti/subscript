@@ -82,16 +82,16 @@ var AnalyticsPage = React.createClass({
 
 
         labels.push(subscription.name);
-        dailyUsageData.push(currentSubDaily.length/totalReviews * 100);
-        weeklyUsageData.push(currentSubWeekly.length/totalReviews * 100);
-        monthlyUsageData.push(currentSubMonthly.length/totalReviews * 100);
+        dailyUsageData.push(Math.round(currentSubDaily.length/totalReviews * 100));
+        weeklyUsageData.push(Math.round(currentSubWeekly.length/totalReviews * 100));
+        monthlyUsageData.push(Math.round(currentSubMonthly.length/totalReviews * 100));
         // radarData[subscription.id].pctDaily = currentSubDaily.length/totalReviews * 100;
         // radarData[subscription.id].pctWeekly = currentSubWeekly.length/totalReviews * 100;
         // radarData[subscription.id].pctMonthly = currentSubMonthly.length/totalReviews * 100;
         // radarData[subscription.id].pctYearly = currentSubYearly.length/totalReviews * 100;
         // radarData[subscription.id].pctNever = currentSubNever.length/totalReviews * 100;
       });
-
+      
       return <div>
         <ReviewsRadarChart dailyUsageData={dailyUsageData} weeklyUsageData={weeklyUsageData}
           monthlyUsageData={monthlyUsageData} labels={labels}/>
