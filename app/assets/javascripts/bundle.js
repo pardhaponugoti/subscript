@@ -50422,7 +50422,7 @@
 	      var self = this;
 	      return React.createElement(
 	        'div',
-	        null,
+	        { className: 'user-show-page' },
 	        React.createElement(
 	          'div',
 	          { className: 'col-md-3 col-md-offset-1 container-fluid' },
@@ -51353,7 +51353,7 @@
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'user-edit-page' },
 	      React.createElement(
 	        'form',
 	        { id: 'user-edit-form', onSubmit: this.handleSubmit },

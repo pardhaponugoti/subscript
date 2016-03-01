@@ -89,7 +89,7 @@ var UserEditPage = React.createClass({
   );
   },
   render: function() {
-      return <div>
+      return <div className="user-edit-page">
         <form id="user-edit-form" onSubmit={this.handleSubmit}>
           <div className="col-md-4 col-md-offset-2">
             <label>First Name

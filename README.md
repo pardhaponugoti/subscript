@@ -103,6 +103,7 @@ for subscriptions or their friends
 
 **objective:** Make the site feel more cohesive and awesome.
 
+- [ ] Error handling
 - [ ] Get feedback on my UI from others
 - [ ] Refactor HTML classes & CSS rules
 - [x] Add modals, transitions, and other styling flourishes.

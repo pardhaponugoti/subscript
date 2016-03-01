@@ -135,7 +135,7 @@ var UserShowPage = React.createClass({
       return <div id="WAITING-FOR-LOAD"></div>;
     } else {
       var self = this;
-      return <div>
+      return <div className="user-show-page">
         <div className="col-md-3 col-md-offset-1 container-fluid">
           <img src={this.state.currentShowUser.image} className="profile-img"></img>
           <br/>
