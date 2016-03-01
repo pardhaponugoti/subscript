@@ -53,7 +53,7 @@ ReviewStore.updateReview = function(review) {
 };
 
 ReviewStore.updateReviews = function(reviewsData) {
-  _reviewsArray = reviewsData;
+  _reviewsArray = [];
   _reviews = {};
   _reviewsByUserId = {};
   _reviewsBySubscriptionId = {};

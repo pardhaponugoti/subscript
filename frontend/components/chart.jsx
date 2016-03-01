@@ -14,7 +14,7 @@ var Chart = React.createClass({
   render: function() {
     if (this.props.reviews === undefined || this.props.subscription === undefined ||
     this.props.reviews.length === 0 || this.props.subscription.length === 0) {
-      return <div>CHART GOES HERE</div>;
+      return <div>NO CHART DATA</div>;
     } else {
       var ratingFrequencies = [0, 0, 0, 0, 0];
       this.props.reviews.forEach(function(review) {
@@ -33,7 +33,7 @@ var Chart = React.createClass({
           datasets: [
             {
               label: "Ratings",
-              fillColor: "rgba(220,220,220,0.2)",
+              fillColor: ["red", "orange", "yellow", "yellow-green", "green"],
               strokeColor: "rgba(220,220,220,1)",
               pointColor: "rgba(220,220,220,1)",
               pointStrokeColor: "#fff",
@@ -85,17 +85,17 @@ var Chart = React.createClass({
         },
         {
           value: ratingFrequencies[4],
-          color:  "#8cff66",
+          color:  "#79ff4d",
           highlight: "#40ff00",
           label: labels[4]
         },
       ];
 
-      return <div className="col-md-8 col-md-offset-2">
+      return <div className="col-md-8 col-md-offset-2 container-fluid">
         <h2 className="chart-title">{this.props.subscription.name} Ratings</h2>
-        <DonutChart data={donutData}  options={{responsive: true, segmentStrokeColor : "#fff", segmentStrokeWidth : 2}}/>
-        <BarChart data={barData} options={{responsive: true}}/>
-        <LineChart data={lineData} options={{responsive: true}} />
+        <DonutChart data={donutData}  options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>", segmentStrokeColor : "#fff", segmentStrokeWidth : 2}}/>
+        <BarChart data={barData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}}/>
+        <LineChart data={lineData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}} />
       </div>;
       }
   }

@@ -137,7 +137,7 @@ var UserShowPage = React.createClass({
           <br/>
           <ul><h3>Subscriptions</h3>
             {this.state.currentShowUserReviews.map(function(review) {
-              return <li key={review.id}><Link className="subscription-name-link" to={"/subscriptions/" + review.subscription_id}>
+              return <li key={review.subscription_id}><Link className="subscription-name-link" to={"/subscriptions/" + review.subscription_id}>
                 {SubscriptionStore.findById(review.subscription_id).name}</Link></li>;
             })}
           </ul>

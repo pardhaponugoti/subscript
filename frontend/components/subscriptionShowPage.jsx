@@ -54,7 +54,8 @@ var SubscriptionShowPage = React.createClass({
   reviewsUl: function() {
     return <ul className="container-fluid subscription-review-ul" >
       {this.state.reviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
-        return <ReviewShowComponent review={review} />;
+        console.log("SUBSCRIPTION SHOW " + review.id);
+        return <ReviewShowComponent key={review.id} review={review} />;
       })}
     </ul>;
   },
@@ -91,17 +92,17 @@ var SubscriptionShowPage = React.createClass({
       return <div className="container">
         <div className="row">
           <div className="col-md-4"><h1><img className="subscription-logo" src={this.state.currentSubscription.logo} height="256"/></h1></div>
-          <div>
+          <div className="col-md-8">
             <h1>{this.state.currentSubscription.name}</h1>
             <h4><a href={"http://" + this.state.currentSubscription.url}>{this.state.currentSubscription.url}</a></h4>
             <h5>{this.state.currentSubscription.description}</h5>
           </div>
         </div>
-        <ul className="nav nav-tabs list-inline" role="tablist">
+        <ul className="nav nav-tabs list-inline borderless" role="tablist">
           <li key="1" className={this.state.showReviews ? "active" : ""}><a onClick={this.showReviews}>Reviews</a></li>
-          <li key="2" className={this.state.showCharts ? "active" : ""}><a onClick={this.showCharts}>Charts</a></li>
+          <li key="2" className={this.state.showCharts ? "active" : ""}><a onClick={this.showCharts}>Charts<sup>beta</sup></a></li>
         </ul>
-        <div className="container tab-content subscription-show-container">
+        <div className="subscription-show-container">
           {input}
         </div>
       </div>;

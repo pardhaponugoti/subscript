@@ -1,4 +1,4 @@
-input{
+input {
   outline: none;
 }
 
@@ -27,7 +27,7 @@ a {
 }
 
 .navbar {
-  background-color: #e63900;
+  background-color: #79bd9a;
   box-shadow: 0px 1px;
 }
 
@@ -93,16 +93,15 @@ a {
 
 .subscription-grid-component {
   margin: 10px 0px;
-  border: 1px black solid;
 }
 
-.example-enter {
+.subscription-grid-enter {
   opacity: 0.01;
   transform:   translate(-250px, 250px);
-  transform: translate3d(-250px, 250px, 0);
+  transform: translate3d(-250px, 250px, 250px);
 }
 
-.example-enter.example-enter-active {
+.subscription-grid-enter.subscription-grid-enter-active {
   opacity: 1;
   transform:   translate(0,0);
   transform: translate3d(0,0,0);
@@ -111,11 +110,35 @@ a {
   transition-timing-function: cubic-bezier(0.175, 0.665, 0.320, 1), linear;
 }
 
-.example-leave {
+.subscription-grid-leave {
   opacity: 1;
 }
 
-.example-leave.example-leave-active {
+.subscription-grid-leave.subscription-grid-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+.review-enter {
+  opacity: 0.01;
+  transform:   translate(0, 250px);
+  transform: translate3d(0, 250px, 0);
+}
+
+.review-enter.review-enter-active {
+  opacity: 1;
+  transform:   translate(0,0);
+  transform: translate3d(0,0,0);
+  transition-property: transform, opacity;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.175, 0.665, 0.320, 1), linear;
+}
+
+.review-leave {
+  opacity: 1;
+}
+
+.review-leave.review-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;
 }
@@ -131,17 +154,21 @@ a {
 }
 
 .subscription-logo {
+  border-left-style: inset;
+  border-top-style: inset;
+  border-right-style: outset;
+  border-bottom-style: outset;
+  border-width: 2px;
   box-shadow: 2px 2px;
   /*border: 1px grey solid;*/
 }
 
 .subscription-show-container {
-  border: 1px #bfbfbf solid;
+  border: 1px  #cccccc solid;
 }
 
 .chart-title {
   text-align: center;
-  color: green;
 }
 
 .subscription-review-ul {
@@ -211,8 +238,20 @@ a {
   position: absolute;
 }
 
+.dropdown-toggle {
+  margin-right: 15px;
+}
+.dropdown-menu {
+  position: absolute;
+}
+
 .subscription-search-li {
   width: 150px;
   background-color: #e6e6e6;
   color: black;
+}
+
+.borderless {
+  border: none !important;
+  border-bottom: none !important;
 }

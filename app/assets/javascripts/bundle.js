@@ -24783,11 +24783,6 @@
 	        React.createElement(Header, { currentUser: this.state.currentUser, loggedIn: this.state.loggedIn })
 	      ),
 	      React.createElement(
-	        'button',
-	        { onClick: this.linkToTest },
-	        'test'
-	      ),
-	      React.createElement(
 	        'div',
 	        null,
 	        this.props.children && React.cloneElement(this.props.children, {
@@ -49878,7 +49873,7 @@
 	};
 	
 	ReviewStore.updateReviews = function (reviewsData) {
-	  _reviewsArray = reviewsData;
+	  _reviewsArray = [];
 	  _reviews = {};
 	  _reviewsByUserId = {};
 	  _reviewsBySubscriptionId = {};
@@ -50407,7 +50402,7 @@
 	            this.state.currentShowUserReviews.map(function (review) {
 	              return React.createElement(
 	                'li',
-	                { key: review.id },
+	                { key: review.subscription_id },
 	                React.createElement(
 	                  Link,
 	                  { className: 'subscription-name-link', to: "/subscriptions/" + review.subscription_id },
@@ -51473,7 +51468,8 @@
 	      this.state.reviews.sort(function (a, b) {
 	        return new Date(b.updated_at) - new Date(a.updated_at);
 	      }).map(function (review) {
-	        return React.createElement(ReviewShowComponent, { review: review });
+	        console.log("SUBSCRIPTION SHOW " + review.id);
+	        return React.createElement(ReviewShowComponent, { key: review.id, review: review });
 	      })
 	    );
 	  },
@@ -51527,7 +51523,7 @@
 	          ),
 	          React.createElement(
 	            'div',
-	            null,
+	            { className: 'col-md-8' },
 	            React.createElement(
 	              'h1',
 	              null,
@@ -51551,7 +51547,7 @@
 	        ),
 	        React.createElement(
 	          'ul',
-	          { className: 'nav nav-tabs list-inline', role: 'tablist' },
+	          { className: 'nav nav-tabs list-inline borderless', role: 'tablist' },
 	          React.createElement(
 	            'li',
 	            { key: '1', className: this.state.showReviews ? "active" : "" },
@@ -51567,13 +51563,18 @@
 	            React.createElement(
 	              'a',
 	              { onClick: this.showCharts },
-	              'Charts'
+	              'Charts',
+	              React.createElement(
+	                'sup',
+	                null,
+	                'beta'
+	              )
 	            )
 	          )
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'container tab-content subscription-show-container' },
+	          { className: 'subscription-show-container' },
 	          input
 	        )
 	      );
@@ -51590,10 +51591,12 @@
 
 	var React = __webpack_require__(1);
 	var Infinite = __webpack_require__(518);
+	var TransitionGroup = __webpack_require__(533);
 	
 	var ReviewStore = __webpack_require__(499);
 	
 	var ReviewShowComponent = __webpack_require__(511);
+	var SplashPage = __webpack_require__(553);
 	
 	var ReviewFeed = React.createClass({
 	  displayName: 'ReviewFeed',
@@ -51629,6 +51632,7 @@
 	    );
 	  },
 	  render: function () {
+	    // debugger;
 	    if (this.state.reviews === undefined) {
 	      return React.createElement(
 	        'div',
@@ -51639,6 +51643,7 @@
 	      return React.createElement(
 	        'div',
 	        { className: 'review-feed' },
+	        !this.props.loggedIn ? React.createElement(SplashPage, null) : "",
 	        React.createElement(
 	          'h2',
 	          null,
@@ -52844,8 +52849,7 @@
 	        { className: 'col-md-offset-1 col-md-10' },
 	        React.createElement(
 	          TransitionGroup,
-	          { transitionName: 'example', transitionAppear: true, transitionAppearTimeout: 100000,
-	            transitionEnterTimeout: 1000000, transitionLeaveTimeout: 300 },
+	          { transitionName: 'subscription-grid' },
 	          this.state.subscriptions.sort(function (a, b) {
 	            var textA = a.name.toUpperCase();
 	            var textB = b.name.toUpperCase();
@@ -53721,7 +53725,7 @@
 	      return React.createElement(
 	        "div",
 	        null,
-	        "CHART GOES HERE"
+	        "NO CHART DATA"
 	      );
 	    } else {
 	      var ratingFrequencies = [0, 0, 0, 0, 0];
@@ -53740,7 +53744,7 @@
 	        labels: labels,
 	        datasets: [{
 	          label: "Ratings",
-	          fillColor: "rgba(220,220,220,0.2)",
+	          fillColor: ["red", "orange", "yellow", "yellow-green", "green"],
 	          strokeColor: "rgba(220,220,220,1)",
 	          pointColor: "rgba(220,220,220,1)",
 	          pointStrokeColor: "#fff",
@@ -53784,23 +53788,23 @@
 	        label: labels[3]
 	      }, {
 	        value: ratingFrequencies[4],
-	        color: "#8cff66",
+	        color: "#79ff4d",
 	        highlight: "#40ff00",
 	        label: labels[4]
 	      }];
 	
 	      return React.createElement(
 	        "div",
-	        { className: "col-md-8 col-md-offset-2" },
+	        { className: "col-md-8 col-md-offset-2 container-fluid" },
 	        React.createElement(
 	          "h2",
 	          { className: "chart-title" },
 	          this.props.subscription.name,
 	          " Ratings"
 	        ),
-	        React.createElement(DonutChart, { data: donutData, options: { responsive: true, segmentStrokeColor: "#fff", segmentStrokeWidth: 2 } }),
-	        React.createElement(BarChart, { data: barData, options: { responsive: true } }),
-	        React.createElement(LineChart, { data: lineData, options: { responsive: true } })
+	        React.createElement(DonutChart, { data: donutData, options: { responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>", segmentStrokeColor: "#fff", segmentStrokeWidth: 2 } }),
+	        React.createElement(BarChart, { data: barData, options: { responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>" } }),
+	        React.createElement(LineChart, { data: lineData, options: { responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>" } })
 	      );
 	    }
 	  }
@@ -57503,6 +57507,26 @@
 	
 	module.exports = vars.createClass('Radar', ['getPointsAtEvent']);
 
+
+/***/ },
+/* 553 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	
+	var SplashPage = React.createClass({
+	  displayName: 'SplashPage',
+	
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      null,
+	      'SPLASH PAGE GOES HERE'
+	    );
+	  }
+	});
+	
+	module.exports = SplashPage;
 
 /***/ }
 /******/ ]);

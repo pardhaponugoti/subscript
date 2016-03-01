@@ -36,8 +36,7 @@ var SubscriptionIndex = React.createClass({
     return <div className="subscription-index">
       <h2>All Subscriptions</h2>
       <div className="col-md-offset-1 col-md-10">
-        <TransitionGroup transitionName="example" transitionAppear={true} transitionAppearTimeout={100000}
-          transitionEnterTimeout={1000000} transitionLeaveTimeout={300}>
+        <TransitionGroup transitionName="subscription-grid">
           {this.state.subscriptions.sort(function(a, b) {
             var textA = a.name.toUpperCase();
             var textB = b.name.toUpperCase();
