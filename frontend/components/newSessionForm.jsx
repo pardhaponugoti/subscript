@@ -30,6 +30,15 @@ var NewSessionForm = React.createClass({
        function(id) {BrowserHistory.push("/users/"+id);}
      );
   },
+
+  submitButtonDisabled: function() {
+    if (this.state.email.length === 0 || this.state.password.length < 8) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+
   render: function() {
     return <div>
       <form action="/session" method="post" className="form new-session-form" onSubmit={this.handleSubmit} >
@@ -41,7 +50,7 @@ var NewSessionForm = React.createClass({
         <input type="password" name="user[password]" placeholder="Password" value={this.state.password}
             onChange={this.passwordChange} />
         </div>
-        <input className = "btn btn-default" type="submit" value="Sign In"/>
+        <input className="btn btn-default" disabled={this.submitButtonDisabled()} type="submit" value="Sign In"/>
       </form>
     </div>;
   }

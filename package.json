@@ -15,6 +15,7 @@
     "classnames": "^2.2.3",
     "flux": "^2.1.1",
     "history": "^1.17.0",
+    "masonry-layout": "^4.0.0",
     "react": "^0.14.7",
     "react-addons-css-transition-group": "^0.14.7",
     "react-addons-linked-state-mixin": "^0.14.7",

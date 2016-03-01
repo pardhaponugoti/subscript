@@ -158,7 +158,7 @@ var UserShowPage = React.createClass({
           <br/>
             { parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ?
               <button className="btn create-review-btn btn-sm" onClick={this.toggleNewReviewModal}>Create New Review</button> : "" }
-            <Modal
+            <Modal bsSize="lg"
               show={this.state.newReviewModalIsOpen}
               onHide={this.closeNewReviewModal}>
               <Modal.Header closeButton>
