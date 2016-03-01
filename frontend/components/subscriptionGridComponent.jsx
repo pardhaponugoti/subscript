@@ -6,8 +6,9 @@ var SubscriptionGridComponent = React.createClass({
       return  <div className="col-md-4 col-sm-6 col-xs-6 subscription-grid-component">
           <Link className="subscription-name-link" to={"/subscriptions/" + this.props.subscription.id}>
             <div><img className="subscription-logo-thumbnail" src={this.props.subscription.logo} height="256"/></div>
-            <div className="row">
-              <h4>{this.props.subscription.name}</h4>
+            <div className="col-md-offset-1 col-md-10">
+              <h4><a>{this.props.subscription.name}</a></h4>
+              <h6>{this.props.subscription.description}</h6>
             </div>
           </Link>
       </div>;

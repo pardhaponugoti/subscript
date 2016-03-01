@@ -14,10 +14,10 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 
 - [x] Create an account
 - [x] Log in / Log out
-- [ ] Create a profile
-- [ ] Add reviews of subscriptions
+- [x] Create a profile
+- [x] Add reviews of subscriptions
 - [ ] Be able to see your friends' subscriptions
-- [ ] Also see global reviews of the services
+- [x] Also see global reviews of the services
 
 ## Design Docs
 * [View Wireframes][views]
@@ -70,7 +70,7 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 
 - [x] create `Subscription` model
 - [x] add flux model for Subscriptions
-- [ ] Subscription page should be styled and ready for reviews
+- [x] Subscription page should be styled and ready for reviews
 
 ### Phase 5: Reviews (0.5 days)
 
@@ -105,7 +105,7 @@ for subscriptions or their friends
 
 - [ ] Get feedback on my UI from others
 - [ ] Refactor HTML classes & CSS rules
-- [ ] Add modals, transitions, and other styling flourishes.
+- [x] Add modals, transitions, and other styling flourishes.
 
 ### Random Todos
 

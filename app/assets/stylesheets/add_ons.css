@@ -27,7 +27,7 @@ a {
 }
 
 .navbar {
-  background-color: #79bd9a;
+  background-color: #367d50;
   box-shadow: 0px 1px;
 }
 
@@ -72,6 +72,11 @@ a {
 }
 
 .profile-img {
+  border-left-style: inset;
+  border-top-style: inset;
+  border-right-style: outset;
+  border-bottom-style: outset;
+  border-width: 2px;
   box-shadow: 2px 2px;
 }
 
@@ -93,6 +98,12 @@ a {
 
 .subscription-grid-component {
   margin: 10px 0px;
+  height: 470px;
+}
+
+.subscription-grid-component:hover {
+  box-shadow: 0px 0px 5px #CCCCCC;
+  border-radius: 5px;
 }
 
 .subscription-grid-enter {

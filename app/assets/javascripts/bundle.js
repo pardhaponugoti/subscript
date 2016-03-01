@@ -24951,7 +24951,7 @@
 	        { className: 'nav navbar-nav navbar-right btn-group header-dropdown' },
 	        React.createElement(
 	          'button',
-	          { className: 'btn btn-default btn-sm', onClick: this.toggleModal },
+	          { className: 'btn btn-default btn-sm dropdown-toggle', onClick: this.toggleModal },
 	          inputs.header
 	        ),
 	        React.createElement(
@@ -51446,7 +51446,8 @@
 	
 	  subscriptionChange: function (newProps) {
 	    this.setState({
-	      currentSubscription: SubscriptionStore.findById(parseInt(newProps.params.subscriptionId))
+	      currentSubscription: SubscriptionStore.findById(parseInt(newProps.params.subscriptionId)),
+	      reviews: ReviewStore.findBySubscriptionId(parseInt(newProps.params.subscriptionId))
 	    });
 	  },
 	
@@ -52889,11 +52890,20 @@
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'row' },
+	          { className: 'col-md-offset-1 col-md-10' },
 	          React.createElement(
 	            'h4',
 	            null,
-	            this.props.subscription.name
+	            React.createElement(
+	              'a',
+	              null,
+	              this.props.subscription.name
+	            )
+	          ),
+	          React.createElement(
+	            'h6',
+	            null,
+	            this.props.subscription.description
 	          )
 	        )
 	      )
@@ -53735,7 +53745,7 @@
 	
 	      var total = ratingFrequencies.reduce(add, 0);
 	      ratingFrequencies = ratingFrequencies.map(function (freq) {
-	        return freq / total * 100;
+	        return Math.round(freq / total * 100);
 	      });
 	
 	      var labels = ["★".repeat(1), "★".repeat(2), "★".repeat(3), "★".repeat(4), "★".repeat(5)];

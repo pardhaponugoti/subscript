@@ -36,7 +36,8 @@ var SubscriptionShowPage = React.createClass({
 
   subscriptionChange: function(newProps) {
     this.setState({
-      currentSubscription: SubscriptionStore.findById(parseInt(newProps.params.subscriptionId))
+      currentSubscription: SubscriptionStore.findById(parseInt(newProps.params.subscriptionId)),
+      reviews: ReviewStore.findBySubscriptionId(parseInt(newProps.params.subscriptionId))
     });
   },
 

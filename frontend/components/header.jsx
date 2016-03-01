@@ -105,7 +105,7 @@ var Header = React.createClass({
         inputs.button = <Button onClick={this.openSignInForm}>Sign In</Button>;
       }
       return <div className="nav navbar-nav navbar-right btn-group header-dropdown">
-        <button className="btn btn-default btn-sm" onClick={this.toggleModal}>{inputs.header}</button>
+        <button className="btn btn-default btn-sm dropdown-toggle" onClick={this.toggleModal}>{inputs.header}</button>
         <Modal show={this.state.modalIsOpen} onHide={this.close}>
           <Modal.Header closeButton>
             <Modal.Title>{inputs.header}</Modal.Title>

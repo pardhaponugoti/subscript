@@ -23,7 +23,7 @@ var Chart = React.createClass({
 
       var total = ratingFrequencies.reduce(add, 0);
       ratingFrequencies = ratingFrequencies.map(function(freq) {
-        return freq/total * 100;
+        return Math.round(freq/total * 100);
       });
 
       var labels =  ["★".repeat(1), "★".repeat(2), "★".repeat(3), "★".repeat(4), "★".repeat(5)];
