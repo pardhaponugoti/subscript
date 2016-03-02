@@ -51644,7 +51644,6 @@
 	  },
 	
 	  toggleModal: function toggleModal() {
-	    debugger;
 	    this.setState({
 	      modalIsOpen: !this.state.modalIsOpen
 	    });
@@ -57902,9 +57901,15 @@
 	  },
 	
 	  signInUser: function signInUser(email) {
+	    $("#App").css({
+	      "-webkit-filter": "blur(0px)",
+	      "filter": "blur(0px)",
+	      "-o-filter": "blur(0px)",
+	      "-moz-filter": "blur(0px)"
+	    });
 	    SessionBackendActions.signInUser({ user: { email: email,
 	        password: "password1" }
-	    }, this.unblurBackground);
+	    });
 	    // console.log(email);
 	    // this.setState({
 	    //   modalIsOpen: true,

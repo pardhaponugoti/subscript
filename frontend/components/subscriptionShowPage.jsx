@@ -86,7 +86,6 @@ var SubscriptionShowPage = React.createClass({
   },
 
   toggleModal: function() {
-    debugger;
     this.setState({
       modalIsOpen: !this.state.modalIsOpen
     });
