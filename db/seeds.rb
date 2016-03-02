@@ -116,14 +116,14 @@ subscription_list = [
 ]
 
 
-# subscription_list.each do |name, url, description, logo|
-#   Subscription.create({
-#     name: name,
-#     url: url,
-#     description: description,
-#     logo: logo
-#     })
-# end
+subscription_list.each do |name, url, description, logo|
+  Subscription.create({
+    name: name,
+    url: url,
+    description: description,
+    logo: logo
+    })
+end
 
 bimodal = [1, 1, 1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5, 5, 5]
 uniform = [1, 2, 3, 4, 5]
