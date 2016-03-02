@@ -2,8 +2,8 @@ var ReviewUtil = require('../util/reviewUtil.js');
 
 var ReviewBackendActions = {
   // create Review
-  createReview: function(reviewParams, callback) {
-    ReviewUtil.createReview(reviewParams, callback);
+  createReview: function(reviewParams, successCallback, errorCallback) {
+    ReviewUtil.createReview(reviewParams, successCallback, errorCallback);
   },
 
   // edit Review

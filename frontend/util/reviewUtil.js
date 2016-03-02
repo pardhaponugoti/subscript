@@ -2,16 +2,21 @@ var ReviewFrontendActions = require('../actions/reviewFrontendActions.js');
 
 var ReviewUtil = {
   // create new review
-  createReview: function(reviewParams, callback) {
+  createReview: function(reviewParams, successCallback, errorCallback) {
     $.ajax({
       url : "/api/reviews",
       type: "POST",
       data: reviewParams,
       success: function(data) {
-        if (callback) {
-          callback();
+        console.log("success: " + data);
+        if (successCallback) {
+          successCallback();
         }
         ReviewFrontendActions.receiveNewReview(data);
+      },
+      error: function(data) {
+        console.log("error: " + data);
+        errorCallback(data.responseText);
       }
     });
   },

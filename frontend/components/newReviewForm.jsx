@@ -1,6 +1,6 @@
 var React = require('react');
 
-var Input = require('react-bootstrap').Input;
+var Alert = require('react-bootstrap').Alert;
 
 var ReviewStore = require('../stores/review.js');
 var BrowserHistory = require('react-router').browserHistory;
@@ -15,7 +15,9 @@ var NewReviewForm = React.createClass({
       subscriptionId: null,
       rating: 5,
       comment: "",
-      frequency: 5
+      frequency: 5,
+      alertVisible: false,
+      errors: ""
     };
   },
 
@@ -27,7 +29,15 @@ var NewReviewForm = React.createClass({
 
   submitNewReview: function(e) {
     e.preventDefault();
-    this.props.closeModalCallback();
+    var successCallback = function() {
+      this.props.closeModalCallback();
+    }.bind(this);
+    var errorCallback = function(error) {
+      this.setState({
+        alertVisible: true,
+        errors: JSON.parse(error)
+      });
+    }.bind(this);
     ReviewBackendActions.createReview({
       review: {
         author_id: this.props.currentUser.id,
@@ -35,8 +45,9 @@ var NewReviewForm = React.createClass({
         rating: this.state.rating,
         comment: this.state.comment,
         frequency: this.state.frequency
-      }
-    });
+      }},
+    successCallback,
+    errorCallback);
   },
 
   updateFrequency: function(e) {
@@ -58,9 +69,29 @@ var NewReviewForm = React.createClass({
     }
   },
 
+  showAlert: function() {
+    if (this.state.alertVisible) {
+      return (
+        <Alert bsStyle="danger" className="alert-messages" onDismiss={this.handleAlertDismiss} dismissAfter={4000}>
+          {this.state.errors.map(function(error) {
+            return <h4>{error}</h4>;
+          })}
+        </Alert>
+      );
+    } else {
+      return null;
+    }
+  },
+  handleAlertDismiss: function() {
+    this.setState({
+      alertVisible: false
+    });
+  },
+
   render: function() {
     return <form className="container-fluid">
       <div>
+        {this.showAlert()}
         <div className="col-md-4">
           <SubscriptionSearch updateFormCallback={this.updateFormCallback} />
         </div>
@@ -112,11 +143,13 @@ var NewReviewForm = React.createClass({
           <textarea cols="40" rows="5" valueLink={this.linkState("comment")}/>
         </div>
         <div className="row submit-button-row">
-          <input className="btn create-review-btn" disabled={this.submitButtonDisabled()} type="submit" onClick={this.submitNewReview}/>
+          <input className="btn create-review-btn" disabled={false} type="submit" onClick={this.submitNewReview}/>
         </div>
       </div>
     </form>;
   }
 });
+
+// disabled={this.submitButtonDisabled()}
 
 module.exports = NewReviewForm;

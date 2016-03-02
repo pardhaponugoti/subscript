@@ -5,6 +5,7 @@ var Alert = require('react-bootstrap').Alert;
 var Modal = require('react-bootstrap').Modal;
 var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
 var Button = require('react-bootstrap').Button;
+var InfiniteScroll = require('react-infinite-scroll')(React);
 
 var ReviewStore = require('../stores/review.js');
 var SubscriptionStore = require('../stores/subscription.js');
@@ -21,6 +22,7 @@ var SubscriptionShowPage = React.createClass({
     return {
       currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId)),
       reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)),
+      shownReviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)).slice(0, 30),
       showReviews: true,
       showCharts: false,
       modalIsOpen: false
@@ -45,7 +47,8 @@ var SubscriptionShowPage = React.createClass({
   subscriptionChange: function(newProps) {
     this.setState({
       currentSubscription: SubscriptionStore.findById(parseInt(newProps.params.subscriptionId)),
-      reviews: ReviewStore.findBySubscriptionId(parseInt(newProps.params.subscriptionId))
+      reviews: ReviewStore.findBySubscriptionId(parseInt(newProps.params.subscriptionId)),
+      shownReviews: ReviewStore.findBySubscriptionId(parseInt(newProps.params.subscriptionId)).slice(0, 30)
     });
   },
 
@@ -56,15 +59,29 @@ var SubscriptionShowPage = React.createClass({
   },
   onReviewChange: function() {
     this.setState({
-      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId))
+      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)),
+      shownReviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)).slice(0, 30)
     });
   },
 
+  loadReviews: function(pageNumber) {
+    this.setState({
+      shownReviews: this.state.reviews.slice(0, 30*(pageNumber + 1))
+    });
+  },
+  infiniteScrollComponent: function() {
+    return <InfiniteScroll
+      pageStart={0}
+      loadMore={this.loadReviews}
+      hasMore={this.state.reviews.length > this.state.shownReviews.length}>
+      {this.state.shownReviews.map(function(review) {
+        return <ReviewShowComponent review={review} key={review.id}/>;
+      })}
+    </InfiniteScroll>;
+  },
   reviewsUl: function() {
     return <ul className="container-fluid subscription-review-ul" >
-      {this.state.reviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
-        return <ReviewShowComponent key={review.id} review={review} />;
-      })}
+      {this.infiniteScrollComponent()}
     </ul>;
   },
 
@@ -183,3 +200,8 @@ var SubscriptionShowPage = React.createClass({
 });
 
 module.exports = SubscriptionShowPage;
+
+
+// {this.state.reviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
+//   return <ReviewShowComponent key={review.id} review={review} />;
+// })}

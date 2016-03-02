@@ -1,7 +1,7 @@
 class Api::ReviewsController < ApplicationController
   def index
     @reviews = Review.all
-    render :index
+    render json: @reviews
   end
 
   def create
@@ -9,7 +9,7 @@ class Api::ReviewsController < ApplicationController
     if @review.save
       render :show
     else
-      render json: { status: 404 }
+      render json: @review.errors.full_messages, status: 422
     end
   end
 
@@ -18,9 +18,11 @@ class Api::ReviewsController < ApplicationController
 
     if @review.update(review_params)
       @reviews = Review.all
-      render :index
+      render json: @reviews
     else
-      render json: { status: 404 }
+      render json: {
+        status: 404
+      }
     end
   end
 
@@ -30,7 +32,7 @@ class Api::ReviewsController < ApplicationController
     if @review
       if @review.destroy
         @reviews = Review.all
-        render :index
+        render json @reviews
       else
         render json: { status: 404 }
       end

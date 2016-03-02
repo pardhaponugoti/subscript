@@ -573,3 +573,7 @@ a.visited {
 .black-text {
   color: black;
 }
+
+.alert-messages {
+  text-align: center;
+}

@@ -50209,8 +50209,8 @@
 	
 	var ReviewBackendActions = {
 	  // create Review
-	  createReview: function createReview(reviewParams, callback) {
-	    ReviewUtil.createReview(reviewParams, callback);
+	  createReview: function createReview(reviewParams, successCallback, errorCallback) {
+	    ReviewUtil.createReview(reviewParams, successCallback, errorCallback);
 	  },
 	
 	  // edit Review
@@ -50242,16 +50242,21 @@
 	
 	var ReviewUtil = {
 	  // create new review
-	  createReview: function createReview(reviewParams, callback) {
+	  createReview: function createReview(reviewParams, successCallback, errorCallback) {
 	    $.ajax({
 	      url: "/api/reviews",
 	      type: "POST",
 	      data: reviewParams,
 	      success: function success(data) {
-	        if (callback) {
-	          callback();
+	        console.log("success: " + data);
+	        if (successCallback) {
+	          successCallback();
 	        }
 	        ReviewFrontendActions.receiveNewReview(data);
+	      },
+	      error: function error(data) {
+	        console.log("error: " + data);
+	        errorCallback(data.responseText);
 	      }
 	    });
 	  },
@@ -50817,7 +50822,7 @@
 	            React.createElement(
 	              'div',
 	              { className: 'review-comment' },
-	              "\"" + this.props.review.comment + "\""
+	              this.props.review.comment ? "\"" + this.props.review.comment + "\"" : ""
 	            )
 	          )
 	        )
@@ -51157,7 +51162,7 @@
 	
 	var React = __webpack_require__(1);
 	
-	var Input = __webpack_require__(218).Input;
+	var Alert = __webpack_require__(218).Alert;
 	
 	var ReviewStore = __webpack_require__(499);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
@@ -51174,7 +51179,9 @@
 	      subscriptionId: null,
 	      rating: 5,
 	      comment: "",
-	      frequency: 5
+	      frequency: 5,
+	      alertVisible: false,
+	      errors: ""
 	    };
 	  },
 	
@@ -51186,7 +51193,15 @@
 	
 	  submitNewReview: function submitNewReview(e) {
 	    e.preventDefault();
-	    this.props.closeModalCallback();
+	    var successCallback = function () {
+	      this.props.closeModalCallback();
+	    }.bind(this);
+	    var errorCallback = function (error) {
+	      this.setState({
+	        alertVisible: true,
+	        errors: JSON.parse(error)
+	      });
+	    }.bind(this);
 	    ReviewBackendActions.createReview({
 	      review: {
 	        author_id: this.props.currentUser.id,
@@ -51194,8 +51209,7 @@
 	        rating: this.state.rating,
 	        comment: this.state.comment,
 	        frequency: this.state.frequency
-	      }
-	    });
+	      } }, successCallback, errorCallback);
 	  },
 	
 	  updateFrequency: function updateFrequency(e) {
@@ -51217,6 +51231,29 @@
 	    }
 	  },
 	
+	  showAlert: function showAlert() {
+	    if (this.state.alertVisible) {
+	      return React.createElement(
+	        Alert,
+	        { bsStyle: 'danger', className: 'alert-messages', onDismiss: this.handleAlertDismiss, dismissAfter: 4000 },
+	        this.state.errors.map(function (error) {
+	          return React.createElement(
+	            'h4',
+	            null,
+	            error
+	          );
+	        })
+	      );
+	    } else {
+	      return null;
+	    }
+	  },
+	  handleAlertDismiss: function handleAlertDismiss() {
+	    this.setState({
+	      alertVisible: false
+	    });
+	  },
+	
 	  render: function render() {
 	    return React.createElement(
 	      'form',
@@ -51224,6 +51261,7 @@
 	      React.createElement(
 	        'div',
 	        null,
+	        this.showAlert(),
 	        React.createElement(
 	          'div',
 	          { className: 'col-md-4' },
@@ -51327,12 +51365,14 @@
 	        React.createElement(
 	          'div',
 	          { className: 'row submit-button-row' },
-	          React.createElement('input', { className: 'btn create-review-btn', disabled: this.submitButtonDisabled(), type: 'submit', onClick: this.submitNewReview })
+	          React.createElement('input', { className: 'btn create-review-btn', disabled: false, type: 'submit', onClick: this.submitNewReview })
 	        )
 	      )
 	    );
 	  }
 	});
+	
+	// disabled={this.submitButtonDisabled()}
 	
 	module.exports = NewReviewForm;
 
@@ -51555,6 +51595,7 @@
 	var Modal = __webpack_require__(218).Modal;
 	var OverlayTrigger = __webpack_require__(218).OverlayTrigger;
 	var Button = __webpack_require__(218).Button;
+	var InfiniteScroll = __webpack_require__(564)(React);
 	
 	var ReviewStore = __webpack_require__(499);
 	var SubscriptionStore = __webpack_require__(491);
@@ -51575,6 +51616,7 @@
 	    return {
 	      currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId)),
 	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)),
+	      shownReviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)).slice(0, 30),
 	      showReviews: true,
 	      showCharts: false,
 	      modalIsOpen: false
@@ -51599,7 +51641,8 @@
 	  subscriptionChange: function subscriptionChange(newProps) {
 	    this.setState({
 	      currentSubscription: SubscriptionStore.findById(parseInt(newProps.params.subscriptionId)),
-	      reviews: ReviewStore.findBySubscriptionId(parseInt(newProps.params.subscriptionId))
+	      reviews: ReviewStore.findBySubscriptionId(parseInt(newProps.params.subscriptionId)),
+	      shownReviews: ReviewStore.findBySubscriptionId(parseInt(newProps.params.subscriptionId)).slice(0, 30)
 	    });
 	  },
 	
@@ -51610,19 +51653,33 @@
 	  },
 	  onReviewChange: function onReviewChange() {
 	    this.setState({
-	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId))
+	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)),
+	      shownReviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)).slice(0, 30)
 	    });
 	  },
 	
+	  loadReviews: function loadReviews(pageNumber) {
+	    this.setState({
+	      shownReviews: this.state.reviews.slice(0, 30 * (pageNumber + 1))
+	    });
+	  },
+	  infiniteScrollComponent: function infiniteScrollComponent() {
+	    return React.createElement(
+	      InfiniteScroll,
+	      {
+	        pageStart: 0,
+	        loadMore: this.loadReviews,
+	        hasMore: this.state.reviews.length > this.state.shownReviews.length },
+	      this.state.shownReviews.map(function (review) {
+	        return React.createElement(ReviewShowComponent, { review: review, key: review.id });
+	      })
+	    );
+	  },
 	  reviewsUl: function reviewsUl() {
 	    return React.createElement(
 	      'ul',
 	      { className: 'container-fluid subscription-review-ul' },
-	      this.state.reviews.sort(function (a, b) {
-	        return new Date(b.updated_at) - new Date(a.updated_at);
-	      }).map(function (review) {
-	        return React.createElement(ReviewShowComponent, { key: review.id, review: review });
-	      })
+	      this.infiniteScrollComponent()
 	    );
 	  },
 	
@@ -51840,6 +51897,10 @@
 	});
 	
 	module.exports = SubscriptionShowPage;
+	
+	// {this.state.reviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
+	//   return <ReviewShowComponent key={review.id} review={review} />;
+	// })}
 
 /***/ },
 /* 517 */
@@ -55824,6 +55885,7 @@
 	
 	var React = __webpack_require__(1);
 	var Infinite = __webpack_require__(529);
+	var InfiniteScroll = __webpack_require__(564)(React);
 	var TransitionGroup = __webpack_require__(542);
 	
 	var ReviewStore = __webpack_require__(499);
@@ -55836,10 +55898,8 @@
 	
 	  getInitialState: function getInitialState() {
 	    return {
-	      unseenReviews: 0,
-	      newReviews: [],
 	      reviews: ReviewStore.sortedByAge(),
-	      isInfiniteLoading: true
+	      shownReviews: ReviewStore.sortedByAge().slice(0, 30)
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
@@ -55851,19 +55911,29 @@
 	
 	  onReviewChange: function onReviewChange() {
 	    this.setState({
-	      unSeenReviews: ReviewStore.all().length - this.state.reviews.length,
-	      reviews: ReviewStore.sortedByAge()
+	      reviews: ReviewStore.sortedByAge(),
+	      shownReviews: ReviewStore.sortedByAge().slice(0, 30)
+	    });
+	  },
+	
+	  loadReviews: function loadReviews(pageNumber) {
+	    this.setState({
+	      shownReviews: this.state.reviews.slice(0, 30 * (pageNumber + 1))
 	    });
 	  },
 	  infiniteScrollComponent: function infiniteScrollComponent() {
 	    return React.createElement(
-	      'div',
-	      null,
-	      this.state.reviews.map(function (review) {
+	      InfiniteScroll,
+	      {
+	        pageStart: 0,
+	        loadMore: this.loadReviews,
+	        hasMore: this.state.reviews.length > this.state.shownReviews.length },
+	      this.state.shownReviews.map(function (review) {
 	        return React.createElement(ReviewShowComponent, { review: review, key: review.id });
 	      })
 	    );
 	  },
+	
 	  render: function render() {
 	
 	    if (this.state.reviews === undefined) {
@@ -55878,19 +55948,13 @@
 	      } else {
 	        return React.createElement(
 	          'div',
-	          { className: 'review-feed' },
+	          { className: 'col-md-offset-1 col-md-10 review-feed' },
 	          React.createElement(
 	            'h2',
 	            null,
 	            'Recent Reviews'
 	          ),
-	          React.createElement(
-	            'ul',
-	            { className: 'container' },
-	            this.state.reviews.map(function (review) {
-	              return React.createElement(ReviewShowComponent, { review: review, key: review.id });
-	            })
-	          )
+	          this.infiniteScrollComponent()
 	        );
 	      }
 	    }
@@ -61347,7 +61411,6 @@
 	  },
 	
 	  render: function render() {
-	    console.log("renderChartPage");
 	    var data = {
 	      labels: this.props.labels,
 	      datasets: [{
@@ -61506,6 +61569,74 @@
 	});
 	
 	module.exports = ReviewsRadarChart;
+
+/***/ },
+/* 564 */
+/***/ function(module, exports) {
+
+	function topPosition(domElt) {
+	  if (!domElt) {
+	    return 0;
+	  }
+	  return domElt.offsetTop + topPosition(domElt.offsetParent);
+	}
+	
+	module.exports = function (React) {
+	  if (React.addons && React.addons.InfiniteScroll) {
+	    return React.addons.InfiniteScroll;
+	  }
+	  React.addons = React.addons || {};
+	  var InfiniteScroll = React.addons.InfiniteScroll = React.createClass({
+	    getDefaultProps: function () {
+	      return {
+	        pageStart: 0,
+	        hasMore: false,
+	        loadMore: function () {},
+	        threshold: 250
+	      };
+	    },
+	    componentDidMount: function () {
+	      this.pageLoaded = this.props.pageStart;
+	      this.attachScrollListener();
+	    },
+	    componentDidUpdate: function () {
+	      this.attachScrollListener();
+	    },
+	    render: function () {
+	      var props = this.props;
+	      return React.DOM.div(null, props.children, props.hasMore && (props.loader || InfiniteScroll._defaultLoader));
+	    },
+	    scrollListener: function () {
+	      var el = this.getDOMNode();
+	      var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+	      if (topPosition(el) + el.offsetHeight - scrollTop - window.innerHeight < Number(this.props.threshold)) {
+	        this.detachScrollListener();
+	        // call loadMore after detachScrollListener to allow
+	        // for non-async loadMore functions
+	        this.props.loadMore(this.pageLoaded += 1);
+	      }
+	    },
+	    attachScrollListener: function () {
+	      if (!this.props.hasMore) {
+	        return;
+	      }
+	      window.addEventListener('scroll', this.scrollListener);
+	      window.addEventListener('resize', this.scrollListener);
+	      this.scrollListener();
+	    },
+	    detachScrollListener: function () {
+	      window.removeEventListener('scroll', this.scrollListener);
+	      window.removeEventListener('resize', this.scrollListener);
+	    },
+	    componentWillUnmount: function () {
+	      this.detachScrollListener();
+	    }
+	  });
+	  InfiniteScroll.setDefaultLoader = function (loader) {
+	    InfiniteScroll._defaultLoader = loader;
+	  };
+	  return InfiniteScroll;
+	};
 
 /***/ }
 /******/ ]);
