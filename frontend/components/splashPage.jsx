@@ -66,7 +66,12 @@ var SplashPage = React.createClass({
   },
 
   signInUser: function(email) {
-    this.unblurBackground();
+    $("#App").css({
+      "-webkit-filter": "blur(0px)",
+      "filter": "blur(0px)",
+      "-o-filter": "blur(0px)",
+      "-moz-filter": "blur(0px)"
+    });
     SessionBackendActions.signInUser({user:
       {email: email,
        password: "password1"}
