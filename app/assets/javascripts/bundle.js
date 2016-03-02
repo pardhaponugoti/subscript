@@ -51550,6 +51550,7 @@
 	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
+	var Modal = __webpack_require__(218).Modal;
 	
 	var ReviewStore = __webpack_require__(499);
 	var SubscriptionStore = __webpack_require__(491);
@@ -51569,7 +51570,8 @@
 	      currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId)),
 	      reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)),
 	      showReviews: true,
-	      showCharts: false
+	      showCharts: false,
+	      modalIsOpen: false
 	    };
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
@@ -51613,7 +51615,6 @@
 	      this.state.reviews.sort(function (a, b) {
 	        return new Date(b.updated_at) - new Date(a.updated_at);
 	      }).map(function (review) {
-	        console.log("SUBSCRIPTION SHOW " + review.id);
 	        return React.createElement(ReviewShowComponent, { key: review.id, review: review });
 	      })
 	    );
@@ -51636,8 +51637,74 @@
 	    });
 	  },
 	
+	  toggleModal: function toggleModal() {
+	    this.setState({
+	      modalIsOpen: !this.state.modalIsOpen
+	    });
+	  },
+	
+	  userButtons: function userButtons(obj, id) {
+	    if (id !== undefined) {
+	      var alreadyMadeReview = false;
+	      obj.state.reviews.forEach(function (review) {
+	        if (review.author_id === id) {
+	          alreadyMadeReview = true;
+	        }
+	      });
+	
+	      if (alreadyMadeReview) {
+	        return React.createElement(
+	          'button',
+	          null,
+	          'EDIT REVIEW BUTTON'
+	        );
+	      } else {
+	        return React.createElement(
+	          'div',
+	          null,
+	          React.createElement(
+	            'button',
+	            { className: 'btn create-review-btn btn-sm', onClick: this.toggleModal },
+	            'Create New Review'
+	          ),
+	          React.createElement(
+	            Modal,
+	            { bsSize: 'lg',
+	              show: this.state.ModalIsOpen,
+	              onHide: this.closeModal },
+	            React.createElement(
+	              Modal.Header,
+	              { closeButton: true },
+	              React.createElement(
+	                Modal.Title,
+	                null,
+	                'Write a New Review'
+	              )
+	            ),
+	            React.createElement(
+	              Modal.Body,
+	              null,
+	              React.createElement(NewReviewForm, { currentUser: this.props.currentUser, closeModalCallback: this.closeModal })
+	            ),
+	            React.createElement(
+	              Modal.Footer,
+	              null,
+	              React.createElement(
+	                Button,
+	                { onClick: this.closeModal },
+	                'Never Mind'
+	              )
+	            )
+	          )
+	        );
+	      }
+	    } else {
+	      return null;
+	    }
+	  },
+	
 	  render: function render() {
-	    if (this.state.currentSubscription.name === undefined) {
+	    if (this.state.currentSubscription.name === undefined || this.props === undefined) {
 	      // INSERT LOADING SYMBOL HERE
 	      return React.createElement(
 	        'div',
@@ -51674,6 +51741,7 @@
 	              null,
 	              this.state.currentSubscription.name
 	            ),
+	            this.userButtons(this, this.props.currentUser.id),
 	            React.createElement(
 	              'h4',
 	              null,
@@ -57925,45 +57993,38 @@
 	
 	  getInitialState: function getInitialState() {
 	    return {
-	      checked: [0, 1, 2]
+	      daily: true,
+	      weekly: true,
+	      monthly: true,
+	      yearly: true,
+	      never: true
 	    };
-	  },
-	  componentWillReceiveProps: function componentWillReceiveProps() {
-	    this.setState({
-	      checked: [0, 1, 2]
-	    });
 	  },
 	
 	  handleClick: function handleClick(e) {
-	    e.preventDefault();
-	    debugger;
-	    if (e.target.checked) {
-	      debugger;
-	      if (this.state.checked.includes(parseInt(e.target.value))) {
-	        console.log("already checked ---- error");
-	      } else {
-	        var checked = this.state.checked;
-	        checked.push(parseInt(e.target.value));
-	        debugger;
-	        this.setState({
-	          checked: checked
-	        });
-	      }
+	    if (parseInt(e.target.value) === 5) {
+	      this.setState({
+	        daily: !this.state.daily
+	      });
+	    } else if (parseInt(e.target.value) === 4) {
+	      this.setState({
+	        weekly: !this.state.weekly
+	      });
+	    } else if (parseInt(e.target.value) === 3) {
+	      this.setState({
+	        monthly: !this.state.monthly
+	      });
+	    } else if (parseInt(e.target.value) === 2) {
+	      this.setState({
+	        yearly: !this.state.yearly
+	      });
 	    } else {
-	      if (this.state.checked.includes(parseInt(e.target.value))) {
-	        var idx = this.state.checked.indexOf(parseInt(e.target.value));
-	        if (idx > -1) {
-	          var checked = this.state.checked;
-	          checked.splice(idx, 1);
-	          this.setState({
-	            checked: checked
-	          });
-	        }
-	      } else {
-	        console.log("already unchecked --- error");
-	      }
+	      this.setState({
+	        never: !this.state.never
+	      });
 	    }
 	  },
+	
 	  // componentDidMount: function() {
 	  //   if (this.refs.radarChart) {
 	  //     var legend = this.refs.radarChart.getChart().generateLegend();
@@ -57974,9 +58035,10 @@
 	  //   }
 	  // },
 	  render: function render() {
+	    console.log("renderChartPage");
 	    // var legend = this.state && this.state.legend || '';
-	
-	    var data = {
+	    var data = {};
+	    data = {
 	      labels: this.props.labels,
 	      datasets: [{
 	        label: "Usage Rate (Daily)",
@@ -58009,11 +58071,23 @@
 	    };
 	
 	    var chartOptions = {
-	      responsive: true,
-	      tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"
+	      responsive: true
 	    };
+	    // tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"
 	
-	    // <div dangerouslySetInnerHTML={{ __html: this.state.legend }} />
+	    var chartData = {};
+	    chartData.labels = data.labels;
+	    chartData.datasets = [];
+	    if (this.state.daily) {
+	      chartData.datasets.push(data.datasets[0]);
+	    }
+	    if (this.state.weekly) {
+	      chartData.datasets.push(data.datasets[1]);
+	    }
+	    if (this.state.monthly) {
+	      chartData.datasets.push(data.datasets[2]);
+	    }
+	    debugger;
 	    return React.createElement(
 	      'div',
 	      { className: 'col-md-10 col-md-offset-1 reviews-radar-chart' },
@@ -58026,35 +58100,35 @@
 	      React.createElement(
 	        'div',
 	        { className: 'col-md-8' },
-	        React.createElement(RadarChart, { ref: 'radarChart', data: data, options: chartOptions })
+	        React.createElement(RadarChart, { data: chartData, options: chartOptions }),
+	        ';'
 	      ),
 	      React.createElement(
 	        'div',
 	        { className: 'col-md-4 reviews-radar-checkbox' },
 	        React.createElement(
 	          'form',
-	          { action: '' },
-	          React.createElement('input', { type: 'checkbox', name: 'vehicle', value: '0', checked: this.state.checked.includes(0), onChange: this.handleClick }),
+	          { className: 'container-fluid' },
 	          React.createElement(
-	            'text',
+	            'label',
 	            { style: { color: data.datasets[0].strokeColor } },
+	            React.createElement('input', { type: 'checkbox', value: '5', checked: this.state.daily, onClick: this.handleClick }),
 	            'Daily'
 	          ),
 	          React.createElement('br', null),
-	          React.createElement('input', { type: 'checkbox', name: 'vehicle', value: '1', checked: this.state.checked.includes(1), onChange: this.handleClick }),
 	          React.createElement(
-	            'text',
+	            'label',
 	            { style: { color: data.datasets[1].strokeColor } },
+	            React.createElement('input', { type: 'checkbox', value: '4', checked: this.state.weekly, onClick: this.handleClick }),
 	            'Weekly'
 	          ),
 	          React.createElement('br', null),
-	          React.createElement('input', { type: 'checkbox', name: 'vehicle', value: '2', checked: this.state.checked.includes(2), onChange: this.handleClick }),
 	          React.createElement(
-	            'text',
+	            'label',
 	            { style: { color: data.datasets[2].strokeColor } },
+	            React.createElement('input', { type: 'checkbox', value: '3', checked: this.state.monthly, onClick: this.handleClick }),
 	            'Monthly'
-	          ),
-	          React.createElement('br', null)
+	          )
 	        )
 	      )
 	    );
@@ -58063,6 +58137,23 @@
 	
 	module.exports = ReviewsRadarChart;
 	
+	// <br/>
+	// <label>
+	//   <input type="checkbox" value="2" checked={this.state.yearly} onClick={this.handleClick}/>
+	//   Yearly
+	// </label>
+	// <br/>
+	// <label>
+	//   <input type="checkbox" value="1" checked={this.state.never} onClick={this.handleClick}/>
+	//   Never
+	// </label>
+	// <input type="checkbox" name="frequency" value="0" {self.state.checked.includes(0) ? "checked" : ""} onChange={self.handleClick0}/>
+	// <text style={{color: data.datasets[0].strokeColor}}>Daily</text><br/>
+	// <input type="checkbox" name="frequency" value="1" {self.state.checked.includes(1) ? "checked" : ""} onChange={self.handleClick}/>
+	// <text style={{color: data.datasets[1].strokeColor}}>Weekly</text><br/>
+	// <input type="checkbox" name="frequency" value="2" {self.state.checked.includes(2) ? "checked" : ""} onChange={self.handleClick0}/>
+	// <text style={{color: data.datasets[2].strokeColor}}>Monthly</text><br/>
+
 	// <input style={{color: data.datasets[3].strokeColor}} type="checkbox" name="vehicle" value="Yearly"/>Yearly<br/>
 	// <input style={{color: data.datasets[4].strokeColor}} type="checkbox" name="vehicle" value="Never"/>Never<br/>
 

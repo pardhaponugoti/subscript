@@ -1,5 +1,6 @@
 var React = require('react');
 var BrowserHistory = require('react-router').browserHistory;
+var Modal = require('react-bootstrap').Modal;
 
 var ReviewStore = require('../stores/review.js');
 var SubscriptionStore = require('../stores/subscription.js');
@@ -15,7 +16,8 @@ var SubscriptionShowPage = React.createClass({
       currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId)),
       reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)),
       showReviews: true,
-      showCharts: false
+      showCharts: false,
+      modalIsOpen: false
     };
   },
   componentWillUnmount: function() {
@@ -55,7 +57,6 @@ var SubscriptionShowPage = React.createClass({
   reviewsUl: function() {
     return <ul className="container-fluid subscription-review-ul" >
       {this.state.reviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
-        console.log("SUBSCRIPTION SHOW " + review.id);
         return <ReviewShowComponent key={review.id} review={review} />;
       })}
     </ul>;
@@ -78,9 +79,48 @@ var SubscriptionShowPage = React.createClass({
     });
   },
 
+  toggleModal: function() {
+    this.setState({
+      modalIsOpen: !this.state.modalIsOpen
+    });
+  },
+
+  userButtons: function(obj, id) {
+    if (id !== undefined) {
+      var alreadyMadeReview = false;
+      obj.state.reviews.forEach(function(review) {
+        if (review.author_id === id) {
+          alreadyMadeReview = true;
+        }
+      });
+
+      if (alreadyMadeReview) {
+        return <button>EDIT REVIEW BUTTON</button>;
+      } else {
+        return <div>
+          <button className="btn create-review-btn btn-sm" onClick={this.toggleModal}>Create New Review</button>
+          <Modal bsSize="lg"
+            show={this.state.ModalIsOpen}
+            onHide={this.closeModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Write a New Review</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <NewReviewForm currentUser={this.props.currentUser} closeModalCallback={this.closeModal}/>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={this.closeModal}>Never Mind</Button>
+            </Modal.Footer>
+          </Modal>
+        </div>;
+      }
+    } else {
+      return null;
+    }
+  },
 
   render: function() {
-    if(this.state.currentSubscription.name === undefined) {
+    if(this.state.currentSubscription.name === undefined || this.props === undefined) {
       // INSERT LOADING SYMBOL HERE
       return <div>WAITING-FOR-LOAD</div>;
     } else {
@@ -95,6 +135,7 @@ var SubscriptionShowPage = React.createClass({
           <div className="col-md-4"><h1><img className="subscription-logo" src={this.state.currentSubscription.logo} height="256"/></h1></div>
           <div className="col-md-8">
             <h1>{this.state.currentSubscription.name}</h1>
+            { this.userButtons(this, this.props.currentUser.id) }
             <h4><a href={"http://" + this.state.currentSubscription.url}>{this.state.currentSubscription.url}</a></h4>
             <h5>{this.state.currentSubscription.description}</h5>
           </div>

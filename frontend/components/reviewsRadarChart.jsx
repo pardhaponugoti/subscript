@@ -4,45 +4,38 @@ var RadarChart = require('react-chartjs').Radar;
 var ReviewsRadarChart = React.createClass({
   getInitialState: function() {
     return {
-      checked: [0,1,2]
+      daily: true,
+      weekly: true,
+      monthly: true,
+      yearly: true,
+      never: true
     };
-  },
-  componentWillReceiveProps: function() {
-    this.setState({
-      checked: [0,1,2]
-    });
   },
 
   handleClick: function(e) {
-    e.preventDefault();
-    debugger;
-    if (e.target.checked) {
-      debugger;
-      if( this.state.checked.includes(parseInt(e.target.value)) ){
-        console.log("already checked ---- error");
-      } else {
-        var checked = this.state.checked;
-        checked.push(parseInt(e.target.value));
-        debugger;
-        this.setState({
-          checked: checked
-        });
-      }
+    if (parseInt(e.target.value) === 5) {
+      this.setState({
+        daily: !this.state.daily
+      });
+    } else if (parseInt(e.target.value) === 4) {
+      this.setState({
+        weekly: !this.state.weekly
+      });
+    } else if (parseInt(e.target.value) === 3) {
+      this.setState({
+        monthly: !this.state.monthly
+      });
+    } else if (parseInt(e.target.value) === 2) {
+      this.setState({
+        yearly: !this.state.yearly
+      });
     } else {
-      if( this.state.checked.includes(parseInt(e.target.value)) ){
-        var idx = this.state.checked.indexOf(parseInt(e.target.value));
-        if (idx > -1) {
-          var checked = this.state.checked;
-          checked.splice(idx, 1);
-          this.setState({
-            checked: checked
-          });
-        }
-      } else {
-        console.log("already unchecked --- error");
-      }
+      this.setState({
+        never: !this.state.never
+      });
     }
   },
+
   // componentDidMount: function() {
   //   if (this.refs.radarChart) {
   //     var legend = this.refs.radarChart.getChart().generateLegend();
@@ -53,9 +46,10 @@ var ReviewsRadarChart = React.createClass({
   //   }
   // },
   render: function() {
+    console.log("renderChartPage");
     // var legend = this.state && this.state.legend || '';
-
-    var data = {
+    var data = {};
+    data = {
       labels: this.props.labels,
       datasets: [
         {
@@ -92,26 +86,45 @@ var ReviewsRadarChart = React.createClass({
     };
 
     var chartOptions = {
-      responsive: true,
-      tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"
+      responsive: true
     };
+    // tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"
 
-
-    // <div dangerouslySetInnerHTML={{ __html: this.state.legend }} />
+    var chartData = {};
+    chartData.labels = data.labels;
+    chartData.datasets = [];
+    if (this.state.daily) {
+      chartData.datasets.push(data.datasets[0]);
+    }
+    if(this.state.weekly) {
+      chartData.datasets.push(data.datasets[1]);
+    }
+    if(this.state.monthly) {
+      chartData.datasets.push(data.datasets[2]);
+    }
+    debugger;
     return <div className="col-md-10 col-md-offset-1 reviews-radar-chart">
       <h2> Usage Rates </h2>
       <br/>
       <div className="col-md-8">
-        <RadarChart ref="radarChart" data={data} options={chartOptions}/>
+        <RadarChart data={chartData} options={chartOptions}/>;
       </div>
       <div className="col-md-4 reviews-radar-checkbox">
-        <form action="">
-          <input type="checkbox" name="vehicle" value="0" checked={this.state.checked.includes(0)} onChange={this.handleClick}/>
-            <text style={{color: data.datasets[0].strokeColor}}>Daily</text><br/>
-          <input type="checkbox" name="vehicle" value="1" checked={this.state.checked.includes(1)} onChange={this.handleClick}/>
-            <text style={{color: data.datasets[1].strokeColor}}>Weekly</text><br/>
-          <input type="checkbox" name="vehicle" value="2" checked={this.state.checked.includes(2)} onChange={this.handleClick}/>
-            <text style={{color: data.datasets[2].strokeColor}}>Monthly</text><br/>
+        <form className="container-fluid">
+          <label style={{color: data.datasets[0].strokeColor}}>
+            <input type="checkbox" value="5" checked={this.state.daily} onClick={this.handleClick}/>
+            Daily
+          </label>
+          <br/>
+          <label style={{color: data.datasets[1].strokeColor}}>
+            <input type="checkbox" value="4" checked={this.state.weekly} onClick={this.handleClick}/>
+            Weekly
+          </label>
+          <br/>
+          <label style={{color: data.datasets[2].strokeColor}}>
+            <input type="checkbox" value="3" checked={this.state.monthly} onClick={this.handleClick}/>
+            Monthly
+          </label>
         </form>
       </div>
     </div>;
@@ -120,6 +133,22 @@ var ReviewsRadarChart = React.createClass({
 
 module.exports = ReviewsRadarChart;
 
+// <br/>
+// <label>
+//   <input type="checkbox" value="2" checked={this.state.yearly} onClick={this.handleClick}/>
+//   Yearly
+// </label>
+// <br/>
+// <label>
+//   <input type="checkbox" value="1" checked={this.state.never} onClick={this.handleClick}/>
+//   Never
+// </label>
+// <input type="checkbox" name="frequency" value="0" {self.state.checked.includes(0) ? "checked" : ""} onChange={self.handleClick0}/>
+// <text style={{color: data.datasets[0].strokeColor}}>Daily</text><br/>
+// <input type="checkbox" name="frequency" value="1" {self.state.checked.includes(1) ? "checked" : ""} onChange={self.handleClick}/>
+// <text style={{color: data.datasets[1].strokeColor}}>Weekly</text><br/>
+// <input type="checkbox" name="frequency" value="2" {self.state.checked.includes(2) ? "checked" : ""} onChange={self.handleClick0}/>
+// <text style={{color: data.datasets[2].strokeColor}}>Monthly</text><br/>
 
 // <input style={{color: data.datasets[3].strokeColor}} type="checkbox" name="vehicle" value="Yearly"/>Yearly<br/>
 // <input style={{color: data.datasets[4].strokeColor}} type="checkbox" name="vehicle" value="Never"/>Never<br/>
