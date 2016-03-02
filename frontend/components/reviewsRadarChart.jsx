@@ -37,7 +37,6 @@ var ReviewsRadarChart = React.createClass({
   },
 
   render: function() {
-    console.log("renderChartPage");
     var data = {
       labels: this.props.labels,
       datasets: [
