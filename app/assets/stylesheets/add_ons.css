@@ -46,6 +46,23 @@ li a:hover {
 
 .demo-btn {
   margin: 20px;
+  transition: background-color 1s ease,
+              color 1s ease;
+}
+
+.demo-btn-1:hover {
+  background-color: green !important;
+  color: white !important;
+}
+
+.demo-btn-2:hover {
+  background-color: red !important;
+  color: white !important;
+}
+
+.demo-btn-3:hover {
+  background-color: blue !important;
+  color: white !important;
 }
 
 .form-control:focus {

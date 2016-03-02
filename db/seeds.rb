@@ -9,15 +9,14 @@
 # first_name, last_name, email, password, location, image, date_of_birth
 
 user_list = [
-  ["Boba", "Fett", "bobafett@bountyhuntersanonymous.com", "password1", "Kamino", "http://res.cloudinary.com/pardha/image/upload/v1456507629/bp4dkfghaibo0mvcbqnl.jpg"],
+  ["Master", "Yoda", "yoda@jedi.com", "password1", "Dagobah", "http://res.cloudinary.com/pardha/image/upload/v1456508772/uizx7rpwjutkp8aechxk.jpg"],
   ["Darth", "Vader", "darthvader@darkside.com", "password1", "Tatooine", "http://res.cloudinary.com/pardha/image/upload/v1456507761/gnus7aomcy8lkoe8qfmb.jpg"],
-  ["Admiral", "Ackbar", "itsatrap@itsatrap.com", "password1", "Mon Cala",
-  "http://res.cloudinary.com/pardha/image/upload/v1456367336/qfuxbnkhb1vo7n6bki3s.jpg"],
+  ["R2", "D2", "beepboop@droid.com", "password1", "Naboo", "http://res.cloudinary.com/pardha/image/upload/v1456886725/v5aflinrywm9pkrmayw3.jpg"],
+  ["Boba", "Fett", "bobafett@bountyhuntersanonymous.com", "password1", "Kamino", "http://res.cloudinary.com/pardha/image/upload/v1456507629/bp4dkfghaibo0mvcbqnl.jpg"],
+  ["Admiral", "Ackbar", "itsatrap@itsatrap.com", "password1", "Mon Cala", "http://res.cloudinary.com/pardha/image/upload/v1456367336/qfuxbnkhb1vo7n6bki3s.jpg"],
   ["Luke", "Skywalker", "luke@jedi.com", "password1", "Tatooine", "http://res.cloudinary.com/pardha/image/upload/v1456886541/n7uzyyiqgrmsvgca0d3n.jpg"],
   ["Mace", "Windu", "mace@jedi.com", "password1", "Haruun Kal", "http://res.cloudinary.com/pardha/image/upload/v1456509202/ffn0ap6efeqixtxtikiq.jpg"],
-  ["Master", "Yoda", "yoda@jedi.com", "password1", "Dagobah", "http://res.cloudinary.com/pardha/image/upload/v1456508772/uizx7rpwjutkp8aechxk.jpg"],
   ["Obi-Wan", "Kenobe", "obi-wan@jedi.com", "password1", "Stewjon", "http://res.cloudinary.com/pardha/image/upload/v1456508702/lie6apunrdvmbvtcc7l3.jpg"],
-  ["R2", "D2", "beepboop@droid.com", "password1", "Naboo", "http://res.cloudinary.com/pardha/image/upload/v1456886725/v5aflinrywm9pkrmayw3.jpg"],
   ["Han", "Solo", "hansolo@bountyhuntersanonymous.com", "password1", "Corellia", "http://res.cloudinary.com/pardha/image/upload/v1456508597/jn55biofw9yrhgswlpz6.jpg"],
   ["Chew", "Bacca", "chewie@wookie.com", "password1", "Kashyyyk", "http://res.cloudinary.com/pardha/image/upload/v1456886818/j0qw6vpdcu1dz9603bkk.jpg"],
   ["Emperor", "Palpatine", "palpatine@darkside.com", "password1", "Naboo", "http://res.cloudinary.com/pardha/image/upload/v1456886924/pscegfat74sfs4xja9k8.jpg"],
@@ -26,13 +25,14 @@ user_list = [
   ["Rey", "Skywalker?", "rey@awesome.com", "password1", "Jakku", "http://res.cloudinary.com/pardha/image/upload/v1456887193/zsrfasbzbo09ejooa3ei.jpg"]
 ]
 
-user_list.each do |first_name, last_name, email, password, location|
+user_list.each do |first_name, last_name, email, password, location, image|
   User.create({
     first_name: first_name,
     last_name: last_name,
     email: email,
     password: password,
-    location: location
+    location: location,
+    image: image
     })
 end
 
@@ -166,7 +166,7 @@ logarithmic = [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5]
     end
 
     Review.create({
-      author_id: i+20,
+      author_id: i+15,
       subscription_id: j+1,
       rating: rating,
       frequency: frequency

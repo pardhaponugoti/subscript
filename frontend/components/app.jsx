@@ -50,10 +50,10 @@ var App = React.createClass({
     // BrowserHistory.push("/test");
   },
 
+  // <button onClick={this.linkToTest}>test</button>
   render: function() {
     return <div id='App'>
       <div><Header currentUser={this.state.currentUser} loggedIn={this.state.loggedIn} /></div>
-      <button onClick={this.linkToTest}>test</button>
       <div>{this.props.children && React.cloneElement(this.props.children, {
                loggedIn: this.state.loggedIn,
                currentUser: this.state.currentUser

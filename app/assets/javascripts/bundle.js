@@ -24773,6 +24773,7 @@
 	    // BrowserHistory.push("/test");
 	  },
 	
+	  // <button onClick={this.linkToTest}>test</button>
 	  render: function render() {
 	    return React.createElement(
 	      'div',
@@ -24781,11 +24782,6 @@
 	        'div',
 	        null,
 	        React.createElement(Header, { currentUser: this.state.currentUser, loggedIn: this.state.loggedIn })
-	      ),
-	      React.createElement(
-	        'button',
-	        { onClick: this.linkToTest },
-	        'test'
 	      ),
 	      React.createElement(
 	        'div',
@@ -49604,13 +49600,13 @@
 	        React.createElement(
 	          'div',
 	          { className: 'form-group' },
-	          React.createElement('input', { type: 'string', name: 'user[email]', placeholder: 'Email', value: this.state.email,
+	          React.createElement('input', { type: 'string', name: 'user[email]', id: 'new-session-email', placeholder: 'Email', value: this.state.email,
 	            onChange: this.emailChange })
 	        ),
 	        React.createElement(
 	          'div',
 	          { className: 'form-group' },
-	          React.createElement('input', { type: 'password', name: 'user[password]', placeholder: 'Password', value: this.state.password,
+	          React.createElement('input', { type: 'password', name: 'user[password]', id: 'new-session-password', placeholder: 'Password', value: this.state.password,
 	            onChange: this.passwordChange })
 	        ),
 	        React.createElement('input', { className: 'btn btn-default', disabled: this.submitButtonDisabled(), type: 'submit', value: 'Sign In' })
@@ -57845,6 +57841,8 @@
 	var NewSessionForm = __webpack_require__(496);
 	var NewUserForm = __webpack_require__(497);
 	
+	var SessionBackendActions = __webpack_require__(493);
+	
 	var SplashPage = React.createClass({
 	  displayName: 'SplashPage',
 	
@@ -57856,7 +57854,25 @@
 	    };
 	  },
 	
+	  blurBackground: function blurBackground() {
+	    $("#App").css({
+	      "-webkit-filter": "blur(5px)",
+	      "filter": "blur(5px)",
+	      "-o-filter": "blur(5px)",
+	      "-moz-filter": "blur(5px)"
+	    });
+	  },
+	  unblurBackground: function unblurBackground() {
+	    $("#App").css({
+	      "-webkit-filter": "blur(0px)",
+	      "filter": "blur(0px)",
+	      "-o-filter": "blur(0px)",
+	      "-moz-filter": "blur(0px)"
+	    });
+	  },
+	
 	  openSignUp: function openSignUp() {
+	    this.blurBackground();
 	    this.setState({
 	      modalIsOpen: true,
 	      signInOpen: false,
@@ -57864,6 +57880,7 @@
 	    });
 	  },
 	  openSignIn: function openSignIn() {
+	    this.blurBackground();
 	    this.setState({
 	      modalIsOpen: true,
 	      signInOpen: true,
@@ -57871,15 +57888,40 @@
 	    });
 	  },
 	  demoUser: function demoUser() {
+	    this.blurBackground();
 	    this.setState({
 	      modalIsOpen: true,
 	      demo: true
 	    });
 	  },
 	  close: function close() {
+	    this.unblurBackground();
 	    this.setState({
 	      modalIsOpen: false
 	    });
+	  },
+	
+	  signInUser: function signInUser(email) {
+	    SessionBackendActions.signInUser({ user: { email: email,
+	        password: "password1" }
+	    });
+	    // console.log(email);
+	    // this.setState({
+	    //   modalIsOpen: true,
+	    //   demo: false,
+	    //   signInOpen: true
+	    // },
+	    //   function() {
+	    //     setTimeout( function() {
+	    //     console.log("should be setting email and password");
+	    //     console.log($( "new-session-email" ).length);
+	    //     console.log($( "new-session-password" ).length);
+	    //
+	    //     $("new-session-email").val(email);
+	    //     $("new-session-password").val("password1");
+	    //   }, 2000);
+	    //   }
+	    // );
 	  },
 	
 	  demoOptions: function demoOptions() {
@@ -57899,21 +57941,21 @@
 	        { className: 'row' },
 	        React.createElement(
 	          'button',
-	          { className: 'btn btn-default btn-sm demo-btn' },
-	          React.createElement('img', { src: user1.image, height: '30' }),
-	          user1.first_name + " " + user1.last_name
+	          { onClick: this.signInUser.bind(this, user1.email), className: 'btn btn-default btn-sm demo-btn demo-btn-1' },
+	          React.createElement('img', { src: user1.image, height: '25' }),
+	          " " + user1.first_name + " " + user1.last_name
 	        ),
 	        React.createElement(
 	          'button',
-	          { className: 'btn btn-default btn-sm demo-btn' },
-	          React.createElement('img', { src: user2.image, height: '30' }),
-	          user2.first_name + " " + user2.last_name
+	          { onClick: this.signInUser.bind(this, user2.email), className: 'btn btn-default btn-sm demo-btn demo-btn-2' },
+	          React.createElement('img', { src: user2.image, height: '25' }),
+	          " " + user2.first_name + " " + user2.last_name
 	        ),
 	        React.createElement(
 	          'button',
-	          { className: 'btn btn-default btn-sm demo-btn' },
-	          React.createElement('img', { src: user3.image, height: '30' }),
-	          user3.first_name + " " + user3.last_name
+	          { onClick: this.signInUser.bind(this, user3.email), className: 'btn btn-default btn-sm demo-btn demo-btn-3' },
+	          React.createElement('img', { src: user3.image, height: '25' }),
+	          " " + user3.first_name + " " + user3.last_name
 	        )
 	      )
 	    );
@@ -57991,7 +58033,7 @@
 	        React.createElement(
 	          'button',
 	          { onClick: this.demoUser, className: 'btn btn-sm splash-btn' },
-	          'Demo Site'
+	          'Demo User'
 	        ),
 	        React.createElement(
 	          Modal,
@@ -61378,6 +61420,10 @@
 	      chartData.datasets.push(data.datasets[4]);
 	    }
 	
+	    if (chartData.datasets.length === 0) {
+	      chartData.datasets = data.datasets;
+	    }
+	
 	    return React.createElement(
 	      'div',
 	      { className: 'col-md-10 col-md-offset-1 reviews-radar-chart' },
@@ -61455,16 +61501,6 @@
 	});
 	
 	module.exports = ReviewsRadarChart;
-	
-	// <input type="checkbox" name="frequency" value="0" {self.state.checked.includes(0) ? "checked" : ""} onChange={self.handleClick0}/>
-	// <text style={{color: data.datasets[0].strokeColor}}>Daily</text><br/>
-	// <input type="checkbox" name="frequency" value="1" {self.state.checked.includes(1) ? "checked" : ""} onChange={self.handleClick}/>
-	// <text style={{color: data.datasets[1].strokeColor}}>Weekly</text><br/>
-	// <input type="checkbox" name="frequency" value="2" {self.state.checked.includes(2) ? "checked" : ""} onChange={self.handleClick0}/>
-	// <text style={{color: data.datasets[2].strokeColor}}>Monthly</text><br/>
-
-	// <input style={{color: data.datasets[3].strokeColor}} type="checkbox" name="vehicle" value="Yearly"/>Yearly<br/>
-	// <input style={{color: data.datasets[4].strokeColor}} type="checkbox" name="vehicle" value="Never"/>Never<br/>
 
 /***/ }
 /******/ ]);

@@ -121,6 +121,10 @@ var ReviewsRadarChart = React.createClass({
       chartData.datasets.push(data.datasets[4]);
     }
 
+    if (chartData.datasets.length === 0) {
+      chartData.datasets = data.datasets;
+    }
+
     return <div className="col-md-10 col-md-offset-1 reviews-radar-chart">
       <h2 className="stats-page-title"><strong> Usage Statistics </strong></h2>
       <br/>
@@ -166,13 +170,3 @@ var ReviewsRadarChart = React.createClass({
 });
 
 module.exports = ReviewsRadarChart;
-
-// <input type="checkbox" name="frequency" value="0" {self.state.checked.includes(0) ? "checked" : ""} onChange={self.handleClick0}/>
-// <text style={{color: data.datasets[0].strokeColor}}>Daily</text><br/>
-// <input type="checkbox" name="frequency" value="1" {self.state.checked.includes(1) ? "checked" : ""} onChange={self.handleClick}/>
-// <text style={{color: data.datasets[1].strokeColor}}>Weekly</text><br/>
-// <input type="checkbox" name="frequency" value="2" {self.state.checked.includes(2) ? "checked" : ""} onChange={self.handleClick0}/>
-// <text style={{color: data.datasets[2].strokeColor}}>Monthly</text><br/>
-
-// <input style={{color: data.datasets[3].strokeColor}} type="checkbox" name="vehicle" value="Yearly"/>Yearly<br/>
-// <input style={{color: data.datasets[4].strokeColor}} type="checkbox" name="vehicle" value="Never"/>Never<br/>

@@ -43,11 +43,11 @@ var NewSessionForm = React.createClass({
     return <div>
       <form action="/session" method="post" className="form new-session-form" onSubmit={this.handleSubmit} >
         <div className="form-group">
-        <input type="string" name="user[email]" placeholder="Email" value={this.state.email}
+        <input type="string" name="user[email]" id="new-session-email" placeholder="Email" value={this.state.email}
             onChange={this.emailChange} />
         </div>
         <div className="form-group">
-        <input type="password" name="user[password]" placeholder="Password" value={this.state.password}
+        <input type="password" name="user[password]" id="new-session-password" placeholder="Password" value={this.state.password}
             onChange={this.passwordChange} />
         </div>
         <input className="btn btn-default" disabled={this.submitButtonDisabled()} type="submit" value="Sign In"/>

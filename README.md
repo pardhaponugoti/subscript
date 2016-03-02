@@ -116,7 +116,7 @@ for subscriptions or their friends
 
 ### Bonus Features (TBD)
 - [ ] Add upvote model to reviews
-- [ ] Add charts to show patterns for the ratings
+- [x] Add charts to show patterns for the ratings
 - [ ] Add infinite scroll
 - [ ] Add multiple session capability
 - [ ] Add Facebook integration to validate friends
