@@ -6,16 +6,6 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-100.times do
-  User.create({
-    first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name,
-    email: Faker::Internet.email,
-    password: "password1",
-    location: Faker::Address.city
-  })
-end
-
 # first_name, last_name, email, password, location, image, date_of_birth
 
 user_list = [
@@ -36,15 +26,25 @@ user_list = [
   ["Rey", "Skywalker?", "rey@awesome.com", "password1", "Jakku", "http://res.cloudinary.com/pardha/image/upload/v1456887193/zsrfasbzbo09ejooa3ei.jpg"]
 ]
 
-# user_list.each do |first_name, last_name, email, password, location|
-#   User.create({
-#     first_name: first_name,
-#     last_name: last_name,
-#     email: email,
-#     password: password,
-#     location: location
-#     })
-# end
+user_list.each do |first_name, last_name, email, password, location|
+  User.create({
+    first_name: first_name,
+    last_name: last_name,
+    email: email,
+    password: password,
+    location: location
+    })
+end
+
+100.times do
+  User.create({
+    first_name: Faker::Name.first_name,
+    last_name: Faker::Name.last_name,
+    email: Faker::Internet.email,
+    password: "password1",
+    location: Faker::Address.city
+  })
+end
 
 # name, url, description, logo
 subscription_list = [
@@ -166,7 +166,7 @@ logarithmic = [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5]
     end
 
     Review.create({
-      author_id: i+1,
+      author_id: i+20,
       subscription_id: j+1,
       rating: rating,
       frequency: frequency

@@ -49452,10 +49452,15 @@
 	      url: "/api/session/new",
 	      type: "GET",
 	      success: function success(data) {
+	        console.log("userDataSuccess:" + data);
 	        SessionFrontendActions.receiveUserSignIn(data);
 	        if (callback) {
 	          callback();
 	        }
+	      },
+	      error: function error(data) {
+	        console.log("userDataError:" + data);
+	        SessionFrontendActions.signOutUser();
 	      }
 	    });
 	  },
@@ -50810,7 +50815,7 @@
 	            ),
 	            React.createElement(
 	              'div',
-	              null,
+	              { className: 'gold-stars' },
 	              "★".repeat(this.props.review.rating)
 	            ),
 	            React.createElement(
@@ -50868,7 +50873,7 @@
 	          ),
 	          React.createElement(
 	            'div',
-	            null,
+	            { className: 'gold-stars' },
 	            "★".repeat(this.props.review.rating)
 	          ),
 	          React.createElement(
