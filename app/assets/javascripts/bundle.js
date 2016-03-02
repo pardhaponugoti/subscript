@@ -25028,12 +25028,7 @@
 	          React.createElement(
 	            'a',
 	            { onClick: this.openAnalyticsPage, className: 'navbar-text white-text' },
-	            'Analytics',
-	            React.createElement(
-	              'sup',
-	              null,
-	              'Beta'
-	            )
+	            'Statistics'
 	          ),
 	          React.createElement(
 	            'a',
@@ -51550,11 +51545,17 @@
 	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
+	var Link = __webpack_require__(159).Link;
+	var Alert = __webpack_require__(218).Alert;
 	var Modal = __webpack_require__(218).Modal;
+	var OverlayTrigger = __webpack_require__(218).OverlayTrigger;
+	var Button = __webpack_require__(218).Button;
 	
 	var ReviewStore = __webpack_require__(499);
 	var SubscriptionStore = __webpack_require__(491);
 	
+	var EditReviewForm = __webpack_require__(512);
+	var NewReviewForm = __webpack_require__(514);
 	var ReviewShowComponent = __webpack_require__(511);
 	var Chart = __webpack_require__(517);
 	
@@ -51638,25 +51639,67 @@
 	  },
 	
 	  toggleModal: function toggleModal() {
+	    debugger;
 	    this.setState({
 	      modalIsOpen: !this.state.modalIsOpen
 	    });
 	  },
+	  closeModal: function closeModal() {
+	    this.setState({
+	      modalIsOpen: false
+	    });
+	  },
 	
-	  userButtons: function userButtons(obj, id) {
-	    if (id !== undefined) {
+	  userButtons: function userButtons() {
+	    if (this.props.loggedIn) {
 	      var alreadyMadeReview = false;
-	      obj.state.reviews.forEach(function (review) {
-	        if (review.author_id === id) {
+	      var currentReview = {};
+	      var self = this;
+	      this.state.reviews.forEach(function (review) {
+	        if (review.author_id === self.props.currentUser.id) {
 	          alreadyMadeReview = true;
+	          currentReview = review;
 	        }
 	      });
 	
 	      if (alreadyMadeReview) {
 	        return React.createElement(
-	          'button',
+	          'div',
 	          null,
-	          'EDIT REVIEW BUTTON'
+	          React.createElement(
+	            'button',
+	            { className: 'btn btn-default btn-sm edit-review-btn', onClick: this.toggleModal },
+	            'Edit Review'
+	          ),
+	          React.createElement(
+	            Modal,
+	            {
+	              show: this.state.modalIsOpen,
+	              onHide: this.closeModal },
+	            React.createElement(
+	              Modal.Header,
+	              { closeButton: true },
+	              React.createElement(
+	                Modal.Title,
+	                null,
+	                'Edit Review'
+	              )
+	            ),
+	            React.createElement(
+	              Modal.Body,
+	              null,
+	              React.createElement(EditReviewForm, { currentUser: this.props.currentUser, review: currentReview, closeModalCallback: this.closeModal })
+	            ),
+	            React.createElement(
+	              Modal.Footer,
+	              null,
+	              React.createElement(
+	                Button,
+	                { onClick: this.closeModal },
+	                'Never Mind'
+	              )
+	            )
+	          )
 	        );
 	      } else {
 	        return React.createElement(
@@ -51665,12 +51708,13 @@
 	          React.createElement(
 	            'button',
 	            { className: 'btn create-review-btn btn-sm', onClick: this.toggleModal },
-	            'Create New Review'
+	            'Review ',
+	            this.state.currentSubscription.name
 	          ),
 	          React.createElement(
 	            Modal,
 	            { bsSize: 'lg',
-	              show: this.state.ModalIsOpen,
+	              show: this.state.modalIsOpen,
 	              onHide: this.closeModal },
 	            React.createElement(
 	              Modal.Header,
@@ -51704,7 +51748,7 @@
 	  },
 	
 	  render: function render() {
-	    if (this.state.currentSubscription.name === undefined || this.props === undefined) {
+	    if (this.state.currentSubscription.name === undefined || this.props === undefined || this.state.reviews === undefined) {
 	      // INSERT LOADING SYMBOL HERE
 	      return React.createElement(
 	        'div',
@@ -51741,7 +51785,7 @@
 	              null,
 	              this.state.currentSubscription.name
 	            ),
-	            this.userButtons(this, this.props.currentUser.id),
+	            this.userButtons(),
 	            React.createElement(
 	              'h4',
 	              null,
@@ -51776,12 +51820,7 @@
 	            React.createElement(
 	              'a',
 	              { onClick: this.showCharts },
-	              'Charts',
-	              React.createElement(
-	                'sup',
-	                null,
-	                'beta'
-	              )
+	              'Charts'
 	            )
 	          )
 	        ),
@@ -51849,7 +51888,7 @@
 	      });
 	
 	      var total = ratingFrequencies.reduce(add, 0);
-	      avgRating = avgRating / total;
+	      avgRating = Number(Math.round(avgRating / total + 'e2') + 'e-2');
 	      medianRating = median(ratings);
 	
 	      ratingFrequencies = ratingFrequencies.map(function (freq) {
@@ -57848,7 +57887,7 @@
 	          ),
 	          React.createElement(
 	            'h6',
-	            null,
+	            { className: 'black-text' },
 	            this.props.subscription.description
 	          )
 	        )
@@ -57922,6 +57961,8 @@
 	      var dailyUsageData = [];
 	      var weeklyUsageData = [];
 	      var monthlyUsageData = [];
+	      var yearlyUsageData = [];
+	      var neverUsageData = [];
 	
 	      this.state.subscriptions.forEach(function (subscription) {
 	        var totalReviews = 0;
@@ -57960,18 +58001,16 @@
 	        dailyUsageData.push(Math.round(currentSubDaily.length / totalReviews * 100));
 	        weeklyUsageData.push(Math.round(currentSubWeekly.length / totalReviews * 100));
 	        monthlyUsageData.push(Math.round(currentSubMonthly.length / totalReviews * 100));
-	        // radarData[subscription.id].pctDaily = currentSubDaily.length/totalReviews * 100;
-	        // radarData[subscription.id].pctWeekly = currentSubWeekly.length/totalReviews * 100;
-	        // radarData[subscription.id].pctMonthly = currentSubMonthly.length/totalReviews * 100;
-	        // radarData[subscription.id].pctYearly = currentSubYearly.length/totalReviews * 100;
-	        // radarData[subscription.id].pctNever = currentSubNever.length/totalReviews * 100;
+	        yearlyUsageData.push(Math.round(currentSubYearly.length / totalReviews * 100));
+	        neverUsageData.push(Math.round(currentSubNever.length / totalReviews * 100));
 	      });
 	
 	      return React.createElement(
 	        'div',
 	        null,
 	        React.createElement(ReviewsRadarChart, { dailyUsageData: dailyUsageData, weeklyUsageData: weeklyUsageData,
-	          monthlyUsageData: monthlyUsageData, labels: labels })
+	          monthlyUsageData: monthlyUsageData, yearlyUsageData: yearlyUsageData,
+	          neverUsageData: neverUsageData, labels: labels })
 	      );
 	    }
 	  }
@@ -58067,6 +58106,24 @@
 	        pointHighlightFill: "#fff",
 	        pointHighlightStroke: "rgba(151,187,205,1)",
 	        data: this.props.monthlyUsageData
+	      }, {
+	        label: "Usage Rate (Yearly)",
+	        fillColor: "rgba(255,0,0,0.2)",
+	        strokeColor: "rgba(255,0,0,1)",
+	        pointColor: "rgba(255,0,0,1)",
+	        pointStrokeColor: "#fff",
+	        pointHighlightFill: "#fff",
+	        pointHighlightStroke: "rgba(151,187,205,1)",
+	        data: this.props.yearlyUsageData
+	      }, {
+	        label: "Usage Rate (Never)",
+	        fillColor: "rgba(128,0,128,0.2)",
+	        strokeColor: "rgba(128,0,128,1)",
+	        pointColor: "rgba(128,0,128,1)",
+	        pointStrokeColor: "#fff",
+	        pointHighlightFill: "#fff",
+	        pointHighlightStroke: "rgba(151,187,205,1)",
+	        data: this.props.neverUsageData
 	      }]
 	    };
 	
@@ -58075,7 +58132,10 @@
 	    };
 	    // tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"
 	
-	    var chartData = {};
+	    var chartData = {
+	      labels: data.labels,
+	      datasets: []
+	    };
 	    chartData.labels = data.labels;
 	    chartData.datasets = [];
 	    if (this.state.daily) {
@@ -58087,7 +58147,12 @@
 	    if (this.state.monthly) {
 	      chartData.datasets.push(data.datasets[2]);
 	    }
-	    debugger;
+	    if (this.state.yearly) {
+	      chartData.datasets.push(data.datasets[3]);
+	    }
+	    if (this.state.never) {
+	      chartData.datasets.push(data.datasets[4]);
+	    }
 	    return React.createElement(
 	      'div',
 	      { className: 'col-md-10 col-md-offset-1 reviews-radar-chart' },
@@ -58099,13 +58164,12 @@
 	      React.createElement('br', null),
 	      React.createElement(
 	        'div',
-	        { className: 'col-md-8' },
-	        React.createElement(RadarChart, { data: chartData, options: chartOptions }),
-	        ';'
+	        { className: 'col-md-12' },
+	        React.createElement(RadarChart, { redraw: true, data: chartData, options: chartOptions })
 	      ),
 	      React.createElement(
 	        'div',
-	        { className: 'col-md-4 reviews-radar-checkbox' },
+	        { className: 'row' },
 	        React.createElement(
 	          'form',
 	          { className: 'container-fluid' },
@@ -58115,19 +58179,29 @@
 	            React.createElement('input', { type: 'checkbox', value: '5', checked: this.state.daily, onClick: this.handleClick }),
 	            'Daily'
 	          ),
-	          React.createElement('br', null),
 	          React.createElement(
 	            'label',
 	            { style: { color: data.datasets[1].strokeColor } },
 	            React.createElement('input', { type: 'checkbox', value: '4', checked: this.state.weekly, onClick: this.handleClick }),
 	            'Weekly'
 	          ),
-	          React.createElement('br', null),
 	          React.createElement(
 	            'label',
 	            { style: { color: data.datasets[2].strokeColor } },
 	            React.createElement('input', { type: 'checkbox', value: '3', checked: this.state.monthly, onClick: this.handleClick }),
 	            'Monthly'
+	          ),
+	          React.createElement(
+	            'label',
+	            { style: { color: data.datasets[3].strokeColor } },
+	            React.createElement('input', { type: 'checkbox', value: '2', checked: this.state.yearly, onClick: this.handleClick }),
+	            'Yearly'
+	          ),
+	          React.createElement(
+	            'label',
+	            { style: { color: data.datasets[4].strokeColor } },
+	            React.createElement('input', { type: 'checkbox', value: '1', checked: this.state.never, onClick: this.handleClick }),
+	            'Never'
 	          )
 	        )
 	      )
@@ -58137,16 +58211,6 @@
 	
 	module.exports = ReviewsRadarChart;
 	
-	// <br/>
-	// <label>
-	//   <input type="checkbox" value="2" checked={this.state.yearly} onClick={this.handleClick}/>
-	//   Yearly
-	// </label>
-	// <br/>
-	// <label>
-	//   <input type="checkbox" value="1" checked={this.state.never} onClick={this.handleClick}/>
-	//   Never
-	// </label>
 	// <input type="checkbox" name="frequency" value="0" {self.state.checked.includes(0) ? "checked" : ""} onChange={self.handleClick0}/>
 	// <text style={{color: data.datasets[0].strokeColor}}>Daily</text><br/>
 	// <input type="checkbox" name="frequency" value="1" {self.state.checked.includes(1) ? "checked" : ""} onChange={self.handleClick}/>

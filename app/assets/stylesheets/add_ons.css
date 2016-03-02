@@ -431,3 +431,7 @@ a.visited {
 .slideOne input[type=checkbox]:checked + label {
 	left: 37px;
 }
+
+.black-text {
+  color: black;
+}

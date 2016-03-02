@@ -40,7 +40,7 @@ var Chart = React.createClass({
       });
 
       var total = ratingFrequencies.reduce(add, 0);
-      avgRating = avgRating/total;
+      avgRating = Number(Math.round((avgRating/total)+'e2')+'e-2');
       medianRating = median(ratings);
 
       ratingFrequencies = ratingFrequencies.map(function(freq) {

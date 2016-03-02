@@ -1,10 +1,16 @@
 var React = require('react');
 var BrowserHistory = require('react-router').browserHistory;
+var Link = require('react-router').Link;
+var Alert = require('react-bootstrap').Alert;
 var Modal = require('react-bootstrap').Modal;
+var OverlayTrigger = require('react-bootstrap').OverlayTrigger;
+var Button = require('react-bootstrap').Button;
 
 var ReviewStore = require('../stores/review.js');
 var SubscriptionStore = require('../stores/subscription.js');
 
+var EditReviewForm = require('./editReviewForm.jsx');
+var NewReviewForm = require('./newReviewForm.jsx');
 var ReviewShowComponent = require('./reviewShowComponent.jsx');
 var Chart = require('./chart.jsx');
 
@@ -80,27 +86,51 @@ var SubscriptionShowPage = React.createClass({
   },
 
   toggleModal: function() {
+    debugger;
     this.setState({
       modalIsOpen: !this.state.modalIsOpen
     });
   },
+  closeModal: function() {
+    this.setState({
+      modalIsOpen: false
+    });
+  },
 
-  userButtons: function(obj, id) {
-    if (id !== undefined) {
+  userButtons: function() {
+    if ( this.props.loggedIn ) {
       var alreadyMadeReview = false;
-      obj.state.reviews.forEach(function(review) {
-        if (review.author_id === id) {
+      var currentReview = {};
+      var self = this;
+      this.state.reviews.forEach(function(review) {
+        if (review.author_id === self.props.currentUser.id) {
           alreadyMadeReview = true;
+          currentReview = review;
         }
       });
 
       if (alreadyMadeReview) {
-        return <button>EDIT REVIEW BUTTON</button>;
+        return <div>
+          <button className="btn btn-default btn-sm edit-review-btn" onClick={this.toggleModal} >Edit Review</button>
+          <Modal
+            show={this.state.modalIsOpen}
+            onHide={this.closeModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Edit Review</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <EditReviewForm currentUser={this.props.currentUser} review={currentReview} closeModalCallback={this.closeModal}/>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={this.closeModal}>Never Mind</Button>
+            </Modal.Footer>
+          </Modal>
+        </div>;
       } else {
         return <div>
-          <button className="btn create-review-btn btn-sm" onClick={this.toggleModal}>Create New Review</button>
+          <button className="btn create-review-btn btn-sm" onClick={this.toggleModal} >Review {this.state.currentSubscription.name}</button>
           <Modal bsSize="lg"
-            show={this.state.ModalIsOpen}
+            show={this.state.modalIsOpen}
             onHide={this.closeModal}>
             <Modal.Header closeButton>
               <Modal.Title>Write a New Review</Modal.Title>
@@ -120,7 +150,7 @@ var SubscriptionShowPage = React.createClass({
   },
 
   render: function() {
-    if(this.state.currentSubscription.name === undefined || this.props === undefined) {
+    if(this.state.currentSubscription.name === undefined || this.props === undefined || this.state.reviews === undefined) {
       // INSERT LOADING SYMBOL HERE
       return <div>WAITING-FOR-LOAD</div>;
     } else {
@@ -135,14 +165,14 @@ var SubscriptionShowPage = React.createClass({
           <div className="col-md-4"><h1><img className="subscription-logo" src={this.state.currentSubscription.logo} height="256"/></h1></div>
           <div className="col-md-8">
             <h1>{this.state.currentSubscription.name}</h1>
-            { this.userButtons(this, this.props.currentUser.id) }
+            { this.userButtons() }
             <h4><a href={"http://" + this.state.currentSubscription.url}>{this.state.currentSubscription.url}</a></h4>
             <h5>{this.state.currentSubscription.description}</h5>
           </div>
         </div>
         <ul className="nav nav-tabs list-inline borderless" role="tablist">
           <li key="1" className={this.state.showReviews ? "active" : ""}><a onClick={this.showReviews}>Reviews</a></li>
-          <li key="2" className={this.state.showCharts ? "active" : ""}><a onClick={this.showCharts}>Charts<sup>beta</sup></a></li>
+          <li key="2" className={this.state.showCharts ? "active" : ""}><a onClick={this.showCharts}>Charts</a></li>
         </ul>
         <div className="subscription-show-container">
           {input}

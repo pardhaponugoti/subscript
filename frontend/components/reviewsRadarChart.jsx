@@ -81,6 +81,26 @@ var ReviewsRadarChart = React.createClass({
           pointHighlightFill: "#fff",
           pointHighlightStroke: "rgba(151,187,205,1)",
           data: this.props.monthlyUsageData
+        },
+        {
+          label: "Usage Rate (Yearly)",
+          fillColor: "rgba(255,0,0,0.2)",
+          strokeColor: "rgba(255,0,0,1)",
+          pointColor: "rgba(255,0,0,1)",
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(151,187,205,1)",
+          data: this.props.yearlyUsageData
+        },
+        {
+          label: "Usage Rate (Never)",
+          fillColor: "rgba(128,0,128,0.2)",
+          strokeColor: "rgba(128,0,128,1)",
+          pointColor: "rgba(128,0,128,1)",
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(151,187,205,1)",
+          data: this.props.neverUsageData
         }
       ]
     };
@@ -90,7 +110,10 @@ var ReviewsRadarChart = React.createClass({
     };
     // tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"
 
-    var chartData = {};
+    var chartData = {
+      labels: data.labels,
+      datasets: []
+    };
     chartData.labels = data.labels;
     chartData.datasets = [];
     if (this.state.daily) {
@@ -102,28 +125,43 @@ var ReviewsRadarChart = React.createClass({
     if(this.state.monthly) {
       chartData.datasets.push(data.datasets[2]);
     }
-    debugger;
+    if(this.state.yearly) {
+      chartData.datasets.push(data.datasets[3]);
+    }
+    if(this.state.never) {
+      chartData.datasets.push(data.datasets[4]);
+    }
     return <div className="col-md-10 col-md-offset-1 reviews-radar-chart">
       <h2> Usage Rates </h2>
       <br/>
-      <div className="col-md-8">
-        <RadarChart data={chartData} options={chartOptions}/>;
+      <div className="col-md-12">
+        <RadarChart redraw={true} data={chartData} options={chartOptions}/>
       </div>
-      <div className="col-md-4 reviews-radar-checkbox">
+      <div className="row">
         <form className="container-fluid">
           <label style={{color: data.datasets[0].strokeColor}}>
             <input type="checkbox" value="5" checked={this.state.daily} onClick={this.handleClick}/>
             Daily
           </label>
-          <br/>
+
           <label style={{color: data.datasets[1].strokeColor}}>
             <input type="checkbox" value="4" checked={this.state.weekly} onClick={this.handleClick}/>
             Weekly
           </label>
-          <br/>
+
           <label style={{color: data.datasets[2].strokeColor}}>
             <input type="checkbox" value="3" checked={this.state.monthly} onClick={this.handleClick}/>
             Monthly
+          </label>
+
+          <label style={{color: data.datasets[3].strokeColor}}>
+            <input type="checkbox" value="2" checked={this.state.yearly} onClick={this.handleClick}/>
+            Yearly
+          </label>
+
+          <label style={{color: data.datasets[4].strokeColor}}>
+            <input type="checkbox" value="1" checked={this.state.never} onClick={this.handleClick}/>
+            Never
           </label>
         </form>
       </div>
@@ -133,16 +171,6 @@ var ReviewsRadarChart = React.createClass({
 
 module.exports = ReviewsRadarChart;
 
-// <br/>
-// <label>
-//   <input type="checkbox" value="2" checked={this.state.yearly} onClick={this.handleClick}/>
-//   Yearly
-// </label>
-// <br/>
-// <label>
-//   <input type="checkbox" value="1" checked={this.state.never} onClick={this.handleClick}/>
-//   Never
-// </label>
 // <input type="checkbox" name="frequency" value="0" {self.state.checked.includes(0) ? "checked" : ""} onChange={self.handleClick0}/>
 // <text style={{color: data.datasets[0].strokeColor}}>Daily</text><br/>
 // <input type="checkbox" name="frequency" value="1" {self.state.checked.includes(1) ? "checked" : ""} onChange={self.handleClick}/>

@@ -146,7 +146,7 @@ var Header = React.createClass({
       <div id="navbarCollapse" className="collapse navbar-collapse">
         {this.userDropdown()}
         <div className="navbar-right">
-          <a onClick={this.openAnalyticsPage} className="navbar-text white-text">Analytics<sup>Beta</sup></a>
+          <a onClick={this.openAnalyticsPage} className="navbar-text white-text">Statistics</a>
           <a onClick={this.openSubscriptionsIndex} className="navbar-text white-text">Services</a>
         </div>
       </div>
