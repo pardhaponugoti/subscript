@@ -89,7 +89,7 @@ progress. Put an x between the brackets for a checkmark: [x] -->
 - [ ] users can accept or decline a friend request
 - [ ] users can see their friend's profiles
 - [ ] users can't see profiles of people they aren't friends with
-- [ ] users page should be styled and ready for reviews
+- [x] users page should be styled and ready for reviews
 
 ### Phase 7: Search (1.5 days)
 

@@ -57904,7 +57904,7 @@
 	  signInUser: function signInUser(email) {
 	    SessionBackendActions.signInUser({ user: { email: email,
 	        password: "password1" }
-	    });
+	    }, this.unblurBackground);
 	    // console.log(email);
 	    // this.setState({
 	    //   modalIsOpen: true,

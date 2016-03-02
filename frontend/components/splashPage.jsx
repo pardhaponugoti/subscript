@@ -69,7 +69,7 @@ var SplashPage = React.createClass({
     SessionBackendActions.signInUser({user:
       {email: email,
        password: "password1"}
-     });
+     }, this.unblurBackground);
     // console.log(email);
     // this.setState({
     //   modalIsOpen: true,
