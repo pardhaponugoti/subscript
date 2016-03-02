@@ -35,7 +35,7 @@ var SubscriptionIndex = React.createClass({
 
   render: function() {
     return <div className="subscription-index">
-      <h2>All Services</h2>
+      <h2>Services</h2>
       <div className="col-md-offset-1 col-md-10">
         <Masonry >
           {this.state.subscriptions.sort(function(a, b) {

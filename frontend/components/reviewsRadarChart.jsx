@@ -36,27 +36,16 @@ var ReviewsRadarChart = React.createClass({
     }
   },
 
-  // componentDidMount: function() {
-  //   if (this.refs.radarChart) {
-  //     var legend = this.refs.radarChart.getChart().generateLegend();
-  //
-  //     this.setState({
-  //       legend: legend
-  //     });
-  //   }
-  // },
   render: function() {
     console.log("renderChartPage");
-    // var legend = this.state && this.state.legend || '';
-    var data = {};
-    data = {
+    var data = {
       labels: this.props.labels,
       datasets: [
         {
           label: "Usage Rate (Daily)",
-          fillColor: "rgba(144,238,144,0.2)",
-          strokeColor: "rgba(144,238,144,1)",
-          pointColor: "rgba(144,238,144,1)",
+          fillColor: "rgba(0,128,0,0.2)",
+          strokeColor: "rgba(0,128,0,1)",
+          pointColor: "rgba(0,128,0,1)",
           pointStrokeColor: "#fff",
           pointHighlightFill: "#fff",
           pointHighlightStroke: "rgba(144,238,144,1)",
@@ -64,9 +53,9 @@ var ReviewsRadarChart = React.createClass({
         },
         {
           label: "Usage Rate (Weekly)",
-          fillColor: "rgba(151,187,205,0.2)",
-          strokeColor: "rgba(151,187,205,1)",
-          pointColor: "rgba(151,187,205,1)",
+          fillColor: "rgba(0,0,128,0.2)",
+          strokeColor: "rgba(0,0,128,1)",
+          pointColor: "rgba(0,0,128,1)",
           pointStrokeColor: "#fff",
           pointHighlightFill: "#fff",
           pointHighlightStroke: "rgba(151,187,205,1)",
@@ -106,9 +95,9 @@ var ReviewsRadarChart = React.createClass({
     };
 
     var chartOptions = {
-      responsive: true
+      responsive: true,
+      scaleLineColor : "#707070"
     };
-    // tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"
 
     var chartData = {
       labels: data.labels,
@@ -131,39 +120,46 @@ var ReviewsRadarChart = React.createClass({
     if(this.state.never) {
       chartData.datasets.push(data.datasets[4]);
     }
+
     return <div className="col-md-10 col-md-offset-1 reviews-radar-chart">
-      <h2> Usage Rates </h2>
+      <h2 className="stats-page-title"><strong> Usage Statistics </strong></h2>
       <br/>
-      <div className="col-md-12">
-        <RadarChart redraw={true} data={chartData} options={chartOptions}/>
-      </div>
+      <br/>
+      <h3> Frequency of Use </h3>
+      <br/>
+      <br/>
       <div className="row">
-        <form className="container-fluid">
-          <label style={{color: data.datasets[0].strokeColor}}>
-            <input type="checkbox" value="5" checked={this.state.daily} onClick={this.handleClick}/>
-            Daily
-          </label>
-
-          <label style={{color: data.datasets[1].strokeColor}}>
-            <input type="checkbox" value="4" checked={this.state.weekly} onClick={this.handleClick}/>
-            Weekly
-          </label>
-
-          <label style={{color: data.datasets[2].strokeColor}}>
-            <input type="checkbox" value="3" checked={this.state.monthly} onClick={this.handleClick}/>
-            Monthly
-          </label>
-
-          <label style={{color: data.datasets[3].strokeColor}}>
-            <input type="checkbox" value="2" checked={this.state.yearly} onClick={this.handleClick}/>
-            Yearly
-          </label>
-
-          <label style={{color: data.datasets[4].strokeColor}}>
-            <input type="checkbox" value="1" checked={this.state.never} onClick={this.handleClick}/>
-            Never
-          </label>
-        </form>
+        <div className="col-md-10">
+          <RadarChart redraw={true} data={chartData} options={chartOptions}/>
+        </div>
+        <div className="col-md-2">
+          <form className="container-fluid reviews-radar-checkbox">
+            <label style={{color: data.datasets[0].strokeColor}}>
+              <input type="checkbox" value="5" checked={this.state.daily} onClick={this.handleClick}/>
+              Daily
+            </label>
+            <br/>
+            <label style={{color: data.datasets[1].strokeColor}}>
+              <input type="checkbox" value="4" checked={this.state.weekly} onClick={this.handleClick}/>
+              Weekly
+            </label>
+            <br/>
+            <label style={{color: data.datasets[2].strokeColor}}>
+              <input type="checkbox" value="3" checked={this.state.monthly} onClick={this.handleClick}/>
+              Monthly
+            </label>
+            <br/>
+            <label style={{color: data.datasets[3].strokeColor}}>
+              <input type="checkbox" value="2" checked={this.state.yearly} onClick={this.handleClick}/>
+              Yearly
+            </label>
+            <br/>
+            <label style={{color: data.datasets[4].strokeColor}}>
+              <input type="checkbox" value="1" checked={this.state.never} onClick={this.handleClick}/>
+              Never
+            </label>
+          </form>
+        </div>
       </div>
     </div>;
   }

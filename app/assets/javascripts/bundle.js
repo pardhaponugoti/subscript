@@ -65,7 +65,7 @@
 	//test components
 	var HeaderSearchComponent = __webpack_require__(462);
 	var Chart = __webpack_require__(517);
-	var AnalyticsPage = __webpack_require__(552);
+	var AnalyticsPage = __webpack_require__(562);
 	
 	var routes = React.createElement(
 	  Route,
@@ -75,7 +75,7 @@
 	  React.createElement(Route, { path: 'users/:userId/edit', component: UserEditPage }),
 	  React.createElement(Route, { path: 'subscriptions', component: SubscriptionIndex }),
 	  React.createElement(Route, { path: 'subscriptions/:subscriptionId', component: SubscriptionShowPage }),
-	  React.createElement(Route, { path: 'test', component: AnalyticsPage }),
+	  React.createElement(Route, { path: 'statistics', component: AnalyticsPage }),
 	  React.createElement(Route, { path: '*', component: ReviewFeed })
 	);
 	
@@ -24739,7 +24739,6 @@
 	window.UserStore = UserStore;
 	window.SubscriptionStore = SubscriptionStore;
 	window.ReviewStore = ReviewStore;
-	window.ReviewBackendActions = ReviewBackendActions;
 	
 	var App = React.createClass({
 	  displayName: 'App',
@@ -24769,16 +24768,12 @@
 	      loggedIn: SessionStore.loggedIn()
 	    });
 	  },
-	  // componentWillUnmount: function() {
-	  //   console.log("AppUnmounting");
-	  // },
 	  linkToTest: function linkToTest(e) {
 	    e.preventDefault();
-	    BrowserHistory.push("/test");
+	    // BrowserHistory.push("/test");
 	  },
 	
 	  render: function render() {
-	    console.log("AppRender");
 	    return React.createElement(
 	      'div',
 	      { id: 'App' },
@@ -24786,6 +24781,11 @@
 	        'div',
 	        null,
 	        React.createElement(Header, { currentUser: this.state.currentUser, loggedIn: this.state.loggedIn })
+	      ),
+	      React.createElement(
+	        'button',
+	        { onClick: this.linkToTest },
+	        'test'
 	      ),
 	      React.createElement(
 	        'div',
@@ -24888,8 +24888,8 @@
 	  openSubscriptionsIndex: function openSubscriptionsIndex() {
 	    BrowserHistory.push("/subscriptions");
 	  },
-	  openAnalyticsPage: function openAnalyticsPage() {
-	    BrowserHistory.push("/test");
+	  openStatisticsPage: function openStatisticsPage() {
+	    BrowserHistory.push("/statistics");
 	  },
 	  showCurrentUserPage: function showCurrentUserPage() {
 	    BrowserHistory.push("/" + this.currentUserUrl());
@@ -25007,7 +25007,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      'nav',
-	      { className: 'navbar navbar-fixed-top' },
+	      { className: 'navbar navbar-fixed-top', id: 'navbar-primary' },
 	      React.createElement(
 	        'div',
 	        { className: 'navbar-header header-home' },
@@ -25020,6 +25020,11 @@
 	      React.createElement(HeaderSearchComponent, null),
 	      React.createElement(
 	        'div',
+	        { onClick: this.renderRoot, className: 'title-centered' },
+	        'subscript'
+	      ),
+	      React.createElement(
+	        'div',
 	        { id: 'navbarCollapse', className: 'collapse navbar-collapse' },
 	        this.userDropdown(),
 	        React.createElement(
@@ -25027,7 +25032,7 @@
 	          { className: 'navbar-right' },
 	          React.createElement(
 	            'a',
-	            { onClick: this.openAnalyticsPage, className: 'navbar-text white-text' },
+	            { onClick: this.openStatisticsPage, className: 'navbar-text white-text' },
 	            'Statistics'
 	          ),
 	          React.createElement(
@@ -49968,7 +49973,6 @@
 	};
 	
 	ReviewStore.findByUserId = function (userId) {
-	  console.log("finding by user id");
 	  if (_reviewsByUserId === {}) {
 	    return undefined;
 	  } else if (_reviewsByUserId[userId] === undefined) {
@@ -51845,6 +51849,7 @@
 	
 	var React = __webpack_require__(1);
 	var LineChart = __webpack_require__(518).Line;
+	var RadarChart = __webpack_require__(518).Radar;
 	var BarChart = __webpack_require__(518).Bar;
 	var DonutChart = __webpack_require__(518).Doughnut;
 	
@@ -51870,8 +51875,12 @@
 	
 	  render: function render() {
 	    var ratingFrequencies = [0, 0, 0, 0, 0];
+	    var usageFrequencies = [0, 0, 0, 0, 0];
 	    var avgRating = 0;
+	    var avgUsage = 0;
 	    var medianRating = 0;
+	    var medianUsage = 0;
+	    var usage = [];
 	    var ratings = [];
 	
 	    if (this.props.reviews === undefined || this.props.subscription === undefined || this.props.reviews.length === 0 || this.props.subscription.length === 0) {
@@ -51885,11 +51894,19 @@
 	        ratings.push(review.rating);
 	        ratingFrequencies[review.rating - 1] += 1;
 	        avgRating += review.rating;
+	
+	        usage.push(review.frequency);
+	        usageFrequencies[review.frequency - 1] += 1;
+	        avgUsage += review.frequency;
 	      });
 	
 	      var total = ratingFrequencies.reduce(add, 0);
+	
 	      avgRating = Number(Math.round(avgRating / total + 'e2') + 'e-2');
 	      medianRating = median(ratings);
+	
+	      avgUsage = Number(Math.round(avgUsage / total + 'e2') + 'e-2');
+	      medianUsage = median(usage);
 	
 	      ratingFrequencies = ratingFrequencies.map(function (freq) {
 	        return Math.round(freq / total * 100);
@@ -51950,6 +51967,20 @@
 	        label: labels[4]
 	      }];
 	
+	      var radarData = {
+	        labels: ["Daily", "Weekly", "Monthly", "Yearly", "Never"],
+	        datasets: [{
+	          label: "Usage Rate",
+	          fillColor: "rgba(0,128,0,0.2)",
+	          strokeColor: "rgba(0,128,0,1)",
+	          pointColor: "rgba(0,128,0,1)",
+	          pointStrokeColor: "#fff",
+	          pointHighlightFill: "#fff",
+	          pointHighlightStroke: "rgba(144,238,144,1)",
+	          data: usageFrequencies.reverse()
+	        }]
+	      };
+	
 	      if (avgRating < 2) {
 	        var meancolor = "red";
 	      } else if (avgRating < 3) {
@@ -51993,7 +52024,7 @@
 	          { className: "row" },
 	          React.createElement(
 	            "div",
-	            { className: "col-md-5" },
+	            { className: "col-md-3" },
 	            React.createElement(
 	              "h4",
 	              null,
@@ -52013,12 +52044,67 @@
 	              "h2",
 	              { style: medianStyle },
 	              medianRating
+	            ),
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Most Common:"
+	            ),
+	            React.createElement(
+	              "h2",
+	              null,
+	              medianRating
 	            )
 	          ),
 	          React.createElement(
 	            "div",
-	            { className: "col-md-7" },
+	            { className: "col-md-9" },
 	            React.createElement(DonutChart, { data: donutData, options: { responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>", segmentStrokeColor: "#fff", segmentStrokeWidth: 2 } })
+	          )
+	        ),
+	        React.createElement("br", null),
+	        React.createElement("br", null),
+	        React.createElement(
+	          "div",
+	          { className: "row" },
+	          React.createElement(
+	            "div",
+	            { className: "col-md-3" },
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Average Usage:"
+	            ),
+	            React.createElement(
+	              "h2",
+	              null,
+	              avgUsage
+	            ),
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Median Usage:"
+	            ),
+	            React.createElement(
+	              "h2",
+	              null,
+	              medianUsage
+	            ),
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Most Common:"
+	            ),
+	            React.createElement(
+	              "h2",
+	              null,
+	              medianUsage
+	            )
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "col-md-9" },
+	            React.createElement(RadarChart, { data: radarData, options: { responsive: true, scaleLineColor: "#707070" } })
 	          )
 	        ),
 	        React.createElement(
@@ -55779,7 +55865,7 @@
 	    );
 	  },
 	  render: function render() {
-	    // debugger;
+	
 	    if (this.state.reviews === undefined) {
 	      return React.createElement(
 	        'div',
@@ -55787,23 +55873,26 @@
 	        'STAY TUNED'
 	      );
 	    } else {
-	      return React.createElement(
-	        'div',
-	        { className: 'review-feed' },
-	        !this.props.loggedIn ? React.createElement(SplashPage, null) : "",
-	        React.createElement(
-	          'h2',
-	          null,
-	          'Review Feed'
-	        ),
-	        React.createElement(
-	          'ul',
-	          { className: 'container' },
-	          this.state.reviews.map(function (review) {
-	            return React.createElement(ReviewShowComponent, { review: review, key: review.id });
-	          })
-	        )
-	      );
+	      if (!this.props.loggedIn) {
+	        return React.createElement(SplashPage, null);
+	      } else {
+	        return React.createElement(
+	          'div',
+	          { className: 'review-feed' },
+	          React.createElement(
+	            'h2',
+	            null,
+	            'Recent Reviews'
+	          ),
+	          React.createElement(
+	            'ul',
+	            { className: 'container' },
+	            this.state.reviews.map(function (review) {
+	              return React.createElement(ReviewShowComponent, { review: review, key: review.id });
+	            })
+	          )
+	        );
+	      }
 	    }
 	  }
 	});
@@ -57743,34 +57832,187 @@
 	'use strict';
 	
 	var React = __webpack_require__(1);
+	var Modal = __webpack_require__(218).Modal;
+	var Button = __webpack_require__(218).Button;
 	
-	var Header = __webpack_require__(217);
+	var UserStore = __webpack_require__(467);
+	
+	var NewSessionForm = __webpack_require__(496);
+	var NewUserForm = __webpack_require__(497);
 	
 	var SplashPage = React.createClass({
 	  displayName: 'SplashPage',
 	
+	  getInitialState: function getInitialState() {
+	    return {
+	      modalIsOpen: false,
+	      signInOpen: true,
+	      demo: false
+	    };
+	  },
+	
+	  openSignUp: function openSignUp() {
+	    this.setState({
+	      modalIsOpen: true,
+	      signInOpen: false,
+	      demo: false
+	    });
+	  },
+	  openSignIn: function openSignIn() {
+	    this.setState({
+	      modalIsOpen: true,
+	      signInOpen: true,
+	      demo: false
+	    });
+	  },
+	  demoUser: function demoUser() {
+	    this.setState({
+	      modalIsOpen: true,
+	      demo: true
+	    });
+	  },
+	  close: function close() {
+	    this.setState({
+	      modalIsOpen: false
+	    });
+	  },
+	
+	  demoOptions: function demoOptions() {
+	    var user1 = UserStore.findById(1);
+	    var user2 = UserStore.findById(2);
+	    var user3 = UserStore.findById(3);
+	    return React.createElement(
+	      'div',
+	      { className: 'demo-modal' },
+	      React.createElement(
+	        'h4',
+	        null,
+	        'Continue As'
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'button',
+	          { className: 'btn btn-default btn-sm demo-btn' },
+	          React.createElement('img', { src: user1.image, height: '30' }),
+	          user1.first_name + " " + user1.last_name
+	        ),
+	        React.createElement(
+	          'button',
+	          { className: 'btn btn-default btn-sm demo-btn' },
+	          React.createElement('img', { src: user2.image, height: '30' }),
+	          user2.first_name + " " + user2.last_name
+	        ),
+	        React.createElement(
+	          'button',
+	          { className: 'btn btn-default btn-sm demo-btn' },
+	          React.createElement('img', { src: user3.image, height: '30' }),
+	          user3.first_name + " " + user3.last_name
+	        )
+	      )
+	    );
+	  },
+	
 	  render: function render() {
+	    var inputs = {};
+	    if (this.state.demo) {
+	      inputs.header = "Demo";
+	      inputs.form = this.demoOptions();
+	      inputs.string = "";
+	      inputs.button = React.createElement(
+	        'div',
+	        null,
+	        'Enjoy!'
+	      );
+	    } else if (this.state.signInOpen) {
+	      inputs.header = "Sign In";
+	      inputs.form = React.createElement(NewSessionForm, { closeModalCallback: this.close });
+	      inputs.string = "";
+	      inputs.button = React.createElement(
+	        'div',
+	        null,
+	        'Welcome Back!'
+	      );
+	    } else {
+	      inputs.header = "Sign Up";
+	      inputs.form = React.createElement(NewUserForm, { closeModalCallback: this.close });
+	      inputs.string = "";
+	      inputs.button = React.createElement(
+	        'div',
+	        null,
+	        'Welcome to subscript!'
+	      );
+	    }
+	
 	    return React.createElement(
 	      'div',
 	      { className: 'splash-page-div' },
-	      React.createElement('div', { className: 'blank-space' }),
 	      React.createElement(
-	        'h1',
-	        { className: '' },
-	        'Σ'
-	      ),
-	      React.createElement(
-	        'h2',
-	        null,
-	        'subscript'
+	        'div',
+	        { className: 'splash-page-inner-text' },
+	        React.createElement(
+	          'h1',
+	          { className: '' },
+	          'Σ'
+	        ),
+	        React.createElement(
+	          'h2',
+	          null,
+	          'subscript'
+	        ),
+	        React.createElement('br', null),
+	        React.createElement(
+	          'h5',
+	          null,
+	          'rate your paid subscriptions and services'
+	        )
 	      ),
 	      React.createElement('br', null),
+	      React.createElement('br', null),
 	      React.createElement(
-	        'h5',
-	        null,
-	        'rate your paid subscriptions and services'
-	      ),
-	      React.createElement('div', { className: 'blank-space-2' })
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'button',
+	          { onClick: this.openSignUp, className: 'btn btn-sm splash-btn' },
+	          'Sign Up'
+	        ),
+	        React.createElement(
+	          'button',
+	          { onClick: this.openSignIn, className: 'btn btn-sm splash-btn' },
+	          'Sign In'
+	        ),
+	        React.createElement(
+	          'button',
+	          { onClick: this.demoUser, className: 'btn btn-sm splash-btn' },
+	          'Demo Site'
+	        ),
+	        React.createElement(
+	          Modal,
+	          { show: this.state.modalIsOpen, onHide: this.close },
+	          React.createElement(
+	            Modal.Header,
+	            { closeButton: true },
+	            React.createElement(
+	              Modal.Title,
+	              null,
+	              inputs.header
+	            )
+	          ),
+	          React.createElement(
+	            Modal.Body,
+	            null,
+	            inputs.form
+	          ),
+	          React.createElement(
+	            Modal.Footer,
+	            null,
+	            inputs.string + " ",
+	            inputs.button
+	          )
+	        )
+	      )
 	    );
 	  }
 	});
@@ -57786,11 +58028,11 @@
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
 	var TransitionGroup = __webpack_require__(542);
-	var Masonry = __webpack_require__(554);
+	var Masonry = __webpack_require__(551);
 	
 	var SubscriptionStore = __webpack_require__(491);
 	
-	var SubscriptionGridComponent = __webpack_require__(551);
+	var SubscriptionGridComponent = __webpack_require__(561);
 	
 	var SubscriptionIndex = React.createClass({
 	  displayName: 'SubscriptionIndex',
@@ -57827,7 +58069,7 @@
 	      React.createElement(
 	        'h2',
 	        null,
-	        'All Services'
+	        'Services'
 	      ),
 	      React.createElement(
 	        'div',
@@ -57864,381 +58106,9 @@
 /* 551 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-	
-	var React = __webpack_require__(1);
-	var Link = __webpack_require__(159).Link;
-	
-	var SubscriptionGridComponent = React.createClass({
-	  displayName: 'SubscriptionGridComponent',
-	
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      { className: 'col-md-4 col-sm-6 col-xs-6 subscription-grid-component' },
-	      React.createElement(
-	        Link,
-	        { to: "/subscriptions/" + this.props.subscription.id },
-	        React.createElement(
-	          'div',
-	          null,
-	          React.createElement('img', { className: 'subscription-logo', src: this.props.subscription.logo })
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'col-md-offset-1 col-md-10' },
-	          React.createElement(
-	            'h4',
-	            null,
-	            React.createElement(
-	              'text',
-	              { className: 'subscription-name-link' },
-	              this.props.subscription.name
-	            )
-	          ),
-	          React.createElement(
-	            'h6',
-	            { className: 'black-text' },
-	            this.props.subscription.description
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	// <div className="row">
-	//   <h6>{this.props.subscription.description}</h6>
-	// </div>
-	
-	module.exports = SubscriptionGridComponent;
-
-/***/ },
-/* 552 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var React = __webpack_require__(1);
-	var RadarChart = __webpack_require__(518).Radar;
-	var LineChart = __webpack_require__(518).Line;
-	var BarChart = __webpack_require__(518).Bar;
-	var DonutChart = __webpack_require__(518).Doughnut;
-	
-	var SubscriptionStore = __webpack_require__(491);
-	var ReviewStore = __webpack_require__(499);
-	
-	var ReviewsRadarChart = __webpack_require__(553);
-	
-	var AnalyticsPage = React.createClass({
-	  displayName: 'AnalyticsPage',
-	
-	  getInitialState: function getInitialState() {
-	    return {
-	      reviews: ReviewStore.all(),
-	      subscriptions: SubscriptionStore.all()
-	    };
-	  },
-	  componentDidMount: function componentDidMount() {
-	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.onSubscriptionChange);
-	    this.reviewListenerToken = ReviewStore.addListener(this.onReviewChange);
-	  },
-	  componentWillUnmount: function componentWillUnmount() {
-	    this.subscriptionListenerToken.remove();
-	    this.reviewListenerToken.remove();
-	  },
-	
-	  onSubscriptionChange: function onSubscriptionChange() {
-	    this.setState({
-	      subscriptions: SubscriptionStore.all()
-	    });
-	  },
-	  onReviewChange: function onReviewChange() {
-	    this.setState({
-	      reviews: ReviewStore.all()
-	    });
-	  },
-	
-	  render: function render() {
-	    if (this.state.subscriptions === undefined || this.state.reviews === undefined || this.state.subscriptions.length === 0 || this.state.reviews.length === 0) {
-	      return React.createElement(
-	        'div',
-	        null,
-	        'WAITING-FOR-LOAD'
-	      );
-	    } else {
-	      var radarData = {};
-	      var labels = [];
-	      var dailyUsageData = [];
-	      var weeklyUsageData = [];
-	      var monthlyUsageData = [];
-	      var yearlyUsageData = [];
-	      var neverUsageData = [];
-	
-	      this.state.subscriptions.forEach(function (subscription) {
-	        var totalReviews = 0;
-	        var currentSubReviews = [];
-	        var currentSubDaily = [];
-	        var currentSubWeekly = [];
-	        var currentSubMonthly = [];
-	        var currentSubYearly = [];
-	        var currentSubNever = [];
-	
-	        radarData[subscription.id] = {};
-	        currentSubReviews = ReviewStore.findBySubscriptionId(parseInt(subscription.id));
-	        totalReviews = currentSubReviews.length;
-	
-	        if (totalReviews === 0) {
-	          return;
-	        }
-	
-	        currentSubDaily = currentSubReviews.filter(function (review) {
-	          return review.frequency === 5;
-	        });
-	        currentSubWeekly = currentSubReviews.filter(function (review) {
-	          return review.frequency === 4;
-	        });
-	        currentSubMonthly = currentSubReviews.filter(function (review) {
-	          return review.frequency === 3;
-	        });
-	        currentSubYearly = currentSubReviews.filter(function (review) {
-	          return review.frequency === 2;
-	        });
-	        currentSubNever = currentSubReviews.filter(function (review) {
-	          return review.frequency === 1;
-	        });
-	
-	        labels.push(subscription.name);
-	        dailyUsageData.push(Math.round(currentSubDaily.length / totalReviews * 100));
-	        weeklyUsageData.push(Math.round(currentSubWeekly.length / totalReviews * 100));
-	        monthlyUsageData.push(Math.round(currentSubMonthly.length / totalReviews * 100));
-	        yearlyUsageData.push(Math.round(currentSubYearly.length / totalReviews * 100));
-	        neverUsageData.push(Math.round(currentSubNever.length / totalReviews * 100));
-	      });
-	
-	      return React.createElement(
-	        'div',
-	        null,
-	        React.createElement(ReviewsRadarChart, { dailyUsageData: dailyUsageData, weeklyUsageData: weeklyUsageData,
-	          monthlyUsageData: monthlyUsageData, yearlyUsageData: yearlyUsageData,
-	          neverUsageData: neverUsageData, labels: labels })
-	      );
-	    }
-	  }
-	});
-	
-	module.exports = AnalyticsPage;
-
-/***/ },
-/* 553 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var React = __webpack_require__(1);
-	var RadarChart = __webpack_require__(518).Radar;
-	
-	var ReviewsRadarChart = React.createClass({
-	  displayName: 'ReviewsRadarChart',
-	
-	  getInitialState: function getInitialState() {
-	    return {
-	      daily: true,
-	      weekly: true,
-	      monthly: true,
-	      yearly: true,
-	      never: true
-	    };
-	  },
-	
-	  handleClick: function handleClick(e) {
-	    if (parseInt(e.target.value) === 5) {
-	      this.setState({
-	        daily: !this.state.daily
-	      });
-	    } else if (parseInt(e.target.value) === 4) {
-	      this.setState({
-	        weekly: !this.state.weekly
-	      });
-	    } else if (parseInt(e.target.value) === 3) {
-	      this.setState({
-	        monthly: !this.state.monthly
-	      });
-	    } else if (parseInt(e.target.value) === 2) {
-	      this.setState({
-	        yearly: !this.state.yearly
-	      });
-	    } else {
-	      this.setState({
-	        never: !this.state.never
-	      });
-	    }
-	  },
-	
-	  // componentDidMount: function() {
-	  //   if (this.refs.radarChart) {
-	  //     var legend = this.refs.radarChart.getChart().generateLegend();
-	  //
-	  //     this.setState({
-	  //       legend: legend
-	  //     });
-	  //   }
-	  // },
-	  render: function render() {
-	    console.log("renderChartPage");
-	    // var legend = this.state && this.state.legend || '';
-	    var data = {};
-	    data = {
-	      labels: this.props.labels,
-	      datasets: [{
-	        label: "Usage Rate (Daily)",
-	        fillColor: "rgba(144,238,144,0.2)",
-	        strokeColor: "rgba(144,238,144,1)",
-	        pointColor: "rgba(144,238,144,1)",
-	        pointStrokeColor: "#fff",
-	        pointHighlightFill: "#fff",
-	        pointHighlightStroke: "rgba(144,238,144,1)",
-	        data: this.props.dailyUsageData
-	      }, {
-	        label: "Usage Rate (Weekly)",
-	        fillColor: "rgba(151,187,205,0.2)",
-	        strokeColor: "rgba(151,187,205,1)",
-	        pointColor: "rgba(151,187,205,1)",
-	        pointStrokeColor: "#fff",
-	        pointHighlightFill: "#fff",
-	        pointHighlightStroke: "rgba(151,187,205,1)",
-	        data: this.props.weeklyUsageData
-	      }, {
-	        label: "Usage Rate (Monthly)",
-	        fillColor: "rgba(255,165,0,0.2)",
-	        strokeColor: "rgba(255,165,0,1)",
-	        pointColor: "rgba(255,165,0,1)",
-	        pointStrokeColor: "#fff",
-	        pointHighlightFill: "#fff",
-	        pointHighlightStroke: "rgba(151,187,205,1)",
-	        data: this.props.monthlyUsageData
-	      }, {
-	        label: "Usage Rate (Yearly)",
-	        fillColor: "rgba(255,0,0,0.2)",
-	        strokeColor: "rgba(255,0,0,1)",
-	        pointColor: "rgba(255,0,0,1)",
-	        pointStrokeColor: "#fff",
-	        pointHighlightFill: "#fff",
-	        pointHighlightStroke: "rgba(151,187,205,1)",
-	        data: this.props.yearlyUsageData
-	      }, {
-	        label: "Usage Rate (Never)",
-	        fillColor: "rgba(128,0,128,0.2)",
-	        strokeColor: "rgba(128,0,128,1)",
-	        pointColor: "rgba(128,0,128,1)",
-	        pointStrokeColor: "#fff",
-	        pointHighlightFill: "#fff",
-	        pointHighlightStroke: "rgba(151,187,205,1)",
-	        data: this.props.neverUsageData
-	      }]
-	    };
-	
-	    var chartOptions = {
-	      responsive: true
-	    };
-	    // tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"
-	
-	    var chartData = {
-	      labels: data.labels,
-	      datasets: []
-	    };
-	    chartData.labels = data.labels;
-	    chartData.datasets = [];
-	    if (this.state.daily) {
-	      chartData.datasets.push(data.datasets[0]);
-	    }
-	    if (this.state.weekly) {
-	      chartData.datasets.push(data.datasets[1]);
-	    }
-	    if (this.state.monthly) {
-	      chartData.datasets.push(data.datasets[2]);
-	    }
-	    if (this.state.yearly) {
-	      chartData.datasets.push(data.datasets[3]);
-	    }
-	    if (this.state.never) {
-	      chartData.datasets.push(data.datasets[4]);
-	    }
-	    return React.createElement(
-	      'div',
-	      { className: 'col-md-10 col-md-offset-1 reviews-radar-chart' },
-	      React.createElement(
-	        'h2',
-	        null,
-	        ' Usage Rates '
-	      ),
-	      React.createElement('br', null),
-	      React.createElement(
-	        'div',
-	        { className: 'col-md-12' },
-	        React.createElement(RadarChart, { redraw: true, data: chartData, options: chartOptions })
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'row' },
-	        React.createElement(
-	          'form',
-	          { className: 'container-fluid' },
-	          React.createElement(
-	            'label',
-	            { style: { color: data.datasets[0].strokeColor } },
-	            React.createElement('input', { type: 'checkbox', value: '5', checked: this.state.daily, onClick: this.handleClick }),
-	            'Daily'
-	          ),
-	          React.createElement(
-	            'label',
-	            { style: { color: data.datasets[1].strokeColor } },
-	            React.createElement('input', { type: 'checkbox', value: '4', checked: this.state.weekly, onClick: this.handleClick }),
-	            'Weekly'
-	          ),
-	          React.createElement(
-	            'label',
-	            { style: { color: data.datasets[2].strokeColor } },
-	            React.createElement('input', { type: 'checkbox', value: '3', checked: this.state.monthly, onClick: this.handleClick }),
-	            'Monthly'
-	          ),
-	          React.createElement(
-	            'label',
-	            { style: { color: data.datasets[3].strokeColor } },
-	            React.createElement('input', { type: 'checkbox', value: '2', checked: this.state.yearly, onClick: this.handleClick }),
-	            'Yearly'
-	          ),
-	          React.createElement(
-	            'label',
-	            { style: { color: data.datasets[4].strokeColor } },
-	            React.createElement('input', { type: 'checkbox', value: '1', checked: this.state.never, onClick: this.handleClick }),
-	            'Never'
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = ReviewsRadarChart;
-	
-	// <input type="checkbox" name="frequency" value="0" {self.state.checked.includes(0) ? "checked" : ""} onChange={self.handleClick0}/>
-	// <text style={{color: data.datasets[0].strokeColor}}>Daily</text><br/>
-	// <input type="checkbox" name="frequency" value="1" {self.state.checked.includes(1) ? "checked" : ""} onChange={self.handleClick}/>
-	// <text style={{color: data.datasets[1].strokeColor}}>Weekly</text><br/>
-	// <input type="checkbox" name="frequency" value="2" {self.state.checked.includes(2) ? "checked" : ""} onChange={self.handleClick0}/>
-	// <text style={{color: data.datasets[2].strokeColor}}>Monthly</text><br/>
-
-	// <input style={{color: data.datasets[3].strokeColor}} type="checkbox" name="vehicle" value="Yearly"/>Yearly<br/>
-	// <input style={{color: data.datasets[4].strokeColor}} type="checkbox" name="vehicle" value="Never"/>Never<br/>
-
-/***/ },
-/* 554 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var isBrowser = (typeof window !== 'undefined');
-	var Masonry = isBrowser ? window.Masonry || __webpack_require__(555) : null;
-	var imagesloaded = isBrowser ? __webpack_require__(562) : null;
+	var Masonry = isBrowser ? window.Masonry || __webpack_require__(552) : null;
+	var imagesloaded = isBrowser ? __webpack_require__(559) : null;
 	var React = __webpack_require__(1);
 	var refName = 'masonryContainer';
 	
@@ -58434,7 +58304,7 @@
 
 
 /***/ },
-/* 555 */
+/* 552 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -58451,8 +58321,8 @@
 	  if ( true ) {
 	    // AMD
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	        __webpack_require__(556),
-	        __webpack_require__(558)
+	        __webpack_require__(553),
+	        __webpack_require__(555)
 	      ], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if ( typeof module == 'object' && module.exports ) {
 	    // CommonJS
@@ -58644,7 +58514,7 @@
 
 
 /***/ },
-/* 556 */
+/* 553 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -58660,10 +58530,10 @@
 	  if ( true ) {
 	    // AMD - RequireJS
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	        __webpack_require__(557),
-	        __webpack_require__(558),
-	        __webpack_require__(559),
-	        __webpack_require__(561)
+	        __webpack_require__(554),
+	        __webpack_require__(555),
+	        __webpack_require__(556),
+	        __webpack_require__(558)
 	      ], __WEBPACK_AMD_DEFINE_RESULT__ = function( EvEmitter, getSize, utils, Item ) {
 	        return factory( window, EvEmitter, getSize, utils, Item);
 	      }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -59545,7 +59415,7 @@
 
 
 /***/ },
-/* 557 */
+/* 554 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -59660,7 +59530,7 @@
 
 
 /***/ },
-/* 558 */
+/* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -59875,7 +59745,7 @@
 
 
 /***/ },
-/* 559 */
+/* 556 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -59892,7 +59762,7 @@
 	  if ( true ) {
 	    // AMD
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	      __webpack_require__(560)
+	      __webpack_require__(557)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function( matchesSelector ) {
 	      return factory( window, matchesSelector );
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -60116,7 +59986,7 @@
 
 
 /***/ },
-/* 560 */
+/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -60175,7 +60045,7 @@
 
 
 /***/ },
-/* 561 */
+/* 558 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -60188,8 +60058,8 @@
 	  if ( true ) {
 	    // AMD - RequireJS
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	        __webpack_require__(557),
-	        __webpack_require__(558)
+	        __webpack_require__(554),
+	        __webpack_require__(555)
 	      ], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if ( typeof module == 'object' && module.exports ) {
 	    // CommonJS - Browserify, Webpack
@@ -60719,7 +60589,7 @@
 
 
 /***/ },
-/* 562 */
+/* 559 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -60736,7 +60606,7 @@
 	  if ( true ) {
 	    // AMD
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	      __webpack_require__(563)
+	      __webpack_require__(560)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function( EvEmitter ) {
 	      return factory( window, EvEmitter );
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -61095,7 +60965,7 @@
 
 
 /***/ },
-/* 563 */
+/* 560 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -61208,6 +61078,388 @@
 	
 	}));
 
+
+/***/ },
+/* 561 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	var Link = __webpack_require__(159).Link;
+	
+	var SubscriptionGridComponent = React.createClass({
+	  displayName: 'SubscriptionGridComponent',
+	
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { className: 'col-md-4 col-sm-6 col-xs-6 subscription-grid-component' },
+	      React.createElement(
+	        Link,
+	        { to: "/subscriptions/" + this.props.subscription.id },
+	        React.createElement(
+	          'div',
+	          null,
+	          React.createElement('img', { className: 'subscription-logo', src: this.props.subscription.logo })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'col-md-offset-1 col-md-10' },
+	          React.createElement(
+	            'h4',
+	            null,
+	            React.createElement(
+	              'text',
+	              { className: 'subscription-name-link' },
+	              this.props.subscription.name
+	            )
+	          ),
+	          React.createElement(
+	            'h6',
+	            { className: 'black-text' },
+	            this.props.subscription.description
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	// <div className="row">
+	//   <h6>{this.props.subscription.description}</h6>
+	// </div>
+	
+	module.exports = SubscriptionGridComponent;
+
+/***/ },
+/* 562 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	var RadarChart = __webpack_require__(518).Radar;
+	var LineChart = __webpack_require__(518).Line;
+	var BarChart = __webpack_require__(518).Bar;
+	var DonutChart = __webpack_require__(518).Doughnut;
+	
+	var SubscriptionStore = __webpack_require__(491);
+	var ReviewStore = __webpack_require__(499);
+	
+	var ReviewsRadarChart = __webpack_require__(563);
+	
+	var AnalyticsPage = React.createClass({
+	  displayName: 'AnalyticsPage',
+	
+	  getInitialState: function getInitialState() {
+	    return {
+	      reviews: ReviewStore.all(),
+	      subscriptions: SubscriptionStore.all()
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.onSubscriptionChange);
+	    this.reviewListenerToken = ReviewStore.addListener(this.onReviewChange);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.subscriptionListenerToken.remove();
+	    this.reviewListenerToken.remove();
+	  },
+	
+	  onSubscriptionChange: function onSubscriptionChange() {
+	    this.setState({
+	      subscriptions: SubscriptionStore.all()
+	    });
+	  },
+	  onReviewChange: function onReviewChange() {
+	    this.setState({
+	      reviews: ReviewStore.all()
+	    });
+	  },
+	
+	  render: function render() {
+	    if (this.state.subscriptions === undefined || this.state.reviews === undefined || this.state.subscriptions.length === 0 || this.state.reviews.length === 0) {
+	      return React.createElement(
+	        'div',
+	        null,
+	        'WAITING-FOR-LOAD'
+	      );
+	    } else {
+	      var radarData = {};
+	      var labels = [];
+	      var dailyUsageData = [];
+	      var weeklyUsageData = [];
+	      var monthlyUsageData = [];
+	      var yearlyUsageData = [];
+	      var neverUsageData = [];
+	
+	      this.state.subscriptions.forEach(function (subscription) {
+	        var totalReviews = 0;
+	        var currentSubReviews = [];
+	        var currentSubDaily = [];
+	        var currentSubWeekly = [];
+	        var currentSubMonthly = [];
+	        var currentSubYearly = [];
+	        var currentSubNever = [];
+	
+	        radarData[subscription.id] = {};
+	        currentSubReviews = ReviewStore.findBySubscriptionId(parseInt(subscription.id));
+	        totalReviews = currentSubReviews.length;
+	
+	        if (totalReviews === 0) {
+	          return;
+	        }
+	
+	        currentSubDaily = currentSubReviews.filter(function (review) {
+	          return review.frequency === 5;
+	        });
+	        currentSubWeekly = currentSubReviews.filter(function (review) {
+	          return review.frequency === 4;
+	        });
+	        currentSubMonthly = currentSubReviews.filter(function (review) {
+	          return review.frequency === 3;
+	        });
+	        currentSubYearly = currentSubReviews.filter(function (review) {
+	          return review.frequency === 2;
+	        });
+	        currentSubNever = currentSubReviews.filter(function (review) {
+	          return review.frequency === 1;
+	        });
+	
+	        labels.push(subscription.name);
+	        dailyUsageData.push(Math.round(currentSubDaily.length / totalReviews * 100));
+	        weeklyUsageData.push(Math.round(currentSubWeekly.length / totalReviews * 100));
+	        monthlyUsageData.push(Math.round(currentSubMonthly.length / totalReviews * 100));
+	        yearlyUsageData.push(Math.round(currentSubYearly.length / totalReviews * 100));
+	        neverUsageData.push(Math.round(currentSubNever.length / totalReviews * 100));
+	      });
+	
+	      return React.createElement(
+	        'div',
+	        null,
+	        React.createElement(ReviewsRadarChart, { dailyUsageData: dailyUsageData, weeklyUsageData: weeklyUsageData,
+	          monthlyUsageData: monthlyUsageData, yearlyUsageData: yearlyUsageData,
+	          neverUsageData: neverUsageData, labels: labels })
+	      );
+	    }
+	  }
+	});
+	
+	module.exports = AnalyticsPage;
+
+/***/ },
+/* 563 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	var RadarChart = __webpack_require__(518).Radar;
+	
+	var ReviewsRadarChart = React.createClass({
+	  displayName: 'ReviewsRadarChart',
+	
+	  getInitialState: function getInitialState() {
+	    return {
+	      daily: true,
+	      weekly: true,
+	      monthly: true,
+	      yearly: true,
+	      never: true
+	    };
+	  },
+	
+	  handleClick: function handleClick(e) {
+	    if (parseInt(e.target.value) === 5) {
+	      this.setState({
+	        daily: !this.state.daily
+	      });
+	    } else if (parseInt(e.target.value) === 4) {
+	      this.setState({
+	        weekly: !this.state.weekly
+	      });
+	    } else if (parseInt(e.target.value) === 3) {
+	      this.setState({
+	        monthly: !this.state.monthly
+	      });
+	    } else if (parseInt(e.target.value) === 2) {
+	      this.setState({
+	        yearly: !this.state.yearly
+	      });
+	    } else {
+	      this.setState({
+	        never: !this.state.never
+	      });
+	    }
+	  },
+	
+	  render: function render() {
+	    console.log("renderChartPage");
+	    var data = {
+	      labels: this.props.labels,
+	      datasets: [{
+	        label: "Usage Rate (Daily)",
+	        fillColor: "rgba(0,128,0,0.2)",
+	        strokeColor: "rgba(0,128,0,1)",
+	        pointColor: "rgba(0,128,0,1)",
+	        pointStrokeColor: "#fff",
+	        pointHighlightFill: "#fff",
+	        pointHighlightStroke: "rgba(144,238,144,1)",
+	        data: this.props.dailyUsageData
+	      }, {
+	        label: "Usage Rate (Weekly)",
+	        fillColor: "rgba(0,0,128,0.2)",
+	        strokeColor: "rgba(0,0,128,1)",
+	        pointColor: "rgba(0,0,128,1)",
+	        pointStrokeColor: "#fff",
+	        pointHighlightFill: "#fff",
+	        pointHighlightStroke: "rgba(151,187,205,1)",
+	        data: this.props.weeklyUsageData
+	      }, {
+	        label: "Usage Rate (Monthly)",
+	        fillColor: "rgba(255,165,0,0.2)",
+	        strokeColor: "rgba(255,165,0,1)",
+	        pointColor: "rgba(255,165,0,1)",
+	        pointStrokeColor: "#fff",
+	        pointHighlightFill: "#fff",
+	        pointHighlightStroke: "rgba(151,187,205,1)",
+	        data: this.props.monthlyUsageData
+	      }, {
+	        label: "Usage Rate (Yearly)",
+	        fillColor: "rgba(255,0,0,0.2)",
+	        strokeColor: "rgba(255,0,0,1)",
+	        pointColor: "rgba(255,0,0,1)",
+	        pointStrokeColor: "#fff",
+	        pointHighlightFill: "#fff",
+	        pointHighlightStroke: "rgba(151,187,205,1)",
+	        data: this.props.yearlyUsageData
+	      }, {
+	        label: "Usage Rate (Never)",
+	        fillColor: "rgba(128,0,128,0.2)",
+	        strokeColor: "rgba(128,0,128,1)",
+	        pointColor: "rgba(128,0,128,1)",
+	        pointStrokeColor: "#fff",
+	        pointHighlightFill: "#fff",
+	        pointHighlightStroke: "rgba(151,187,205,1)",
+	        data: this.props.neverUsageData
+	      }]
+	    };
+	
+	    var chartOptions = {
+	      responsive: true,
+	      scaleLineColor: "#707070"
+	    };
+	
+	    var chartData = {
+	      labels: data.labels,
+	      datasets: []
+	    };
+	    chartData.labels = data.labels;
+	    chartData.datasets = [];
+	    if (this.state.daily) {
+	      chartData.datasets.push(data.datasets[0]);
+	    }
+	    if (this.state.weekly) {
+	      chartData.datasets.push(data.datasets[1]);
+	    }
+	    if (this.state.monthly) {
+	      chartData.datasets.push(data.datasets[2]);
+	    }
+	    if (this.state.yearly) {
+	      chartData.datasets.push(data.datasets[3]);
+	    }
+	    if (this.state.never) {
+	      chartData.datasets.push(data.datasets[4]);
+	    }
+	
+	    return React.createElement(
+	      'div',
+	      { className: 'col-md-10 col-md-offset-1 reviews-radar-chart' },
+	      React.createElement(
+	        'h2',
+	        { className: 'stats-page-title' },
+	        React.createElement(
+	          'strong',
+	          null,
+	          ' Usage Statistics '
+	        )
+	      ),
+	      React.createElement('br', null),
+	      React.createElement('br', null),
+	      React.createElement(
+	        'h3',
+	        null,
+	        ' Frequency of Use '
+	      ),
+	      React.createElement('br', null),
+	      React.createElement('br', null),
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'div',
+	          { className: 'col-md-10' },
+	          React.createElement(RadarChart, { redraw: true, data: chartData, options: chartOptions })
+	        ),
+	        React.createElement(
+	          'div',
+	          { className: 'col-md-2' },
+	          React.createElement(
+	            'form',
+	            { className: 'container-fluid reviews-radar-checkbox' },
+	            React.createElement(
+	              'label',
+	              { style: { color: data.datasets[0].strokeColor } },
+	              React.createElement('input', { type: 'checkbox', value: '5', checked: this.state.daily, onClick: this.handleClick }),
+	              'Daily'
+	            ),
+	            React.createElement('br', null),
+	            React.createElement(
+	              'label',
+	              { style: { color: data.datasets[1].strokeColor } },
+	              React.createElement('input', { type: 'checkbox', value: '4', checked: this.state.weekly, onClick: this.handleClick }),
+	              'Weekly'
+	            ),
+	            React.createElement('br', null),
+	            React.createElement(
+	              'label',
+	              { style: { color: data.datasets[2].strokeColor } },
+	              React.createElement('input', { type: 'checkbox', value: '3', checked: this.state.monthly, onClick: this.handleClick }),
+	              'Monthly'
+	            ),
+	            React.createElement('br', null),
+	            React.createElement(
+	              'label',
+	              { style: { color: data.datasets[3].strokeColor } },
+	              React.createElement('input', { type: 'checkbox', value: '2', checked: this.state.yearly, onClick: this.handleClick }),
+	              'Yearly'
+	            ),
+	            React.createElement('br', null),
+	            React.createElement(
+	              'label',
+	              { style: { color: data.datasets[4].strokeColor } },
+	              React.createElement('input', { type: 'checkbox', value: '1', checked: this.state.never, onClick: this.handleClick }),
+	              'Never'
+	            )
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = ReviewsRadarChart;
+	
+	// <input type="checkbox" name="frequency" value="0" {self.state.checked.includes(0) ? "checked" : ""} onChange={self.handleClick0}/>
+	// <text style={{color: data.datasets[0].strokeColor}}>Daily</text><br/>
+	// <input type="checkbox" name="frequency" value="1" {self.state.checked.includes(1) ? "checked" : ""} onChange={self.handleClick}/>
+	// <text style={{color: data.datasets[1].strokeColor}}>Weekly</text><br/>
+	// <input type="checkbox" name="frequency" value="2" {self.state.checked.includes(2) ? "checked" : ""} onChange={self.handleClick0}/>
+	// <text style={{color: data.datasets[2].strokeColor}}>Monthly</text><br/>
+
+	// <input style={{color: data.datasets[3].strokeColor}} type="checkbox" name="vehicle" value="Yearly"/>Yearly<br/>
+	// <input style={{color: data.datasets[4].strokeColor}} type="checkbox" name="vehicle" value="Never"/>Never<br/>
 
 /***/ }
 /******/ ]);

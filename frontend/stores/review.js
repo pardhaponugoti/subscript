@@ -69,7 +69,6 @@ ReviewStore.deleteReview = function(data) {
 };
 
 ReviewStore.findByUserId = function(userId) {
-  console.log("finding by user id");
   if (_reviewsByUserId === {}) {
     return undefined;
   } else if (_reviewsByUserId[userId] === undefined) {

@@ -18,8 +18,6 @@ window.SessionStore = SessionStore;
 window.UserStore = UserStore;
 window.SubscriptionStore = SubscriptionStore;
 window.ReviewStore = ReviewStore;
-window.ReviewBackendActions = ReviewBackendActions;
-
 
 var App = React.createClass({
   getInitialState: function() {
@@ -47,18 +45,15 @@ var App = React.createClass({
       loggedIn: SessionStore.loggedIn()
     });
   },
-  // componentWillUnmount: function() {
-  //   console.log("AppUnmounting");
-  // },
   linkToTest: function(e) {
     e.preventDefault();
-    BrowserHistory.push("/test");
+    // BrowserHistory.push("/test");
   },
 
   render: function() {
-    console.log("AppRender");
     return <div id='App'>
       <div><Header currentUser={this.state.currentUser} loggedIn={this.state.loggedIn} /></div>
+      <button onClick={this.linkToTest}>test</button>
       <div>{this.props.children && React.cloneElement(this.props.children, {
                loggedIn: this.state.loggedIn,
                currentUser: this.state.currentUser
@@ -66,10 +61,5 @@ var App = React.createClass({
     </div>;
   }
 });
-
-
-
-
-
 
 module.exports = App;

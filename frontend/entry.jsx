@@ -26,7 +26,7 @@ var routes = (
     <Route path="users/:userId/edit" component={UserEditPage}></Route>
     <Route path="subscriptions" component={SubscriptionIndex}></Route>
     <Route path="subscriptions/:subscriptionId" component={SubscriptionShowPage}></Route>
-    <Route path="test" component={AnalyticsPage}></Route>
+    <Route path="statistics" component={AnalyticsPage}></Route>
     <Route path="*" component={ReviewFeed} ></Route>
   </Route>
 );

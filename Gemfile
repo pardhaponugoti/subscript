@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'faker'
 gem 'newrelic_rpm'
 gem "therubyracer"
 gem "better_errors"

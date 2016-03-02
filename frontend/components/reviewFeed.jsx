@@ -37,19 +37,22 @@ var ReviewFeed = React.createClass({
     </div>;
   },
   render: function() {
-    // debugger;
+
     if (this.state.reviews === undefined) {
       return <div>STAY TUNED</div>;
     } else {
-      return <div className="review-feed">
-        {!this.props.loggedIn ? <SplashPage/> : ""}
-        <h2>Review Feed</h2>
+      if (!this.props.loggedIn) {
+        return <SplashPage />;
+      } else {
+        return <div className="review-feed">
+        <h2>Recent Reviews</h2>
           <ul className="container">
             {this.state.reviews.map(function(review) {
               return <ReviewShowComponent review={review} key={review.id}/>;
             })}
           </ul>
-      </div>;
+        </div>;
+      }
     }
   }
 });

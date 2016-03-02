@@ -6,6 +6,16 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
+100.times do
+  User.create({
+    first_name: Faker::Name.first_name,
+    last_name: Faker::Name.last_name,
+    email: Faker::Internet.email,
+    password: "password1",
+    location: Faker::Address.city
+  })
+end
+
 # first_name, last_name, email, password, location, image, date_of_birth
 
 user_list = [
@@ -13,28 +23,28 @@ user_list = [
   ["Darth", "Vader", "darthvader@darkside.com", "password1", "Tatooine", "http://res.cloudinary.com/pardha/image/upload/v1456507761/gnus7aomcy8lkoe8qfmb.jpg"],
   ["Admiral", "Ackbar", "itsatrap@itsatrap.com", "password1", "Mon Cala",
   "http://res.cloudinary.com/pardha/image/upload/v1456367336/qfuxbnkhb1vo7n6bki3s.jpg"],
-  ["Luke", "Skywalker", "luke@jedi.com", "password1", "Tatooine"],
-  ["Mace", "Windu", "mace@jedi.com", "password1", "Haruun Kal"],
+  ["Luke", "Skywalker", "luke@jedi.com", "password1", "Tatooine", "http://res.cloudinary.com/pardha/image/upload/v1456886541/n7uzyyiqgrmsvgca0d3n.jpg"],
+  ["Mace", "Windu", "mace@jedi.com", "password1", "Haruun Kal", "http://res.cloudinary.com/pardha/image/upload/v1456509202/ffn0ap6efeqixtxtikiq.jpg"],
   ["Master", "Yoda", "yoda@jedi.com", "password1", "Dagobah", "http://res.cloudinary.com/pardha/image/upload/v1456508772/uizx7rpwjutkp8aechxk.jpg"],
-  ["Obi-Wan", "Kenobe", "obi-wan@jedi.com", "password1", "Stewjon"],
-  ["R2", "D2", "beepboop@droid.com", "password1", "Naboo"],
-  ["Han", "Solo", "hansolo@bountyhuntersanonymous.com", "password1", "Corellia"],
-  ["Chew", "Bacca", "chewie@wookie.com", "password1", "Kashyyyk"],
-  ["Emperor", "Palpatine", "palpatine@darkside.com", "password1", "Naboo"],
-  ["Count", "Dooku", "dooku@darkside.com", "password1", "Serenno"],
-  ["Kylo", "Ren", "kylo@darkside.com", "password1", "Corellia"],
-  ["Rey", "Skywalker?", "rey@awesome.com", "password1", "Jakku"]
+  ["Obi-Wan", "Kenobe", "obi-wan@jedi.com", "password1", "Stewjon", "http://res.cloudinary.com/pardha/image/upload/v1456508702/lie6apunrdvmbvtcc7l3.jpg"],
+  ["R2", "D2", "beepboop@droid.com", "password1", "Naboo", "http://res.cloudinary.com/pardha/image/upload/v1456886725/v5aflinrywm9pkrmayw3.jpg"],
+  ["Han", "Solo", "hansolo@bountyhuntersanonymous.com", "password1", "Corellia", "http://res.cloudinary.com/pardha/image/upload/v1456508597/jn55biofw9yrhgswlpz6.jpg"],
+  ["Chew", "Bacca", "chewie@wookie.com", "password1", "Kashyyyk", "http://res.cloudinary.com/pardha/image/upload/v1456886818/j0qw6vpdcu1dz9603bkk.jpg"],
+  ["Emperor", "Palpatine", "palpatine@darkside.com", "password1", "Naboo", "http://res.cloudinary.com/pardha/image/upload/v1456886924/pscegfat74sfs4xja9k8.jpg"],
+  ["Count", "Dooku", "dooku@darkside.com", "password1", "Serenno", "http://res.cloudinary.com/pardha/image/upload/v1456887024/edshlhypx4dez11qmivc.jpg"],
+  ["Kylo", "Ren", "kylo@darkside.com", "password1", "Corellia", "http://res.cloudinary.com/pardha/image/upload/v1456887105/nhh2a8wwgdqt0mo7ol9i.jpg"],
+  ["Rey", "Skywalker?", "rey@awesome.com", "password1", "Jakku", "http://res.cloudinary.com/pardha/image/upload/v1456887193/zsrfasbzbo09ejooa3ei.jpg"]
 ]
 
-user_list.each do |first_name, last_name, email, password, location|
-  User.create({
-    first_name: first_name,
-    last_name: last_name,
-    email: email,
-    password: password,
-    location: location
-    })
-end
+# user_list.each do |first_name, last_name, email, password, location|
+#   User.create({
+#     first_name: first_name,
+#     last_name: last_name,
+#     email: email,
+#     password: password,
+#     location: location
+#     })
+# end
 
 # name, url, description, logo
 subscription_list = [
@@ -46,14 +56,12 @@ subscription_list = [
   ["Lyft",
    "www.lyft.com",
    "Lyft is a privately held American transportation network company (TNC) based in San Francisco, CA. Launched in June 2012 by Logan Green and John Zimmer, the company's mobile-phone application facilitates peer-to-peer ridesharing by connecting passengers who need a ride with drivers who have a car.",
-   "https://s3-media1.fl.yelpcdn.com/bphoto/lss8dMcgrbQe4glPVxPs5A/o.jpg"
- ],
+   "https://s3-media1.fl.yelpcdn.com/bphoto/lss8dMcgrbQe4glPVxPs5A/o.jpg"],
 
   ["Netflix",
     "www.netflix.com",
     "Netflix is a global provider of streaming movies and TV series, and now has over 75 million subscribers. Netflix started as an American DVD-by-mail service in 1998, and began streaming in 2007. Netflix expanded with streaming to Canada in 2010 and now serves over 190 countries with streaming.",
-    "http://phandroid.s3.amazonaws.com/wp-content/uploads/2011/07/NetflixSquare.png"
-  ],
+    "http://phandroid.s3.amazonaws.com/wp-content/uploads/2011/07/NetflixSquare.png"],
 
   ["Blue Apron",
    "www.blueapron.com",
@@ -107,6 +115,7 @@ subscription_list = [
 
 ]
 
+
 subscription_list.each do |name, url, description, logo|
   Subscription.create({
     name: name,
@@ -116,10 +125,51 @@ subscription_list.each do |name, url, description, logo|
     })
 end
 
-
-
 bimodal = [1, 1, 1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5, 5, 5]
 uniform = [1, 2, 3, 4, 5]
-exponential = [1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+exponential = [1, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5]
 normal = [1, 2, 2, 3, 3, 3, 3, 4, 4, 5]
 logarithmic = [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5]
+
+100.times do |i|
+  13.times do |j|
+    if j == 0
+      rating = bimodal.sample
+      frequency = bimodal.sample
+    elsif j == 1
+      rating = uniform.sample
+      frequency = uniform.sample
+    elsif j == 2
+      rating = exponential.sample
+      frequency = uniform.sample
+    elsif j == 3
+      rating = normal.sample
+      frequency = logarithmic.sample
+    elsif j == 4
+      rating = exponential.sample
+      frequency = bimodal.sample
+    elsif j == 5
+      rating = normal.sample
+      frequency = uniform.sample
+    elsif j == 7
+      rating = exponential.sample
+      frequency = bimodal.sample
+    elsif j == 8
+      rating = logarithmic.sample
+      frequency = logarithmic.sample
+    elsif j == 9
+      rating = logarithmic.sample
+      frequency = logarithmic.sample
+    else
+      rating = normal.sample
+      frequency = normal.sample
+    end
+
+    Review.create({
+      author_id: i+1,
+      subscription_id: j+1,
+      rating: rating,
+      frequency: frequency
+    })
+  end
+end

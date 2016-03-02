@@ -77,8 +77,8 @@ var Header = React.createClass({
   openSubscriptionsIndex: function() {
     BrowserHistory.push("/subscriptions");
   },
-  openAnalyticsPage: function() {
-    BrowserHistory.push("/test");
+  openStatisticsPage: function() {
+    BrowserHistory.push("/statistics");
   },
   showCurrentUserPage: function() {
     BrowserHistory.push("/"+this.currentUserUrl());
@@ -138,15 +138,16 @@ var Header = React.createClass({
     }
   },
   render: function() {
-    return <nav className="navbar navbar-fixed-top">
+    return <nav className="navbar navbar-fixed-top" id="navbar-primary">
       <div className="navbar-header header-home">
         <a onClick={this.renderRoot} className="navbar-brand white-text">Σ</a>
       </div>
       <HeaderSearchComponent />
+      <div onClick={this.renderRoot} className="title-centered">subscript</div>
       <div id="navbarCollapse" className="collapse navbar-collapse">
         {this.userDropdown()}
         <div className="navbar-right">
-          <a onClick={this.openAnalyticsPage} className="navbar-text white-text">Statistics</a>
+          <a onClick={this.openStatisticsPage} className="navbar-text white-text">Statistics</a>
           <a onClick={this.openSubscriptionsIndex} className="navbar-text white-text">Services</a>
         </div>
       </div>

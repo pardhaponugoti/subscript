@@ -1,5 +1,6 @@
 var React = require('react');
 var LineChart = require("react-chartjs").Line;
+var RadarChart = require("react-chartjs").Radar;
 var BarChart = require("react-chartjs").Bar;
 var DonutChart = require("react-chartjs").Doughnut;
 
@@ -24,8 +25,12 @@ function median(values) {
 var Chart = React.createClass({
   render: function() {
     var ratingFrequencies = [0, 0, 0, 0, 0];
+    var usageFrequencies = [0, 0, 0, 0, 0];
     var avgRating = 0;
+    var avgUsage = 0;
     var medianRating = 0;
+    var medianUsage = 0;
+    var usage = [];
     var ratings = [];
 
 
@@ -37,11 +42,19 @@ var Chart = React.createClass({
         ratings.push(review.rating);
         ratingFrequencies[review.rating-1] += 1;
         avgRating += review.rating;
+
+        usage.push(review.frequency);
+        usageFrequencies[review.frequency-1] += 1;
+        avgUsage += review.frequency;
       });
 
       var total = ratingFrequencies.reduce(add, 0);
+
       avgRating = Number(Math.round((avgRating/total)+'e2')+'e-2');
       medianRating = median(ratings);
+
+      avgUsage = Number(Math.round((avgUsage/total)+'e2')+'e-2');
+      medianUsage = median(usage);
 
       ratingFrequencies = ratingFrequencies.map(function(freq) {
         return Math.round(freq/total * 100);
@@ -112,6 +125,22 @@ var Chart = React.createClass({
         },
       ];
 
+      var radarData = {
+        labels: ["Daily", "Weekly", "Monthly", "Yearly", "Never"],
+        datasets: [
+          {
+            label: "Usage Rate",
+            fillColor: "rgba(0,128,0,0.2)",
+            strokeColor: "rgba(0,128,0,1)",
+            pointColor: "rgba(0,128,0,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(144,238,144,1)",
+            data: usageFrequencies.reverse()
+          }
+        ]
+      };
+
       if (avgRating < 2) {
         var meancolor="red";
       } else if (avgRating < 3) {
@@ -144,12 +173,25 @@ var Chart = React.createClass({
         <h2 className="chart-title">{this.props.subscription.name} Ratings</h2>
         <br/>
         <div className="row">
-          <div className="col-md-5">
+          <div className="col-md-3">
             <h4>Average Rating:</h4><h2 style={meanStyle}>{avgRating}</h2>
             <h4>Median Rating:</h4><h2 style={medianStyle}>{medianRating}</h2>
+            <h4>Most Common:</h4><h2>{medianRating}</h2>
           </div>
-          <div className="col-md-7">
+          <div className="col-md-9">
             <DonutChart data={donutData}  options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>", segmentStrokeColor : "#fff", segmentStrokeWidth : 2}}/>
+          </div>
+        </div>
+        <br/>
+        <br/>
+        <div className="row">
+          <div className="col-md-3">
+            <h4>Average Usage:</h4><h2>{avgUsage}</h2>
+            <h4>Median Usage:</h4><h2>{medianUsage}</h2>
+            <h4>Most Common:</h4><h2>{medianUsage}</h2>
+          </div>
+          <div className="col-md-9">
+            <RadarChart data={radarData}  options={{responsive: true, scaleLineColor : "#707070"}}/>
           </div>
         </div>
         <div>
