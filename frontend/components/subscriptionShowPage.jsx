@@ -74,7 +74,7 @@ var SubscriptionShowPage = React.createClass({
       pageStart={0}
       loadMore={this.loadReviews}
       hasMore={this.state.reviews.length > this.state.shownReviews.length}>
-      {this.state.shownReviews.map(function(review) {
+      {this.state.shownReviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
         return <ReviewShowComponent review={review} key={review.id}/>;
       })}
     </InfiniteScroll>;

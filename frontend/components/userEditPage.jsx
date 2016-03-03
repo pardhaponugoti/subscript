@@ -1,5 +1,6 @@
 var React = require('react');
 var BrowserHistory = require('react-router').browserHistory;
+var Alert = require('react-bootstrap').Alert;
 
 var UserStore = require('../stores/user.js');
 var UserBackendActions = require('../actions/userBackendActions');
@@ -74,7 +75,13 @@ var UserEditPage = React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
     var id = this.props.currentUser.id;
-    var callback = function() { BrowserHistory.push("/users/" + id); };
+    var successCallback = function() { BrowserHistory.push("/users/" + id); };
+    var errorCallback = function(error) {
+      this.setState({
+        alertVisible: true,
+        errors: JSON.parse(error)
+      });
+    }.bind(this);
     UserBackendActions.updateUser({
       id: id,
       user: {
@@ -85,12 +92,35 @@ var UserEditPage = React.createClass({
         date_of_birth: this.state.dateOfBirth,
         image: this.state.image
       },
-    }, callback
+    },
+    successCallback,
+    errorCallback
   );
   },
+
+  showAlert: function() {
+    if (this.state.alertVisible) {
+      return (
+        <Alert bsStyle="danger" className="alert-messages" onDismiss={this.handleAlertDismiss} dismissAfter={4000}>
+          {this.state.errors.map(function(error) {
+            return <h4>{error}</h4>;
+          })}
+        </Alert>
+      );
+    } else {
+      return null;
+    }
+  },
+  handleAlertDismiss: function() {
+    this.setState({
+      alertVisible: false
+    });
+  },
+
   render: function() {
       return <div className="user-edit-page">
         <form id="user-edit-form" onSubmit={this.handleSubmit}>
+          { this.showAlert() }
           <div className="col-md-4 col-md-offset-2">
             <label>First Name
               <br/>

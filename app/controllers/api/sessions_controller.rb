@@ -15,7 +15,7 @@ class Api::SessionsController < ApplicationController
     )
 
     if @user.nil?
-      render json: { status: 404 }
+      render json: ["Username and Password do not match!"], status: 422
     else
       login_user!(@user)
       render :show

@@ -143,7 +143,7 @@ var NewReviewForm = React.createClass({
           <textarea cols="40" rows="5" valueLink={this.linkState("comment")}/>
         </div>
         <div className="row submit-button-row">
-          <input className="btn create-review-btn" disabled={false} type="submit" onClick={this.submitNewReview}/>
+          <input className="btn create-review-btn" type="submit" onClick={this.submitNewReview}/>
         </div>
       </div>
     </form>;

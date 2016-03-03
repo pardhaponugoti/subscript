@@ -49417,11 +49417,11 @@
 	  },
 	
 	  // session create, users create
-	  signInUser: function signInUser(userParams, callback) {
-	    SessionUtil.signInUser(userParams, callback);
+	  signInUser: function signInUser(userParams, successCallback, errorCallback) {
+	    SessionUtil.signInUser(userParams, successCallback, errorCallback);
 	  },
-	  signUpUser: function signUpUser(userParams, callback) {
-	    SessionUtil.signUpUser(userParams, callback);
+	  signUpUser: function signUpUser(userParams, successCallback, errorCallback) {
+	    SessionUtil.signUpUser(userParams, successCallback, errorCallback);
 	  },
 	
 	  //session destroy
@@ -49462,29 +49462,31 @@
 	  },
 	
 	  // session create and users create
-	  signUpUser: function signUpUser(userParams, callback) {
+	  signUpUser: function signUpUser(userParams, successCallback, errorCallback) {
 	    $.ajax({
 	      url: "/api/users",
 	      type: "POST",
 	      data: userParams,
 	      success: function success(data) {
+	        successCallback(data.id);
 	        SessionFrontendActions.receiveUserSignUp(data);
-	        if (callback) {
-	          callback(data.id);
-	        }
+	      },
+	      error: function error(data) {
+	        errorCallback(data.responseText);
 	      }
 	    });
 	  },
-	  signInUser: function signInUser(userParams, callback) {
+	  signInUser: function signInUser(userParams, successCallback, errorCallback) {
 	    $.ajax({
 	      url: "/api/session",
 	      type: "POST",
 	      data: userParams,
 	      success: function success(data) {
+	        successCallback(data.id);
 	        SessionFrontendActions.receiveUserSignIn(data);
-	        if (callback) {
-	          callback(data.id);
-	        }
+	      },
+	      error: function error(data) {
+	        errorCallback(data.responseText);
 	      }
 	    });
 	  },
@@ -49551,6 +49553,7 @@
 	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
+	var Alert = __webpack_require__(218).Alert;
 	
 	var SessionBackendActions = __webpack_require__(493);
 	
@@ -49560,7 +49563,10 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      email: "",
-	      password: ""
+	      password: "",
+	      alertVisible: false,
+	      errors: [],
+	      loading: false
 	    };
 	  },
 	  emailChange: function emailChange(e) {
@@ -49575,10 +49581,48 @@
 	  },
 	  handleSubmit: function handleSubmit(e) {
 	    e.preventDefault();
-	    this.props.closeModalCallback();
-	    SessionBackendActions.signInUser({ user: { email: this.state.email,
-	        password: this.state.password } }, function (id) {
+	
+	    this.setState({
+	      loading: true
+	    });
+	
+	    var successCallback = function (id) {
+	      this.props.closeModalCallback();
 	      BrowserHistory.push("/users/" + id);
+	    }.bind(this);
+	
+	    var errorCallback = function (error) {
+	      this.setState({
+	        alertVisible: true,
+	        errors: JSON.parse(error),
+	        loading: false
+	      });
+	    }.bind(this);
+	
+	    SessionBackendActions.signInUser({ user: { email: this.state.email,
+	        password: this.state.password } }, successCallback, errorCallback);
+	  },
+	
+	  showAlert: function showAlert() {
+	    if (this.state.alertVisible) {
+	      return React.createElement(
+	        Alert,
+	        { bsStyle: 'danger', className: 'alert-messages', onDismiss: this.handleAlertDismiss, dismissAfter: 4000 },
+	        this.state.errors.map(function (error) {
+	          return React.createElement(
+	            'h4',
+	            null,
+	            error
+	          );
+	        })
+	      );
+	    } else {
+	      return null;
+	    }
+	  },
+	  handleAlertDismiss: function handleAlertDismiss() {
+	    this.setState({
+	      alertVisible: false
 	    });
 	  },
 	
@@ -49591,30 +49635,40 @@
 	  },
 	
 	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'form',
-	        { action: '/session', method: 'post', className: 'form new-session-form', onSubmit: this.handleSubmit },
+	    if (this.state.loading) {
+	      return React.createElement(
+	        'div',
+	        { className: 'loading-container' },
+	        React.createElement('div', { className: 'jawn' })
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        null,
 	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement('input', { type: 'string', name: 'user[email]', id: 'new-session-email', placeholder: 'Email', value: this.state.email,
-	            onChange: this.emailChange })
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'form-group' },
-	          React.createElement('input', { type: 'password', name: 'user[password]', id: 'new-session-password', placeholder: 'Password', value: this.state.password,
-	            onChange: this.passwordChange })
-	        ),
-	        React.createElement('input', { className: 'btn btn-default', disabled: this.submitButtonDisabled(), type: 'submit', value: 'Sign In' })
-	      )
-	    );
+	          'form',
+	          { action: '/session', method: 'post', className: 'form new-session-form', onSubmit: this.handleSubmit },
+	          this.showAlert(),
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement('input', { type: 'string', name: 'user[email]', id: 'new-session-email', placeholder: 'Email', value: this.state.email,
+	              onChange: this.emailChange })
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'form-group' },
+	            React.createElement('input', { type: 'password', name: 'user[password]', id: 'new-session-password', placeholder: 'Password', value: this.state.password,
+	              onChange: this.passwordChange })
+	          ),
+	          React.createElement('input', { className: 'btn btn-default', type: 'submit', value: 'Sign In' })
+	        )
+	      );
+	    }
 	  }
 	});
 	
+	// disabled={this.submitButtonDisabled()}
 	module.exports = NewSessionForm;
 
 /***/ },
@@ -49626,6 +49680,7 @@
 	var React = __webpack_require__(1);
 	var SessionBackendActions = __webpack_require__(493);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
+	var Alert = __webpack_require__(218).Alert;
 	
 	var NewUserForm = React.createClass({
 	  displayName: 'NewUserForm',
@@ -49637,7 +49692,9 @@
 	      confirmPassword: "",
 	      firstName: "",
 	      lastName: "",
-	      inputEnabled: true
+	      inputEnabled: true,
+	      alertVisible: false,
+	      errors: []
 	    };
 	  },
 	  firstNameChange: function firstNameChange(e) {
@@ -49665,6 +49722,30 @@
 	      confirmPassword: e.target.value
 	    });
 	  },
+	
+	  showAlert: function showAlert() {
+	    if (this.state.alertVisible) {
+	      return React.createElement(
+	        Alert,
+	        { bsStyle: 'danger', className: 'alert-messages', onDismiss: this.handleAlertDismiss, dismissAfter: 4000 },
+	        this.state.errors.map(function (error) {
+	          return React.createElement(
+	            'h4',
+	            null,
+	            error
+	          );
+	        })
+	      );
+	    } else {
+	      return null;
+	    }
+	  },
+	  handleAlertDismiss: function handleAlertDismiss() {
+	    this.setState({
+	      alertVisible: false
+	    });
+	  },
+	
 	  passwordUl: function passwordUl() {
 	    var passwordErrors = [];
 	    var length = this.state.password.length;
@@ -49771,8 +49852,24 @@
 	  },
 	
 	  submitButtonDisabled: function submitButtonDisabled() {
-	    if (this.state.firstName.length === 0 || this.state.lastName.length === 0 || this.state.email.length === 0 || this.state.password.length === 0 || this.state.confirmPassword.length === 0 || !this.validPassword || !this.passwordMatch) {
-	      return true;
+	    // if(this.state.firstName.length === 0 ||
+	    //   this.state.lastName.length === 0 ||
+	    //   this.state.email.length === 0 ||
+	    //   this.state.password.length === 0 ||
+	    //   this.state.confirmPassword.length === 0 ||
+	    //   !this.validPassword ||
+	    //   !this.passwordMatch) {
+	    //     return true;
+	    //   } else {
+	    //     return false;
+	    //   }
+	
+	    if (this.state.password.length > 0) {
+	      if (this.state.confirmPassword !== this.state.password) {
+	        return true;
+	      } else {
+	        return false;
+	      }
 	    } else {
 	      return false;
 	    }
@@ -49780,13 +49877,21 @@
 	
 	  handleSubmit: function handleSubmit(e) {
 	    e.preventDefault();
-	    this.props.closeModalCallback();
+	    var successCallback = function (id) {
+	      this.props.closeModalCallback();
+	      BrowserHistory.push("/users/" + id + "/edit");
+	    }.bind(this);
+	    var errorCallback = function (error) {
+	      console.log("new user error callback: " + error);
+	      this.setState({
+	        alertVisible: true,
+	        errors: JSON.parse(error)
+	      });
+	    }.bind(this);
 	    SessionBackendActions.signUpUser({ user: { email: this.state.email,
 	        password: this.state.password,
 	        first_name: this.state.firstName,
-	        last_name: this.state.lastName } }, function (id) {
-	      BrowserHistory.push("/users/" + id + "/edit");
-	    });
+	        last_name: this.state.lastName } }, successCallback, errorCallback);
 	  },
 	  render: function render() {
 	    return React.createElement(
@@ -49795,6 +49900,7 @@
 	      React.createElement(
 	        'form',
 	        { action: '/users', method: 'post', className: 'new-user-form', onSubmit: this.handleSubmit },
+	        this.showAlert(),
 	        React.createElement('input', { className: 'session-user-form-input', type: 'string', name: 'user[first_name]',
 	          value: this.state.firstName, placeholder: 'First Name*', onChange: this.firstNameChange }),
 	        React.createElement('br', null),
@@ -49813,13 +49919,15 @@
 	        this.matchedPassword(),
 	        React.createElement('br', null),
 	        React.createElement('br', null),
-	        React.createElement('input', { className: 'btn btn-default', type: 'submit', value: 'Sign Up', disabled: this.submitButtonDisabled() })
+	        React.createElement('input', { className: 'btn btn-default', type: 'submit', disabled: this.submitButtonDisabled(), value: 'Sign Up' })
 	      )
 	    );
 	  }
 	});
 	
 	module.exports = NewUserForm;
+	
+	// disabled={this.submitButtonDisabled()}
 	
 	function isNumeric(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);
@@ -49989,7 +50097,9 @@
 	  } else if (_reviewsBySubscriptionId[subscriptionId] === undefined) {
 	    return [];
 	  } else {
-	    return _reviewsBySubscriptionId[subscriptionId];
+	    return _reviewsBySubscriptionId[subscriptionId].sort(function (a, b) {
+	      return new Date(b.updated_at) - new Date(a.updated_at);
+	    });
 	  }
 	};
 	
@@ -50036,8 +50146,8 @@
 	  fetchAllUsers: function fetchAllUsers() {
 	    UserUtil.fetchAllUsers();
 	  },
-	  updateUser: function updateUser(userData, callback) {
-	    UserUtil.updateUser(userData, callback);
+	  updateUser: function updateUser(userData, successCallback, errorCallback) {
+	    UserUtil.updateUser(userData, successCallback, errorCallback);
 	  },
 	  deleteUser: function deleteUser(userId, callback) {
 	    UserUtil.deleteUser(userId, callback);
@@ -50065,16 +50175,17 @@
 	      }
 	    });
 	  },
-	  updateUser: function updateUser(userData, callback) {
+	  updateUser: function updateUser(userData, successCallback, errorCallback) {
 	    $.ajax({
 	      url: "/api/users/" + userData.id,
 	      type: 'PATCH',
 	      data: userData,
 	      success: function success(data) {
+	        successCallback();
 	        UserFrontendActions.updateCurrentUser(data);
-	        if (callback) {
-	          callback();
-	        }
+	      },
+	      error: function error(data) {
+	        errorCallback(data.responseText);
 	      }
 	    });
 	  },
@@ -50898,7 +51009,7 @@
 	
 	var React = __webpack_require__(1);
 	
-	var Input = __webpack_require__(218).Input;
+	var Alert = __webpack_require__(218).Alert;
 	
 	var ReviewStore = __webpack_require__(499);
 	var SubscriptionStore = __webpack_require__(491);
@@ -50919,13 +51030,23 @@
 	      subscription: SubscriptionStore.findById(this.props.review.subscription_id),
 	      rating: this.props.review.rating,
 	      comment: this.props.review.comment,
-	      frequency: this.props.review.frequency
+	      frequency: this.props.review.frequency,
+	      alertVisible: false,
+	      errors: []
 	    };
 	  },
 	
 	  submitEditedReview: function submitEditedReview(e) {
 	    e.preventDefault();
-	    this.props.closeModalCallback();
+	    var successCallback = function () {
+	      this.props.closeModalCallback();
+	    }.bind(this);
+	    var errorCallback = function (error) {
+	      this.setState({
+	        alertVisible: true,
+	        errors: JSON.parse(error)
+	      });
+	    }.bind(this);
 	    ReviewBackendActions.editReview({
 	      id: this.props.review.id,
 	      review: {
@@ -50934,8 +51055,7 @@
 	        rating: this.state.rating,
 	        comment: this.state.comment,
 	        frequency: this.state.frequency
-	      }
-	    });
+	      } }, successCallback, errorCallback);
 	  },
 	
 	  updateFrequency: function updateFrequency(e) {
@@ -50949,10 +51069,38 @@
 	    });
 	  },
 	
+	  showAlert: function showAlert() {
+	    if (this.state.alertVisible) {
+	      return React.createElement(
+	        Alert,
+	        { bsStyle: 'danger', className: 'alert-messages', onDismiss: this.handleAlertDismiss, dismissAfter: 4000 },
+	        this.state.errors.map(function (error) {
+	          return React.createElement(
+	            'h4',
+	            null,
+	            error
+	          );
+	        })
+	      );
+	    } else {
+	      return null;
+	    }
+	  },
+	  handleAlertDismiss: function handleAlertDismiss() {
+	    this.setState({
+	      alertVisible: false
+	    });
+	  },
+	
 	  render: function render() {
 	    return React.createElement(
 	      'form',
 	      { className: 'container-fluid' },
+	      React.createElement(
+	        'div',
+	        null,
+	        this.showAlert()
+	      ),
 	      React.createElement(
 	        'div',
 	        null,
@@ -51365,7 +51513,7 @@
 	        React.createElement(
 	          'div',
 	          { className: 'row submit-button-row' },
-	          React.createElement('input', { className: 'btn create-review-btn', disabled: false, type: 'submit', onClick: this.submitNewReview })
+	          React.createElement('input', { className: 'btn create-review-btn', type: 'submit', onClick: this.submitNewReview })
 	        )
 	      )
 	    );
@@ -51384,6 +51532,7 @@
 	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
+	var Alert = __webpack_require__(218).Alert;
 	
 	var UserStore = __webpack_require__(467);
 	var UserBackendActions = __webpack_require__(501);
@@ -51458,9 +51607,15 @@
 	  handleSubmit: function handleSubmit(e) {
 	    e.preventDefault();
 	    var id = this.props.currentUser.id;
-	    var callback = function callback() {
+	    var successCallback = function successCallback() {
 	      BrowserHistory.push("/users/" + id);
 	    };
+	    var errorCallback = function (error) {
+	      this.setState({
+	        alertVisible: true,
+	        errors: JSON.parse(error)
+	      });
+	    }.bind(this);
 	    UserBackendActions.updateUser({
 	      id: id,
 	      user: {
@@ -51471,8 +51626,32 @@
 	        date_of_birth: this.state.dateOfBirth,
 	        image: this.state.image
 	      }
-	    }, callback);
+	    }, successCallback, errorCallback);
 	  },
+	
+	  showAlert: function showAlert() {
+	    if (this.state.alertVisible) {
+	      return React.createElement(
+	        Alert,
+	        { bsStyle: 'danger', className: 'alert-messages', onDismiss: this.handleAlertDismiss, dismissAfter: 4000 },
+	        this.state.errors.map(function (error) {
+	          return React.createElement(
+	            'h4',
+	            null,
+	            error
+	          );
+	        })
+	      );
+	    } else {
+	      return null;
+	    }
+	  },
+	  handleAlertDismiss: function handleAlertDismiss() {
+	    this.setState({
+	      alertVisible: false
+	    });
+	  },
+	
 	  render: function render() {
 	    return React.createElement(
 	      'div',
@@ -51480,6 +51659,7 @@
 	      React.createElement(
 	        'form',
 	        { id: 'user-edit-form', onSubmit: this.handleSubmit },
+	        this.showAlert(),
 	        React.createElement(
 	          'div',
 	          { className: 'col-md-4 col-md-offset-2' },
@@ -51670,7 +51850,9 @@
 	        pageStart: 0,
 	        loadMore: this.loadReviews,
 	        hasMore: this.state.reviews.length > this.state.shownReviews.length },
-	      this.state.shownReviews.map(function (review) {
+	      this.state.shownReviews.sort(function (a, b) {
+	        return new Date(b.updated_at) - new Date(a.updated_at);
+	      }).map(function (review) {
 	        return React.createElement(ReviewShowComponent, { review: review, key: review.id });
 	      })
 	    );
@@ -57898,6 +58080,7 @@
 	var React = __webpack_require__(1);
 	var Modal = __webpack_require__(218).Modal;
 	var Button = __webpack_require__(218).Button;
+	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
 	var UserStore = __webpack_require__(467);
 	
@@ -57965,15 +58148,21 @@
 	  },
 	
 	  signInUser: function signInUser(email) {
-	    $("#App").css({
-	      "-webkit-filter": "blur(0px)",
-	      "filter": "blur(0px)",
-	      "-o-filter": "blur(0px)",
-	      "-moz-filter": "blur(0px)"
-	    });
+	    var successCallback = function (id) {
+	      this.unblurBackground();
+	      BrowserHistory.push("/users/" + id);
+	    }.bind(this);
+	    var errorCallback = function errorCallback(error) {
+	      console.log("error signing in demo");
+	    };
+	    // $("#App").css({
+	    //   "-webkit-filter": "blur(0px)",
+	    //   "filter": "blur(0px)",
+	    //   "-o-filter": "blur(0px)",
+	    //   "-moz-filter": "blur(0px)"
+	    // });
 	    SessionBackendActions.signInUser({ user: { email: email,
-	        password: "password1" }
-	    });
+	        password: "password1" } }, successCallback, errorCallback);
 	    // console.log(email);
 	    // this.setState({
 	    //   modalIsOpen: true,
@@ -58172,6 +58361,7 @@
 	    });
 	    this.listenerToken.remove();
 	  },
+	
 	  onChange: function onChange() {
 	    this.setState({
 	      subscriptions: SubscriptionStore.all()

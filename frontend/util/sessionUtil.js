@@ -21,29 +21,31 @@ var SessionUtil = {
   },
 
   // session create and users create
-  signUpUser : function(userParams, callback) {
+  signUpUser : function(userParams, successCallback, errorCallback) {
     $.ajax({
       url : "/api/users",
       type: "POST",
       data: userParams,
       success: function(data) {
+        successCallback(data.id);
         SessionFrontendActions.receiveUserSignUp(data);
-        if (callback) {
-          callback(data.id);
-        }
+      },
+      error: function(data) {
+        errorCallback(data.responseText);
       }
     });
   },
-  signInUser : function(userParams, callback) {
+  signInUser : function(userParams, successCallback, errorCallback) {
     $.ajax({
       url : "/api/session",
       type: "POST",
       data: userParams,
       success: function(data) {
+        successCallback(data.id);
         SessionFrontendActions.receiveUserSignIn(data);
-        if (callback) {
-          callback(data.id);
-        }
+      },
+      error: function(data) {
+        errorCallback(data.responseText);
       }
     });
   },

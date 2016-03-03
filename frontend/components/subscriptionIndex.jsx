@@ -27,6 +27,7 @@ var SubscriptionIndex = React.createClass({
     });
     this.listenerToken.remove();
   },
+  
   onChange: function() {
     this.setState({
       subscriptions: SubscriptionStore.all()

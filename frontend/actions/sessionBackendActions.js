@@ -7,11 +7,11 @@ var SessionBackendActions = {
   },
 
   // session create, users create
-  signInUser: function(userParams, callback) {
-    SessionUtil.signInUser(userParams, callback);
+  signInUser: function(userParams, successCallback, errorCallback) {
+    SessionUtil.signInUser(userParams, successCallback, errorCallback);
   },
-  signUpUser: function(userParams, callback) {
-    SessionUtil.signUpUser(userParams, callback);
+  signUpUser: function(userParams, successCallback, errorCallback) {
+    SessionUtil.signUpUser(userParams, successCallback, errorCallback);
   },
 
   //session destroy

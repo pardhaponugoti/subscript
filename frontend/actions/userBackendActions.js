@@ -4,8 +4,8 @@ var UserBackendActions = {
   fetchAllUsers: function() {
     UserUtil.fetchAllUsers();
   },
-  updateUser: function(userData, callback) {
-    UserUtil.updateUser(userData, callback);
+  updateUser: function(userData, successCallback, errorCallback) {
+    UserUtil.updateUser(userData, successCallback, errorCallback);
   },
   deleteUser: function(userId, callback) {
     UserUtil.deleteUser(userId, callback);

@@ -1,6 +1,7 @@
 var React = require('react');
 var SessionBackendActions = require('../actions/sessionBackendActions.js');
 var BrowserHistory = require('react-router').browserHistory;
+var Alert = require('react-bootstrap').Alert;
 
 var NewUserForm = React.createClass({
   getInitialState: function() {
@@ -10,7 +11,9 @@ var NewUserForm = React.createClass({
       confirmPassword : "",
       firstName: "",
       lastName: "",
-      inputEnabled: true
+      inputEnabled: true,
+      alertVisible: false,
+      errors: []
     };
   },
   firstNameChange: function(e) {
@@ -38,6 +41,26 @@ var NewUserForm = React.createClass({
       confirmPassword: e.target.value
     });
   },
+
+  showAlert: function() {
+    if (this.state.alertVisible) {
+      return (
+        <Alert bsStyle="danger" className="alert-messages" onDismiss={this.handleAlertDismiss} dismissAfter={4000}>
+          {this.state.errors.map(function(error) {
+            return <h4>{error}</h4>;
+          })}
+        </Alert>
+      );
+    } else {
+      return null;
+    }
+  },
+  handleAlertDismiss: function() {
+    this.setState({
+      alertVisible: false
+    });
+  },
+
   passwordUl: function() {
     var passwordErrors = [];
     var length = this.state.password.length;
@@ -95,34 +118,56 @@ var NewUserForm = React.createClass({
   },
 
   submitButtonDisabled: function() {
-    if(this.state.firstName.length === 0 ||
-      this.state.lastName.length === 0 ||
-      this.state.email.length === 0 ||
-      this.state.password.length === 0 ||
-      this.state.confirmPassword.length === 0 ||
-      !this.validPassword ||
-      !this.passwordMatch) {
+    // if(this.state.firstName.length === 0 ||
+    //   this.state.lastName.length === 0 ||
+    //   this.state.email.length === 0 ||
+    //   this.state.password.length === 0 ||
+    //   this.state.confirmPassword.length === 0 ||
+    //   !this.validPassword ||
+    //   !this.passwordMatch) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+
+    if( this.state.password.length > 0 ) {
+      if (this.state.confirmPassword !== this.state.password) {
         return true;
       } else {
         return false;
       }
+    } else {
+      return false;
+    }
   },
 
   handleSubmit: function(e) {
     e.preventDefault();
-    this.props.closeModalCallback();
+    var successCallback = function(id) {
+      this.props.closeModalCallback();
+      BrowserHistory.push("/users/"+id+"/edit");
+    }.bind(this);
+    var errorCallback=function(error) {
+      console.log("new user error callback: " + error);
+      this.setState({
+        alertVisible: true,
+        errors: JSON.parse(error)
+      });
+    }.bind(this);
     SessionBackendActions.signUpUser(
       {user:
         {email: this.state.email,
          password: this.state.password,
          first_name: this.state.firstName,
          last_name: this.state.lastName}},
-       function(id) { BrowserHistory.push("/users/" +id + "/edit"); }
+      successCallback,
+      errorCallback
      );
   },
   render: function() {
     return <div>
       <form action="/users" method="post" className="new-user-form" onSubmit={this.handleSubmit}>
+        {this.showAlert()}
         <input className="session-user-form-input" type="string" name="user[first_name]"
           value={this.state.firstName} placeholder="First Name*" onChange={this.firstNameChange}/>
         <br/>
@@ -141,7 +186,7 @@ var NewUserForm = React.createClass({
         {this.matchedPassword()}
         <br/>
         <br/>
-        <input className="btn btn-default" type="submit" value="Sign Up" disabled={this.submitButtonDisabled()}/>
+        <input className="btn btn-default" type="submit" disabled={this.submitButtonDisabled()} value="Sign Up" />
       </form>
     </div>;
   }
@@ -149,6 +194,7 @@ var NewUserForm = React.createClass({
 
 module.exports = NewUserForm;
 
+// disabled={this.submitButtonDisabled()}
 
 function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
 

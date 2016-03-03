@@ -1,6 +1,7 @@
 var React = require('react');
 var Modal = require('react-bootstrap').Modal;
 var Button = require('react-bootstrap').Button;
+var BrowserHistory = require('react-router').browserHistory;
 
 var UserStore = require('../stores/user.js');
 
@@ -66,16 +67,25 @@ var SplashPage = React.createClass({
   },
 
   signInUser: function(email) {
-    $("#App").css({
-      "-webkit-filter": "blur(0px)",
-      "filter": "blur(0px)",
-      "-o-filter": "blur(0px)",
-      "-moz-filter": "blur(0px)"
-    });
-    SessionBackendActions.signInUser({user:
-      {email: email,
-       password: "password1"}
-     });
+    var successCallback = function(id) {
+      this.unblurBackground();
+      BrowserHistory.push("/users/"+id);
+    }.bind(this);
+    var errorCallback=function(error) {
+      console.log("error signing in demo");
+    };
+    // $("#App").css({
+    //   "-webkit-filter": "blur(0px)",
+    //   "filter": "blur(0px)",
+    //   "-o-filter": "blur(0px)",
+    //   "-moz-filter": "blur(0px)"
+    // });
+    SessionBackendActions.signInUser(
+      {user:
+        {email: email,
+         password: "password1"}},
+      successCallback,
+      errorCallback);
     // console.log(email);
     // this.setState({
     //   modalIsOpen: true,

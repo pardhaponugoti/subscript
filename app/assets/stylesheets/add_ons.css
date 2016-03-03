@@ -577,3 +577,11 @@ a.visited {
 .alert-messages {
   text-align: center;
 }
+
+.alert-messages h4 {
+  font-size: 14px;
+}
+
+.loading-container {
+  height: 75px;
+}

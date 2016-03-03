@@ -1,6 +1,6 @@
 var React = require('react');
 
-var Input = require('react-bootstrap').Input;
+var Alert = require('react-bootstrap').Alert;
 
 var ReviewStore = require('../stores/review.js');
 var SubscriptionStore = require('../stores/subscription.js');
@@ -19,13 +19,23 @@ var EditReviewForm = React.createClass({
       subscription: SubscriptionStore.findById(this.props.review.subscription_id),
       rating: this.props.review.rating,
       comment: this.props.review.comment,
-      frequency: this.props.review.frequency
+      frequency: this.props.review.frequency,
+      alertVisible: false,
+      errors: []
     };
   },
 
   submitEditedReview: function(e) {
     e.preventDefault();
-    this.props.closeModalCallback();
+    var successCallback = function() {
+      this.props.closeModalCallback();
+    }.bind(this);
+    var errorCallback = function(error) {
+      this.setState({
+        alertVisible: true,
+        errors: JSON.parse(error)
+      });
+    }.bind(this);
     ReviewBackendActions.editReview({
       id: this.props.review.id,
       review: {
@@ -34,8 +44,9 @@ var EditReviewForm = React.createClass({
         rating: this.state.rating,
         comment: this.state.comment,
         frequency: this.state.frequency
-      }
-    });
+      }},
+    successCallback,
+    errorCallback);
   },
 
   updateFrequency: function(e) {
@@ -49,8 +60,30 @@ var EditReviewForm = React.createClass({
     });
   },
 
+  showAlert: function() {
+    if (this.state.alertVisible) {
+      return (
+        <Alert bsStyle="danger" className="alert-messages" onDismiss={this.handleAlertDismiss} dismissAfter={4000}>
+          {this.state.errors.map(function(error) {
+            return <h4>{error}</h4>;
+          })}
+        </Alert>
+      );
+    } else {
+      return null;
+    }
+  },
+  handleAlertDismiss: function() {
+    this.setState({
+      alertVisible: false
+    });
+  },
+
   render: function() {
     return <form className="container-fluid">
+      <div>
+        {this.showAlert()}
+      </div>
       <div>
         Subscription: {this.state.subscription.name}
         <br/>

@@ -84,12 +84,18 @@ ReviewStore.findBySubscriptionId = function(subscriptionId) {
   } else if (_reviewsBySubscriptionId[subscriptionId] === undefined) {
     return [];
   } else {
-    return _reviewsBySubscriptionId[subscriptionId];
+    return _reviewsBySubscriptionId[subscriptionId].sort(
+      function(a, b) {
+        return new Date(b.updated_at) - new Date(a.updated_at);
+      }
+    );
   }
 };
 
 ReviewStore.sortedByAge = function() {
-  return _reviewsArray.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);});
+  return _reviewsArray.sort(
+    function(a, b) { return new Date(b.updated_at) - new Date(a.updated_at); }
+  );
 };
 
 ReviewStore.all = function() {

@@ -11,16 +11,17 @@ var UserUtil = {
       }
     });
   },
-  updateUser: function(userData, callback) {
+  updateUser: function(userData, successCallback, errorCallback) {
     $.ajax({
       url: "/api/users/" + userData.id,
       type: 'PATCH',
       data: userData,
       success: function(data) {
+        successCallback();
         UserFrontendActions.updateCurrentUser(data);
-        if (callback) {
-          callback();
-        }
+      },
+      error: function(data) {
+        errorCallback(data.responseText);
       }
     });
   },
