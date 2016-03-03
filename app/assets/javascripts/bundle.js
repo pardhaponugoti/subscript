@@ -59,13 +59,13 @@
 	var UserShowPage = __webpack_require__(510);
 	var UserEditPage = __webpack_require__(515);
 	var SubscriptionShowPage = __webpack_require__(516);
-	var ReviewFeed = __webpack_require__(528);
-	var SubscriptionIndex = __webpack_require__(550);
+	var ReviewFeed = __webpack_require__(529);
+	var SubscriptionIndex = __webpack_require__(551);
 	
 	//test components
 	var HeaderSearchComponent = __webpack_require__(462);
-	var Chart = __webpack_require__(517);
-	var AnalyticsPage = __webpack_require__(562);
+	var Chart = __webpack_require__(518);
+	var AnalyticsPage = __webpack_require__(563);
 	
 	var routes = React.createElement(
 	  Route,
@@ -24721,6 +24721,7 @@
 	
 	var React = __webpack_require__(1);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
+	var Joyride = __webpack_require__(565);
 	
 	var Header = __webpack_require__(217);
 	
@@ -24734,6 +24735,8 @@
 	var SubscriptionBackendActions = __webpack_require__(504);
 	var ReviewBackendActions = __webpack_require__(507);
 	
+	var ReviewFeed = __webpack_require__(529);
+	
 	//Test stuff obv
 	window.SessionStore = SessionStore;
 	window.UserStore = UserStore;
@@ -24746,7 +24749,11 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      currentUser: SessionStore.currentUser(),
-	      loggedIn: SessionStore.loggedIn()
+	      loggedIn: SessionStore.loggedIn(),
+	      joyrideOverlay: true,
+	      joyrideType: 'continuous',
+	      ready: false,
+	      steps: []
 	    };
 	  },
 	  componentWillMount: function componentWillMount() {
@@ -24770,28 +24777,139 @@
 	  },
 	  linkToTest: function linkToTest(e) {
 	    e.preventDefault();
-	    // BrowserHistory.push("/test");
+	    this.setState({
+	      ready: !this.state.ready
+	    });
 	  },
 	
-	  // <button onClick={this.linkToTest}>test</button>
+	  _addSteps: function _addSteps(steps) {
+	    var joyride = this.refs.joyride;
+	
+	    if (!Array.isArray(steps)) {
+	      steps = [steps];
+	    }
+	
+	    if (!steps.length) {
+	      return false;
+	    }
+	
+	    this.setState({
+	      steps: this.state.steps.concat(joyride.parseSteps(steps))
+	    });
+	  },
+	
+	  _addTooltip: function _addTooltip(data) {
+	    this.refs.joyride.addTooltip(data);
+	  },
+	
+	  _stepCallback: function _stepCallback(step) {
+	    console.log('••• stepCallback', step);
+	  },
+	
+	  _completeCallback: function _completeCallback(steps, skipped) {
+	    console.log('••• completeCallback', steps, skipped);
+	    $("body").css({
+	      "padding-top": "50px"
+	    });
+	    this.setState({
+	      ready: false,
+	      steps: []
+	    });
+	  },
+	
+	  _onClickSwitch: function _onClickSwitch(e) {
+	    e.preventDefault();
+	    var el = e.currentTarget,
+	        state = {};
+	
+	    if (el.dataset.key === 'joyrideType') {
+	      this.refs.joyride.reset();
+	
+	      setTimeout(function () {
+	        this.refs.joyride.start();
+	      }, 300);
+	
+	      state.joyrideType = e.currentTarget.dataset.type;
+	    }
+	
+	    if (el.dataset.key === 'joyrideOverlay') {
+	      state.joyrideOverlay = el.dataset.type === 'active';
+	    }
+	
+	    this.setState({
+	      joyrideOverlay: state.joyrideOverlay,
+	      joyrideType: state.joyrideType
+	    });
+	  },
+	
+	  startTour: function startTour(e) {
+	    e.preventDefault();
+	    this.setState({
+	      ready: !this.state.ready
+	    });
+	  },
+	
 	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      { id: 'App' },
-	      React.createElement(
+	    console.log("App ready: " + this.state.ready);
+	    if (this.state.ready) {
+	      $("body").css({
+	        "padding-top": "0px"
+	      });
+	      setTimeout(function () {
+	        this.refs.joyride.start();
+	      }.bind(this), 2500);
+	      return React.createElement(
 	        'div',
-	        null,
-	        React.createElement(Header, { currentUser: this.state.currentUser, loggedIn: this.state.loggedIn })
-	      ),
-	      React.createElement(
-	        'div',
-	        null,
-	        this.props.children && React.cloneElement(this.props.children, {
+	        { id: 'App' },
+	        React.createElement(Joyride, { ref: 'joyride',
+	          debug: true,
+	          steps: this.state.steps,
+	          type: this.state.joyrideType,
+	          showSkipButton: true,
+	          showOverlay: this.state.joyrideOverlay,
+	          stepCallback: this._stepCallback,
+	          completeCallback: this._completeCallback,
+	          scrollToSteps: false }),
+	        React.createElement(
+	          'div',
+	          null,
+	          React.createElement(Header, { currentUser: this.state.currentUser,
+	            loggedIn: this.state.loggedIn,
+	            joyrideType: this.state.joyrideType,
+	            joyrideOverlay: this.state.joyrideOverlay,
+	            onClickSwitch: this._onClickSwitch,
+	            addSteps: this._addSteps,
+	            addTooltip: this._addTooltip })
+	        ),
+	        React.createElement('div', { className: 'fifty-pixels' }),
+	        React.createElement(ReviewFeed, { currentUser: this.state.currentUser,
 	          loggedIn: this.state.loggedIn,
-	          currentUser: this.state.currentUser
-	        })
-	      )
-	    );
+	          joyrideType: this.state.joyrideType,
+	          joyrideOverlay: this.state.joyrideOverlay,
+	          onClickSwitch: this._onClickSwitch,
+	          addSteps: this._addSteps,
+	          addTooltip: this._addTooltip })
+	      );
+	    } else {
+	      return React.createElement(
+	        'div',
+	        { id: 'App' },
+	        React.createElement(
+	          'div',
+	          null,
+	          React.createElement(Header, { currentUser: this.state.currentUser, loggedIn: this.state.loggedIn })
+	        ),
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.children && React.cloneElement(this.props.children, {
+	            loggedIn: this.state.loggedIn,
+	            currentUser: this.state.currentUser,
+	            startTourCallback: this.startTour
+	          })
+	        )
+	      );
+	    }
 	  }
 	});
 	
@@ -24826,11 +24944,92 @@
 	    };
 	  },
 	
-	  // componentWillReceiveProps: function(newProps) {
-	  //   console.log(newProps);
-	  //   console.log(newProps.currentUser);
-	  //   console.log(newProps.loggedIn);
-	  // },
+	  componentDidMount: function componentDidMount() {
+	
+	    if (this.props.addSteps) {
+	      setTimeout(function () {
+	        this.props.addSteps([{
+	          title: 'Statistics',
+	          text: "Click here to see statistics on our users",
+	          selector: '.statistics-link',
+	          position: 'bottom',
+	          type: 'hover',
+	          style: {
+	            backgroundColor: '#fff',
+	            borderRadius: '1rem',
+	            mainColor: '#9BBEA8',
+	            color: '#000',
+	            textAlign: 'center',
+	            width: '40rem'
+	          }
+	        }, {
+	          title: 'Services',
+	          text: "Click here to see all the subscriptions and services you can rate",
+	          selector: '.services-link',
+	          position: 'bottom',
+	          type: 'hover',
+	          style: {
+	            backgroundColor: '#fff',
+	            borderRadius: '1rem',
+	            mainColor: '#9BBEA8',
+	            color: '#000',
+	            textAlign: 'center',
+	            width: '40rem'
+	          }
+	        }]);
+	      }.bind(this), 100);
+	    }
+	    // if (this.props.addTooltip) {
+	    //   this.props.addTooltip({
+	    //     title: 'Standalone Tooltips',
+	    //     text: 'And even style them one by one!',
+	    //     selector: '.title-centered',
+	    //     event: 'hover',
+	    //     position: 'bottom-right',
+	    //     style: {
+	    //       backgroundColor: 'rgba(0, 0, 0, 0.8)',
+	    //       borderRadius: '0',
+	    //       color: '#fff',
+	    //       mainColor: '#ff67b4',
+	    //       textAlign: 'center',
+	    //       width: '29rem'
+	    //     }
+	    //   });
+	    //   this.props.addTooltip({
+	    //     title: 'Standalone Tooltips',
+	    //     text: 'And even style them one by one!',
+	    //     selector: '.dropdown-toggle',
+	    //     event: 'hover',
+	    //     position: 'bottom-left',
+	    //     style: {
+	    //       backgroundColor: 'rgba(0, 0, 0, 0.8)',
+	    //       borderRadius: '0',
+	    //       color: '#fff',
+	    //       mainColor: '#ff67b4',
+	    //       textAlign: 'center',
+	    //       width: '29rem'
+	    //     }
+	    //   });
+	    // }
+	    // }
+	    // if (this.props.addTooltip) {
+	    //   this.props.addTooltip({
+	    //     title: 'Standalone Tooltips',
+	    //     text: 'And even style them one by one!',
+	    //     selector: '.test-button',
+	    //     event: 'hover',
+	    //     position: 'bottom-right',
+	    //     style: {
+	    //       backgroundColor: 'rgba(0, 0, 0, 0.8)',
+	    //       borderRadius: '0',
+	    //       color: '#fff',
+	    //       mainColor: '#ff67b4',
+	    //       textAlign: 'center',
+	    //       width: '29rem'
+	    //     }
+	    //   });
+	    // }
+	  },
 	
 	  currentUserUrl: function currentUserUrl() {
 	    return "users/" + this.props.currentUser.id;
@@ -25028,12 +25227,12 @@
 	          { className: 'navbar-right' },
 	          React.createElement(
 	            'a',
-	            { onClick: this.openStatisticsPage, className: 'navbar-text white-text' },
+	            { onClick: this.openStatisticsPage, className: 'navbar-text white-text statistics-link' },
 	            'Statistics'
 	          ),
 	          React.createElement(
 	            'a',
-	            { onClick: this.openSubscriptionsIndex, className: 'navbar-text white-text' },
+	            { onClick: this.openSubscriptionsIndex, className: 'navbar-text white-text services-link' },
 	            'Services'
 	          )
 	        )
@@ -50795,6 +50994,25 @@
 	      editReviewModalIsOpen: false
 	    };
 	  },
+	  componentDidMount: function componentDidMount() {
+	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.onSubscriptionChange);
+	    this.userListenerToken = UserStore.addListener(this.onUserChange);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.subscriptionListenerToken.remove();
+	    this.userListenerToken.remove();
+	  },
+	
+	  onSubscriptionChange: function onSubscriptionChange() {
+	    this.setState({
+	      subscription: SubscriptionStore.findById(this.props.review.subscription_id)
+	    });
+	  },
+	  onUserChange: function onUserChange() {
+	    this.setState({
+	      author: UserStore.findById(this.props.review.author_id)
+	    });
+	  },
 	
 	  openSubscriptionPage: function openSubscriptionPage() {
 	    BrowserHistory.push("/subscriptions/" + this.state.subscription.id);
@@ -50831,6 +51049,13 @@
 	
 	  render: function render() {
 	    // two cases -- if the currentUser has been passed down or if not
+	    if (this.state.author === undefined || this.state.subscription === undefined) {
+	      return React.createElement(
+	        'div',
+	        null,
+	        'WAITING-FOR_LOAD'
+	      );
+	    }
 	    if (this.props.currentUser) {
 	      return React.createElement(
 	        'li',
@@ -51659,52 +51884,59 @@
 	      React.createElement(
 	        'form',
 	        { id: 'user-edit-form', onSubmit: this.handleSubmit },
-	        this.showAlert(),
 	        React.createElement(
 	          'div',
-	          { className: 'col-md-4 col-md-offset-2' },
+	          { className: 'user-edit-form-title' },
+	          React.createElement(
+	            'h2',
+	            null,
+	            'Edit Your Profile'
+	          )
+	        ),
+	        React.createElement('br', null),
+	        this.showAlert(),
+	        React.createElement('br', null),
+	        React.createElement('br', null),
+	        React.createElement(
+	          'div',
+	          { className: 'col-md-2 col-md-offset-4' },
 	          React.createElement(
 	            'label',
 	            null,
-	            'First Name',
-	            React.createElement('br', null),
-	            React.createElement('input', { type: 'string', name: 'user[first_name]', value: this.state.firstName,
+	            'First Name:',
+	            React.createElement('input', { type: 'string', className: 'edit-user-input', name: 'user[first_name]', value: this.state.firstName,
 	              onChange: this.firstNameChange })
 	          ),
 	          React.createElement('br', null),
 	          React.createElement(
 	            'label',
 	            null,
-	            'Last Name',
-	            React.createElement('br', null),
-	            React.createElement('input', { type: 'string', name: 'user[last_name]', value: this.state.lastName,
+	            'Last Name:',
+	            React.createElement('input', { type: 'string', className: 'edit-user-input', name: 'user[last_name]', value: this.state.lastName,
 	              onChange: this.lastNameChange })
 	          ),
 	          React.createElement('br', null),
 	          React.createElement(
 	            'label',
 	            null,
-	            'Email',
-	            React.createElement('br', null),
-	            React.createElement('input', { type: 'string', name: 'user[email]', value: this.state.email,
+	            'Email:',
+	            React.createElement('input', { type: 'string', className: 'edit-user-input', name: 'user[email]', value: this.state.email,
 	              onChange: this.emailChange })
 	          ),
 	          React.createElement('br', null),
 	          React.createElement(
 	            'label',
 	            null,
-	            'Location',
-	            React.createElement('br', null),
-	            React.createElement('input', { type: 'string', name: 'user[location]', value: this.state.location,
+	            'Location:',
+	            React.createElement('input', { type: 'string', className: 'edit-user-input', name: 'user[location]', value: this.state.location,
 	              onChange: this.locationChange })
 	          ),
 	          React.createElement('br', null),
 	          React.createElement(
 	            'label',
 	            null,
-	            'Date of Birth',
-	            React.createElement('br', null),
-	            React.createElement('input', { type: 'date', name: 'user[date_of_birth]', value: this.state.dateOfBirth,
+	            'Date of Birth:',
+	            React.createElement('input', { type: 'date', className: 'edit-user-input', name: 'user[date_of_birth]', value: this.state.dateOfBirth,
 	              onChange: this.DOBChange })
 	          )
 	        ),
@@ -51721,7 +51953,7 @@
 	            React.createElement('br', null),
 	            React.createElement(
 	              'button',
-	              { className: 'btn btn-default btn-sm', onClick: this.openCloudinaryWidget },
+	              { className: 'btn btn-default btn-sm edit-form-image-btn', onClick: this.openCloudinaryWidget },
 	              'Change Profile Picture'
 	            ),
 	            React.createElement('div', { id: 'my-widget-container' })
@@ -51735,15 +51967,10 @@
 	          React.createElement(
 	            'div',
 	            null,
-	            React.createElement('input', { value: 'Update My Profile', type: 'submit', className: 'btn create-review-btn' })
-	          ),
-	          React.createElement('br', null),
-	          React.createElement(
-	            'div',
-	            null,
+	            React.createElement('input', { value: 'Update', type: 'submit', className: 'btn create-review-btn edit-form-btn' }),
 	            React.createElement(
 	              'button',
-	              { className: 'btn btn-default', onClick: this.cancelUpdate },
+	              { className: 'btn btn-default edit-form-btn', onClick: this.cancelUpdate },
 	              'Cancel'
 	            )
 	          ),
@@ -51775,7 +52002,7 @@
 	var Modal = __webpack_require__(218).Modal;
 	var OverlayTrigger = __webpack_require__(218).OverlayTrigger;
 	var Button = __webpack_require__(218).Button;
-	var InfiniteScroll = __webpack_require__(564)(React);
+	var InfiniteScroll = __webpack_require__(517)(React);
 	
 	var ReviewStore = __webpack_require__(499);
 	var SubscriptionStore = __webpack_require__(491);
@@ -51783,7 +52010,7 @@
 	var EditReviewForm = __webpack_require__(512);
 	var NewReviewForm = __webpack_require__(514);
 	var ReviewShowComponent = __webpack_require__(511);
-	var Chart = __webpack_require__(517);
+	var Chart = __webpack_require__(518);
 	
 	function isNumeric(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);
@@ -52086,15 +52313,83 @@
 
 /***/ },
 /* 517 */
+/***/ function(module, exports) {
+
+	function topPosition(domElt) {
+	  if (!domElt) {
+	    return 0;
+	  }
+	  return domElt.offsetTop + topPosition(domElt.offsetParent);
+	}
+	
+	module.exports = function (React) {
+	  if (React.addons && React.addons.InfiniteScroll) {
+	    return React.addons.InfiniteScroll;
+	  }
+	  React.addons = React.addons || {};
+	  var InfiniteScroll = React.addons.InfiniteScroll = React.createClass({
+	    getDefaultProps: function () {
+	      return {
+	        pageStart: 0,
+	        hasMore: false,
+	        loadMore: function () {},
+	        threshold: 250
+	      };
+	    },
+	    componentDidMount: function () {
+	      this.pageLoaded = this.props.pageStart;
+	      this.attachScrollListener();
+	    },
+	    componentDidUpdate: function () {
+	      this.attachScrollListener();
+	    },
+	    render: function () {
+	      var props = this.props;
+	      return React.DOM.div(null, props.children, props.hasMore && (props.loader || InfiniteScroll._defaultLoader));
+	    },
+	    scrollListener: function () {
+	      var el = this.getDOMNode();
+	      var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+	      if (topPosition(el) + el.offsetHeight - scrollTop - window.innerHeight < Number(this.props.threshold)) {
+	        this.detachScrollListener();
+	        // call loadMore after detachScrollListener to allow
+	        // for non-async loadMore functions
+	        this.props.loadMore(this.pageLoaded += 1);
+	      }
+	    },
+	    attachScrollListener: function () {
+	      if (!this.props.hasMore) {
+	        return;
+	      }
+	      window.addEventListener('scroll', this.scrollListener);
+	      window.addEventListener('resize', this.scrollListener);
+	      this.scrollListener();
+	    },
+	    detachScrollListener: function () {
+	      window.removeEventListener('scroll', this.scrollListener);
+	      window.removeEventListener('resize', this.scrollListener);
+	    },
+	    componentWillUnmount: function () {
+	      this.detachScrollListener();
+	    }
+	  });
+	  InfiniteScroll.setDefaultLoader = function (loader) {
+	    InfiniteScroll._defaultLoader = loader;
+	  };
+	  return InfiniteScroll;
+	};
+
+/***/ },
+/* 518 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	
 	var React = __webpack_require__(1);
-	var LineChart = __webpack_require__(518).Line;
-	var RadarChart = __webpack_require__(518).Radar;
-	var BarChart = __webpack_require__(518).Bar;
-	var DonutChart = __webpack_require__(518).Doughnut;
+	var LineChart = __webpack_require__(519).Line;
+	var RadarChart = __webpack_require__(519).Radar;
+	var BarChart = __webpack_require__(519).Bar;
+	var DonutChart = __webpack_require__(519).Doughnut;
 	
 	var SubscriptionStore = __webpack_require__(491);
 	var ReviewStore = __webpack_require__(499);
@@ -52366,31 +52661,31 @@
 	module.exports = Chart;
 
 /***/ },
-/* 518 */
+/* 519 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
-	  Bar: __webpack_require__(519),
-	  Doughnut: __webpack_require__(523),
-	  Line: __webpack_require__(524),
-	  Pie: __webpack_require__(525),
-	  PolarArea: __webpack_require__(526),
-	  Radar: __webpack_require__(527),
-	  createClass: __webpack_require__(520).createClass
+	  Bar: __webpack_require__(520),
+	  Doughnut: __webpack_require__(524),
+	  Line: __webpack_require__(525),
+	  Pie: __webpack_require__(526),
+	  PolarArea: __webpack_require__(527),
+	  Radar: __webpack_require__(528),
+	  createClass: __webpack_require__(521).createClass
 	};
 
 
 /***/ },
-/* 519 */
+/* 520 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(520);
+	var vars = __webpack_require__(521);
 	
 	module.exports = vars.createClass('Bar', ['getBarsAtEvent']);
 
 
 /***/ },
-/* 520 */
+/* 521 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -52449,7 +52744,7 @@
 	    };
 	
 	    classData.initializeChart = function(nextProps) {
-	      var Chart = __webpack_require__(521);
+	      var Chart = __webpack_require__(522);
 	      var el = ReactDOM.findDOMNode(this);
 	      var ctx = el.getContext("2d");
 	      var chart = new Chart(ctx)[chartType](nextProps.data, nextProps.options || {});
@@ -52525,7 +52820,7 @@
 
 
 /***/ },
-/* 521 */
+/* 522 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -52832,7 +53127,7 @@
 				//Method for warning of errors
 				if (window.console && typeof window.console.warn == "function") console.warn(str);
 			},
-			amd = helpers.amd = ("function" == 'function' && __webpack_require__(522)),
+			amd = helpers.amd = ("function" == 'function' && __webpack_require__(523)),
 			//-- Math methods
 			isNumber = helpers.isNumber = function(n){
 				return !isNaN(parseFloat(n)) && isFinite(n);
@@ -56007,7 +56302,7 @@
 	}).call(this);
 
 /***/ },
-/* 522 */
+/* 523 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
@@ -56015,65 +56310,66 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
-/* 523 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var vars = __webpack_require__(520);
-	
-	module.exports = vars.createClass('Doughnut', ['getSegmentsAtEvent']);
-
-
-/***/ },
 /* 524 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(520);
+	var vars = __webpack_require__(521);
 	
-	module.exports = vars.createClass('Line', ['getPointsAtEvent']);
+	module.exports = vars.createClass('Doughnut', ['getSegmentsAtEvent']);
 
 
 /***/ },
 /* 525 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(520);
+	var vars = __webpack_require__(521);
 	
-	module.exports = vars.createClass('Pie', ['getSegmentsAtEvent']);
+	module.exports = vars.createClass('Line', ['getPointsAtEvent']);
 
 
 /***/ },
 /* 526 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(520);
+	var vars = __webpack_require__(521);
 	
-	module.exports = vars.createClass('PolarArea', ['getSegmentsAtEvent']);
+	module.exports = vars.createClass('Pie', ['getSegmentsAtEvent']);
 
 
 /***/ },
 /* 527 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var vars = __webpack_require__(520);
+	var vars = __webpack_require__(521);
 	
-	module.exports = vars.createClass('Radar', ['getPointsAtEvent']);
+	module.exports = vars.createClass('PolarArea', ['getSegmentsAtEvent']);
 
 
 /***/ },
 /* 528 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var vars = __webpack_require__(521);
+	
+	module.exports = vars.createClass('Radar', ['getPointsAtEvent']);
+
+
+/***/ },
+/* 529 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 	
 	var React = __webpack_require__(1);
-	var Infinite = __webpack_require__(529);
-	var InfiniteScroll = __webpack_require__(564)(React);
-	var TransitionGroup = __webpack_require__(542);
+	var Infinite = __webpack_require__(530);
+	var InfiniteScroll = __webpack_require__(517)(React);
+	var TransitionGroup = __webpack_require__(543);
+	var BrowserHistory = __webpack_require__(159).browserHistory;
 	
 	var ReviewStore = __webpack_require__(499);
 	
 	var ReviewShowComponent = __webpack_require__(511);
-	var SplashPage = __webpack_require__(549);
+	var SplashPage = __webpack_require__(550);
 	
 	var ReviewFeed = React.createClass({
 	  displayName: 'ReviewFeed',
@@ -56085,7 +56381,55 @@
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
+	    console.log("Review Feed Mount");
 	    this.listenerToken = ReviewStore.addListener(this.onReviewChange);
+	    if (this.props.addSteps) {
+	      setTimeout(function () {
+	        this.props.addSteps([{
+	          title: 'Reviews',
+	          text: "Check out user reviews from around the galaxy!",
+	          selector: '.review-show',
+	          position: 'top',
+	          type: 'hover',
+	          style: {
+	            backgroundColor: '#fff',
+	            mainColor: '#9BBEA8',
+	            color: '#000',
+	            borderRadius: '1rem',
+	            textAlign: 'center',
+	            width: '40rem'
+	          }
+	        }, {
+	          title: 'Profile',
+	          text: "Preview your profile, write and edit reviews, and edit your information",
+	          selector: '.open-profile',
+	          position: 'right',
+	          type: 'hover',
+	          style: {
+	            backgroundColor: '#fff',
+	            mainColor: '#9BBEA8',
+	            color: '#000',
+	            borderRadius: '1rem',
+	            textAlign: 'center',
+	            width: '40rem'
+	          }
+	        }, {
+	          title: 'Write a Review',
+	          text: "Write a review",
+	          selector: '.write-new-review',
+	          position: 'right',
+	          type: 'hover',
+	          style: {
+	            backgroundColor: '#fff',
+	            mainColor: '#9BBEA8',
+	            color: '#000',
+	            borderRadius: '1rem',
+	            textAlign: 'center',
+	            width: '40rem'
+	          }
+	        }]);
+	      }.bind(this), 100);
+	    }
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.listenerToken.remove();
@@ -56116,8 +56460,20 @@
 	    );
 	  },
 	
-	  render: function render() {
+	  openTour: function openTour() {
+	    BrowserHistory.push("/users/" + this.props.currentUser.id);
+	  },
+	  openProfile: function openProfile() {
+	    BrowserHistory.push("/users/" + this.props.currentUser.id);
+	  },
+	  openStatistics: function openStatistics() {
+	    BrowserHistory.push("/statistics");
+	  },
+	  openServices: function openServices() {
+	    BrowserHistory.push("/subscriptions");
+	  },
 	
+	  render: function render() {
 	    if (this.state.reviews === undefined) {
 	      return React.createElement(
 	        'div',
@@ -56130,13 +56486,77 @@
 	      } else {
 	        return React.createElement(
 	          'div',
-	          { className: 'col-md-offset-1 col-md-10 review-feed' },
+	          { className: 'row review-feed' },
 	          React.createElement(
-	            'h2',
-	            null,
-	            'Recent Reviews'
+	            'div',
+	            { className: 'container' },
+	            React.createElement(
+	              'div',
+	              { className: 'col-md-5 review-feed-title' },
+	              React.createElement(
+	                'h1',
+	                null,
+	                'Recent Reviews'
+	              )
+	            ),
+	            this.props.startTourCallback ? React.createElement(
+	              'div',
+	              { className: 'col-md-7 right-justify' },
+	              React.createElement(
+	                'button',
+	                { onClick: this.props.startTourCallback, className: 'btn btn-default btn-lg tour-btn' },
+	                'What can I do on this site?'
+	              )
+	            ) : null
 	          ),
-	          this.infiniteScrollComponent()
+	          React.createElement('br', null),
+	          React.createElement('br', null),
+	          React.createElement('br', null),
+	          React.createElement(
+	            'div',
+	            { className: 'col-md-2 col-sm-4 sidebar-div' },
+	            React.createElement(
+	              'ul',
+	              { id: 'sidebar', className: 'nav nav-stacked' },
+	              'Σ',
+	              this.props.startTourCallback ? React.createElement(
+	                'li',
+	                { className: 'sidebar-li', onClick: this.props.startTourCallback },
+	                'Take A Tour'
+	              ) : null,
+	              React.createElement(
+	                'li',
+	                { className: 'sidebar-li open-profile', onClick: this.openProfile },
+	                'Profile'
+	              ),
+	              React.createElement(
+	                'li',
+	                { className: 'sidebar-li' },
+	                'Your Subscriptions',
+	                React.createElement('span', { className: 'caret' })
+	              ),
+	              React.createElement(
+	                'li',
+	                { className: 'sidebar-li', onClick: this.openStatistics },
+	                'Statistics'
+	              ),
+	              React.createElement(
+	                'li',
+	                { className: 'sidebar-li', onClick: this.openServices },
+	                'Services'
+	              ),
+	              React.createElement(
+	                'li',
+	                { className: 'sidebar-li write-new-review' },
+	                'Write A Review'
+	              )
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'col-md-9 col-sm-8' },
+	            this.infiniteScrollComponent()
+	          )
 	        );
 	      }
 	    }
@@ -56146,7 +56566,7 @@
 	module.exports = ReviewFeed;
 
 /***/ },
-/* 529 */
+/* 530 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -56156,13 +56576,13 @@
 	var React = global.React || __webpack_require__(1);
 	var ReactDOM = global.ReactDOM || __webpack_require__(158);
 	
-	__webpack_require__(530);
-	var scaleEnum = __webpack_require__(533);
-	var infiniteHelpers = __webpack_require__(534);
-	var _isFinite = __webpack_require__(539);
+	__webpack_require__(531);
+	var scaleEnum = __webpack_require__(534);
+	var infiniteHelpers = __webpack_require__(535);
+	var _isFinite = __webpack_require__(540);
 	
-	var preloadType = __webpack_require__(540).preloadType;
-	var checkProps = checkProps = __webpack_require__(541);
+	var preloadType = __webpack_require__(541).preloadType;
+	var checkProps = checkProps = __webpack_require__(542);
 	
 	var Infinite = React.createClass({
 	  displayName: 'Infinite',
@@ -56594,7 +57014,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 530 */
+/* 531 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -56607,15 +57027,15 @@
 	'use strict';
 	
 	if (!Object.assign) {
-	  Object.assign = __webpack_require__(531);
+	  Object.assign = __webpack_require__(532);
 	}
 	
 	if (!Array.isArray) {
-	  Array.isArray = __webpack_require__(532);
+	  Array.isArray = __webpack_require__(533);
 	}
 
 /***/ },
-/* 531 */
+/* 532 */
 /***/ function(module, exports) {
 
 	/* eslint-disable no-unused-vars */
@@ -56660,7 +57080,7 @@
 
 
 /***/ },
-/* 532 */
+/* 533 */
 /***/ function(module, exports) {
 
 	/**
@@ -56846,7 +57266,7 @@
 
 
 /***/ },
-/* 533 */
+/* 534 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -56856,13 +57276,13 @@
 	};
 
 /***/ },
-/* 534 */
+/* 535 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 	
-	var ConstantInfiniteComputer = __webpack_require__(535);
-	var ArrayInfiniteComputer = __webpack_require__(537);
+	var ConstantInfiniteComputer = __webpack_require__(536);
+	var ArrayInfiniteComputer = __webpack_require__(538);
 	var React = global.React || __webpack_require__(1);
 	
 	function createInfiniteComputer(data, children) {
@@ -56908,7 +57328,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 535 */
+/* 536 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56921,7 +57341,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var InfiniteComputer = __webpack_require__(536);
+	var InfiniteComputer = __webpack_require__(537);
 	
 	var ConstantInfiniteComputer = (function (_InfiniteComputer) {
 	  _inherits(ConstantInfiniteComputer, _InfiniteComputer);
@@ -56970,7 +57390,7 @@
 	module.exports = ConstantInfiniteComputer;
 
 /***/ },
-/* 536 */
+/* 537 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {// An infinite computer must be able to do the following things:
@@ -57050,7 +57470,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 537 */
+/* 538 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57063,8 +57483,8 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var InfiniteComputer = __webpack_require__(536),
-	    bs = __webpack_require__(538);
+	var InfiniteComputer = __webpack_require__(537),
+	    bs = __webpack_require__(539);
 	
 	var ArrayInfiniteComputer = (function (_InfiniteComputer) {
 	  _inherits(ArrayInfiniteComputer, _InfiniteComputer);
@@ -57132,7 +57552,7 @@
 	module.exports = ArrayInfiniteComputer;
 
 /***/ },
-/* 538 */
+/* 539 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -57180,7 +57600,7 @@
 	};
 
 /***/ },
-/* 539 */
+/* 540 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -57231,7 +57651,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 540 */
+/* 541 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
@@ -57247,7 +57667,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 541 */
+/* 542 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {// This module provides a centralized place for
@@ -57257,7 +57677,7 @@
 	'use strict';
 	
 	var React = global.React || __webpack_require__(1);
-	var _isFinite = __webpack_require__(539);
+	var _isFinite = __webpack_require__(540);
 	
 	module.exports = function (props) {
 	  var rie = 'Invariant Violation: ';
@@ -57278,13 +57698,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 542 */
+/* 543 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(543);
+	module.exports = __webpack_require__(544);
 
 /***/ },
-/* 543 */
+/* 544 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -57305,8 +57725,8 @@
 	
 	var assign = __webpack_require__(39);
 	
-	var ReactTransitionGroup = __webpack_require__(544);
-	var ReactCSSTransitionGroupChild = __webpack_require__(546);
+	var ReactTransitionGroup = __webpack_require__(545);
+	var ReactCSSTransitionGroupChild = __webpack_require__(547);
 	
 	function createTransitionTimeoutPropValidator(transitionType) {
 	  var timeoutPropName = 'transition' + transitionType + 'Timeout';
@@ -57372,7 +57792,7 @@
 	module.exports = ReactCSSTransitionGroup;
 
 /***/ },
-/* 544 */
+/* 545 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -57389,7 +57809,7 @@
 	'use strict';
 	
 	var React = __webpack_require__(2);
-	var ReactTransitionChildMapping = __webpack_require__(545);
+	var ReactTransitionChildMapping = __webpack_require__(546);
 	
 	var assign = __webpack_require__(39);
 	var emptyFunction = __webpack_require__(15);
@@ -57582,7 +58002,7 @@
 	module.exports = ReactTransitionGroup;
 
 /***/ },
-/* 545 */
+/* 546 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -57685,7 +58105,7 @@
 	module.exports = ReactTransitionChildMapping;
 
 /***/ },
-/* 546 */
+/* 547 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -57705,8 +58125,8 @@
 	var React = __webpack_require__(2);
 	var ReactDOM = __webpack_require__(3);
 	
-	var CSSCore = __webpack_require__(547);
-	var ReactTransitionEvents = __webpack_require__(548);
+	var CSSCore = __webpack_require__(548);
+	var ReactTransitionEvents = __webpack_require__(549);
 	
 	var onlyChild = __webpack_require__(156);
 	
@@ -57855,7 +58275,7 @@
 	module.exports = ReactCSSTransitionGroupChild;
 
 /***/ },
-/* 547 */
+/* 548 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -57958,7 +58378,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 548 */
+/* 549 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -58072,7 +58492,7 @@
 	module.exports = ReactTransitionEvents;
 
 /***/ },
-/* 549 */
+/* 550 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -58325,19 +58745,19 @@
 	module.exports = SplashPage;
 
 /***/ },
-/* 550 */
+/* 551 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var React = __webpack_require__(1);
 	var Link = __webpack_require__(159).Link;
-	var TransitionGroup = __webpack_require__(542);
-	var Masonry = __webpack_require__(551);
+	var TransitionGroup = __webpack_require__(543);
+	var Masonry = __webpack_require__(552);
 	
 	var SubscriptionStore = __webpack_require__(491);
 	
-	var SubscriptionGridComponent = __webpack_require__(561);
+	var SubscriptionGridComponent = __webpack_require__(562);
 	
 	var SubscriptionIndex = React.createClass({
 	  displayName: 'SubscriptionIndex',
@@ -58409,12 +58829,12 @@
 	// </TransitionGroup>
 
 /***/ },
-/* 551 */
+/* 552 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isBrowser = (typeof window !== 'undefined');
-	var Masonry = isBrowser ? window.Masonry || __webpack_require__(552) : null;
-	var imagesloaded = isBrowser ? __webpack_require__(559) : null;
+	var Masonry = isBrowser ? window.Masonry || __webpack_require__(553) : null;
+	var imagesloaded = isBrowser ? __webpack_require__(560) : null;
 	var React = __webpack_require__(1);
 	var refName = 'masonryContainer';
 	
@@ -58610,7 +59030,7 @@
 
 
 /***/ },
-/* 552 */
+/* 553 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -58627,8 +59047,8 @@
 	  if ( true ) {
 	    // AMD
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	        __webpack_require__(553),
-	        __webpack_require__(555)
+	        __webpack_require__(554),
+	        __webpack_require__(556)
 	      ], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if ( typeof module == 'object' && module.exports ) {
 	    // CommonJS
@@ -58820,7 +59240,7 @@
 
 
 /***/ },
-/* 553 */
+/* 554 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -58836,10 +59256,10 @@
 	  if ( true ) {
 	    // AMD - RequireJS
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	        __webpack_require__(554),
 	        __webpack_require__(555),
 	        __webpack_require__(556),
-	        __webpack_require__(558)
+	        __webpack_require__(557),
+	        __webpack_require__(559)
 	      ], __WEBPACK_AMD_DEFINE_RESULT__ = function( EvEmitter, getSize, utils, Item ) {
 	        return factory( window, EvEmitter, getSize, utils, Item);
 	      }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -59721,7 +60141,7 @@
 
 
 /***/ },
-/* 554 */
+/* 555 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -59836,7 +60256,7 @@
 
 
 /***/ },
-/* 555 */
+/* 556 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -60051,7 +60471,7 @@
 
 
 /***/ },
-/* 556 */
+/* 557 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -60068,7 +60488,7 @@
 	  if ( true ) {
 	    // AMD
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	      __webpack_require__(557)
+	      __webpack_require__(558)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function( matchesSelector ) {
 	      return factory( window, matchesSelector );
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -60292,7 +60712,7 @@
 
 
 /***/ },
-/* 557 */
+/* 558 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -60351,7 +60771,7 @@
 
 
 /***/ },
-/* 558 */
+/* 559 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -60364,8 +60784,8 @@
 	  if ( true ) {
 	    // AMD - RequireJS
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	        __webpack_require__(554),
-	        __webpack_require__(555)
+	        __webpack_require__(555),
+	        __webpack_require__(556)
 	      ], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if ( typeof module == 'object' && module.exports ) {
 	    // CommonJS - Browserify, Webpack
@@ -60895,7 +61315,7 @@
 
 
 /***/ },
-/* 559 */
+/* 560 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -60912,7 +61332,7 @@
 	  if ( true ) {
 	    // AMD
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	      __webpack_require__(560)
+	      __webpack_require__(561)
 	    ], __WEBPACK_AMD_DEFINE_RESULT__ = function( EvEmitter ) {
 	      return factory( window, EvEmitter );
 	    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -61271,7 +61691,7 @@
 
 
 /***/ },
-/* 560 */
+/* 561 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -61386,7 +61806,7 @@
 
 
 /***/ },
-/* 561 */
+/* 562 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -61439,21 +61859,21 @@
 	module.exports = SubscriptionGridComponent;
 
 /***/ },
-/* 562 */
+/* 563 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var React = __webpack_require__(1);
-	var RadarChart = __webpack_require__(518).Radar;
-	var LineChart = __webpack_require__(518).Line;
-	var BarChart = __webpack_require__(518).Bar;
-	var DonutChart = __webpack_require__(518).Doughnut;
+	var RadarChart = __webpack_require__(519).Radar;
+	var LineChart = __webpack_require__(519).Line;
+	var BarChart = __webpack_require__(519).Bar;
+	var DonutChart = __webpack_require__(519).Doughnut;
 	
 	var SubscriptionStore = __webpack_require__(491);
 	var ReviewStore = __webpack_require__(499);
 	
-	var ReviewsRadarChart = __webpack_require__(563);
+	var ReviewsRadarChart = __webpack_require__(564);
 	
 	var AnalyticsPage = React.createClass({
 	  displayName: 'AnalyticsPage',
@@ -61555,13 +61975,13 @@
 	module.exports = AnalyticsPage;
 
 /***/ },
-/* 563 */
+/* 564 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	var React = __webpack_require__(1);
-	var RadarChart = __webpack_require__(518).Radar;
+	var RadarChart = __webpack_require__(519).Radar;
 	
 	var ReviewsRadarChart = React.createClass({
 	  displayName: 'ReviewsRadarChart',
@@ -61761,72 +62181,1490 @@
 	module.exports = ReviewsRadarChart;
 
 /***/ },
-/* 564 */
-/***/ function(module, exports) {
+/* 565 */
+/***/ function(module, exports, __webpack_require__) {
 
-	function topPosition(domElt) {
-	  if (!domElt) {
-	    return 0;
+	module.exports = __webpack_require__(566);
+
+
+/***/ },
+/* 566 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React          = __webpack_require__(1),
+	    ReactDOM       = __webpack_require__(158),
+	    ReactDOMServer = __webpack_require__(567),
+	    scroll         = __webpack_require__(568),
+	    Beacon         = __webpack_require__(571),
+	    Tooltip        = __webpack_require__(573);
+	
+	var defaultState = {
+	        index: 0,
+	        play: false,
+	        showTooltip: false,
+	        xPos: -1000,
+	        yPos: -1000,
+	        skipped: false
+	    },
+	    listeners    = {
+	        tooltips: {}
+	    },
+	    isTouch      = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+	
+	var Component = React.createClass({
+	    displayName: 'Joyride',
+	
+	    propTypes: {
+	        completeCallback: React.PropTypes.func,
+	        debug: React.PropTypes.bool,
+	        keyboardNavigation: React.PropTypes.bool,
+	        locale: React.PropTypes.object,
+	        resizeDebounce: React.PropTypes.bool,
+	        resizeDebounceDelay: React.PropTypes.number,
+	        scrollOffset: React.PropTypes.number,
+	        scrollToFirstStep: React.PropTypes.bool,
+	        scrollToSteps: React.PropTypes.bool,
+	        showBackButton: React.PropTypes.bool,
+	        showOverlay: React.PropTypes.bool,
+	        showSkipButton: React.PropTypes.bool,
+	        showStepsProgress: React.PropTypes.bool,
+	        stepCallback: React.PropTypes.func,
+	        steps: React.PropTypes.array,
+	        tooltipOffset: React.PropTypes.number,
+	        type: React.PropTypes.string
+	    },
+	
+	    getDefaultProps: function () {
+	        return {
+	            debug: false,
+	            keyboardNavigation: true,
+	            locale: {
+	                back: 'Back',
+	                close: 'Close',
+	                last: 'Last',
+	                next: 'Next',
+	                skip: 'Skip'
+	            },
+	            resizeDebounce: false,
+	            resizeDebounceDelay: 200,
+	            scrollToSteps: true,
+	            scrollOffset: 20,
+	            scrollToFirstStep: false,
+	            showBackButton: true,
+	            showOverlay: true,
+	            showSkipButton: false,
+	            showStepsProgress: false,
+	            steps: [],
+	            tooltipOffset: 15,
+	            type: 'single',
+	            completeCallback: undefined,
+	            stepCallback: undefined
+	        };
+	    },
+	
+	    getInitialState: function () {
+	        return defaultState;
+	    },
+	
+	    componentDidMount: function () {
+	        var state = this.state,
+	            props = this.props;
+	
+	        this._log(['joyride:initialized', props]);
+	
+	        if (props.resizeDebounce) {
+	            var self = this,
+	                timeoutId;
+	
+	            listeners.resize = (function () {
+	                return function () {
+	                    clearTimeout(timeoutId);
+	                    timeoutId = setTimeout(function () {
+	                        timeoutId = null;
+	                        self._calcPlacement();
+	                    }, props.resizeDebounceDelay);
+	                };
+	            }());
+	        }
+	        else {
+	            listeners.resize = this._calcPlacement;
+	        }
+	        window.addEventListener('resize', listeners.resize);
+	
+	        if (props.keyboardNavigation) {
+	            listeners.keyboard = this._keyboardNavigation;
+	            document.body.addEventListener('keydown', listeners.keyboard);
+	        }
+	    },
+	
+	    componentWillUnmount: function () {
+	        window.removeEventListener('resize', listeners.resize);
+	
+	        if (this.props.keyboardNavigation) {
+	            document.body.removeEventListener('keydown', listeners.keyboard);
+	        }
+	
+	        if (Object.keys(listeners.tooltips).length) {
+	            Object.keys(listeners.tooltips).forEach(function (key) {
+	                document.querySelector(key).removeEventListener(listeners.tooltips[key].event, listeners.tooltips[key].cb);
+	                delete listeners.tooltips[key];
+	            });
+	        }
+	    },
+	
+	    componentDidUpdate: function (prevProps, prevState) {
+	        var props = this.props,
+	            state = this.state;
+	
+	        if ((state.tooltip || (state.play && props.steps[state.index])) && state.xPos < 0) {
+	            this._calcPlacement();
+	        }
+	
+	        if (prevProps.steps.length !== props.steps.length) {
+	            this._log(['joyride:changedSteps', this.props.steps]);
+	
+	            if (!props.steps.length) {
+	                this.reset();
+	            }
+	        }
+	
+	        if (state.play && props.scrollToSteps && (props.scrollToFirstStep || (state.index > 0 || prevState.index > state.index))) {
+	            scroll.top(this._getBrowser() === 'firefox' ? document.documentElement : document.body, this._getScrollTop());
+	        }
+	    },
+	
+	    /**
+	     * Starts the tour
+	     * @param {boolean} [autorun]- Starts with the first tooltip opened
+	     */
+	    start: function (autorun) {
+	        autorun = autorun === true;
+	
+	        this._log(['joyride:start', 'autorun:', autorun]);
+	
+	        this.setState({
+	            play: true
+	        }, function () {
+	            if (autorun) {
+	                this._toggleTooltip(true);
+	            }
+	        });
+	    },
+	
+	    /**
+	     * Stop the tour
+	     */
+	    stop: function () {
+	        this._log(['joyride:stop']);
+	
+	        this.setState({
+	            showTooltip: false,
+	            play: false
+	        });
+	    },
+	
+	    /**
+	     * Reset Tour
+	     * @param {boolean} [restart] - Starts the new tour right away
+	     */
+	    reset: function (restart) {
+	        restart = restart === true;
+	
+	        var newState = JSON.parse(JSON.stringify(defaultState));
+	        newState.play = restart;
+	
+	        this._log(['joyride:reset', 'restart:', restart]);
+	
+	        // Force a re-render if necessary
+	        if (restart && this.state.play === restart && this.state.index === 0) {
+	            this.forceUpdate();
+	        }
+	
+	        this.setState(newState);
+	    },
+	
+	    /**
+	     * Retrieve the current progress of your tour
+	     * @returns {{index: (number|*), percentageComplete: number, step: (object|null)}}
+	     */
+	    getProgress: function () {
+	        var state = this.state,
+	            props = this.props;
+	
+	        this._log(['joyride:getProgress', 'steps:', props.steps]);
+	
+	        return {
+	            index: state.index,
+	            percentageComplete: parseFloat(((state.index / props.steps.length) * 100).toFixed(2).replace('.00', '')),
+	            step: props.steps[state.index]
+	        };
+	    },
+	
+	    /**
+	     * Parse the incoming steps
+	     * @param {Array|Object} steps
+	     * @returns {Array}
+	     */
+	    parseSteps: function (steps) {
+	        var tmpSteps = [],
+	            newSteps = [],
+	            el;
+	
+	        if (Array.isArray(steps)) {
+	            steps.forEach(function (s) {
+	                if (s instanceof Object) {
+	                    tmpSteps.push(s);
+	                }
+	            });
+	        }
+	        else {
+	            tmpSteps = [steps];
+	        }
+	
+	        tmpSteps.forEach(function (s) {
+	            if (s.selector.dataset && s.selector.dataset.reactid) {
+	                s.selector = '[data-reactid="' + s.selector.dataset.reactid + '"]';
+	            }
+	            el = document.querySelector(s.selector);
+	            s.position = s.position || 'top';
+	
+	            if (el && el.offsetParent) {
+	                newSteps.push(s);
+	            }
+	            else {
+	                this._log(['joyride:parseSteps', 'Element not rendered in the DOM. Skipped..', s], true);
+	            }
+	        }.bind(this));
+	
+	        return newSteps;
+	    },
+	
+	    addTooltip: function (data) {
+	        var parseData = this.parseSteps(data),
+	            el,
+	            eventType,
+	            key,
+	            self      = this,
+	            timeoutId;
+	
+	        this._log(['joyride:addTooltip', 'data:', data]);
+	
+	        if (parseData.length) {
+	            data = parseData[0];
+	            key = data.trigger || data.selector;
+	            el = document.querySelector(key);
+	            eventType = data.event || 'click';
+	        }
+	
+	        el.dataset.tooltip = JSON.stringify(data);
+	
+	        if (eventType === 'hover' && !isTouch) {
+	            listeners.tooltips[key] = { event: 'mouseenter', cb: this._onTooltipTrigger };
+	            listeners.tooltips[key + 'mouseleave'] = { event: 'mouseleave', cb: this._onTooltipTrigger };
+	            listeners.tooltips[key + 'click'] = {
+	                event: 'click', cb: function (e) {
+	                    e.preventDefault();
+	                }
+	            };
+	
+	            el.addEventListener('mouseenter', listeners.tooltips[key].cb);
+	            el.addEventListener('mouseleave', listeners.tooltips[key + 'mouseleave'].cb);
+	            el.addEventListener('click', listeners.tooltips[key + 'click'].cb);
+	        }
+	        else {
+	            listeners.tooltips[key] = { event: 'click', cb: this._onTooltipTrigger };
+	            el.addEventListener('click', listeners.tooltips[key].cb);
+	        }
+	    },
+	
+	    _log: function (msg, warn) {
+	        var logger = warn ? console.warn || console.error : console.log; //eslint-disable-line no-console
+	
+	        if (this.props.debug) {
+	            logger.apply(console, msg); //eslint-disable-line no-console
+	        }
+	    },
+	
+	    /**
+	     * Returns the current browser
+	     * @private
+	     * @returns {String}
+	     */
+	    _getBrowser: function () {
+	        // Return cached result if avalible, else get result then cache it.
+	        if (this._browser) {
+	            return this._browser;
+	        }
+	
+	        var isOpera = Boolean(window.opera) || navigator.userAgent.indexOf(' OPR/') >= 0;
+	        // Opera 8.0+ (UA detection to detect Blink/v8-powered Opera)
+	        var isFirefox = typeof InstallTrigger !== 'undefined';// Firefox 1.0+
+	        var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+	        // At least Safari 3+: "[object HTMLElementConstructor]"
+	        var isChrome = Boolean(window.chrome) && !isOpera;// Chrome 1+
+	        var isIE = /*@cc_on!@*/ Boolean(document.documentMode); // At least IE6
+	
+	        return (this._browser =
+	            isOpera ? 'opera' :
+	                isFirefox ? 'firefox' :
+	                    isSafari ? 'safari' :
+	                        isChrome ? 'chrome' :
+	                            isIE ? 'ie' :
+	                                '');
+	    },
+	
+	    /**
+	     * Get an element actual dimensions with margin
+	     * @param {String|DOMElement} el - Element node or selector
+	     * @returns {{height: number, width: number}}
+	     */
+	    _getElementDimensions: function (el) {
+	        // Get the DOM Node if you pass in a string
+	        el = (typeof el === 'string') ? document.querySelector(el) : el;
+	
+	        var styles = window.getComputedStyle(el),
+	            height = el.clientHeight + parseInt(styles.marginTop, 10) + parseInt(styles.marginBottom, 10),
+	            width  = el.clientWidth + parseInt(styles.marginLeft, 10) + parseInt(styles.marginRight, 10);
+	
+	        return {
+	            height: height,
+	            width: width
+	        };
+	    },
+	
+	    /**
+	     * Get the scrollTop position
+	     * @returns {number}
+	     */
+	    _getScrollTop: function () {
+	        var state     = this.state,
+	            props     = this.props,
+	            step      = props.steps[state.index],
+	            position  = step.position,
+	            target    = document.querySelector(step.selector),
+	            targetTop = target.getBoundingClientRect().top + document.body.scrollTop,
+	            scrollTop = 0;
+	
+	        if (/^top/.test(position)) {
+	            scrollTop = Math.floor(state.yPos - props.scrollOffset);
+	        }
+	        else if (/^bottom|^left|^right/.test(position)) {
+	            scrollTop = Math.floor(targetTop - props.scrollOffset);
+	        }
+	
+	        return scrollTop;
+	    },
+	
+	    /**
+	     * Keydown event listener
+	     * @param {Event} e - Keyboard event
+	     */
+	    _keyboardNavigation: function (e) {
+	        var state  = this.state,
+	            props  = this.props,
+	            intKey = (window.Event) ? e.which : e.keyCode,
+	            hasSteps;
+	
+	        if (state.showTooltip) {
+	            if ([32, 38, 40].indexOf(intKey) > -1) {
+	                e.preventDefault();
+	            }
+	
+	            if (intKey === 27) {
+	                this._toggleTooltip(false, state.index + 1);
+	            }
+	            else if ([13, 32].indexOf(intKey) > -1) {
+	                hasSteps = Boolean(props.steps[state.index + 1]);
+	                this._toggleTooltip(hasSteps, state.index + 1);
+	            }
+	        }
+	    },
+	
+	    /**
+	     * Tooltip event listener
+	     * @param {Event} e - Keyboard event
+	     */
+	    _onTooltipTrigger: function (e) {
+	        e.preventDefault();
+	        var tooltip = e.currentTarget.dataset.tooltip;
+	
+	        if (tooltip) {
+	            tooltip = JSON.parse(tooltip);
+	
+	            if (!this.state.tooltip || (this.state.tooltip.selector !== tooltip.selector)) {
+	
+	                this.setState({
+	                    previousPlay: this.state.previousPlay !== undefined ? this.state.previousPlay : this.state.play,
+	                    play: false,
+	                    showTooltip: false,
+	                    tooltip: tooltip,
+	                    xPos: -1000,
+	                    yPos: -1000
+	                });
+	            }
+	            else {
+	                document.querySelector('.joyride-tooltip__close').click();
+	            }
+	        }
+	    },
+	
+	    /**
+	     * Beacon click event listener
+	     * @param {Event} e - Keyboard event
+	     */
+	    _onBeaconTrigger: function (e) {
+	        e.preventDefault();
+	        this._toggleTooltip(true, this.state.index);
+	    },
+	
+	    /**
+	     * Tooltip click event listener
+	     * @param {Event} e - Keyboard event
+	     */
+	    _onClickTooltip: function (e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	
+	        var state    = this.state,
+	            props    = this.props,
+	            tooltip  = document.querySelector('.joyride-tooltip'),
+	            el       = e.target,
+	            type     = el.dataset.type,
+	            newIndex = state.index + (type === 'back' ? -1 : 1);
+	
+	        if (type === 'skip') {
+	            this.setState({
+	                skipped: true
+	            });
+	            newIndex = props.steps.length + 1;
+	        }
+	
+	        if (tooltip.classList.contains('standalone')) {
+	            this.setState({
+	                play: this.state.previousPlay,
+	                previousPlay: undefined,
+	                tooltip: undefined,
+	                xPos: -1000,
+	                yPos: -1000
+	            });
+	        }
+	        else if (type) {
+	            this._toggleTooltip(
+	                (props.type === 'continuous' || props.type === 'guided')
+	                && ['close', 'skip'].indexOf(type) === -1
+	                && Boolean(props.steps[newIndex])
+	                , newIndex);
+	        }
+	    },
+	
+	    /**
+	     * Toggle Tooltip's visibility
+	     * @param {Boolean} show - Render the tooltip directly or the beacon
+	     * @param {Number} index - The tour's new index
+	     */
+	    _toggleTooltip: function (show, index) {
+	        index = (index !== undefined ? index : this.state.index);
+	
+	        var props = this.props;
+	
+	        this.setState({
+	            play: props.steps[index] ? this.state.play : false,
+	            showTooltip: show,
+	            index: index,
+	            xPos: -1000,
+	            yPos: -1000
+	        }, function () {
+	            if (typeof props.stepCallback === 'function' && props.steps[this.state.index]) {
+	                props.stepCallback(props.steps[this.state.index]);
+	            }
+	
+	            if (props.steps.length && !props.steps[this.state.index]) {
+	                if (typeof props.completeCallback === 'function') {
+	                    props.completeCallback(props.steps, this.state.skipped);
+	                }
+	            }
+	        });
+	    },
+	
+	    /**
+	     * Position absolute elements next to its target
+	     * @param {Object} [step]
+	     * @param {Boolean} [showTooltip]
+	     */
+	    _calcPlacement: function () {
+	        var state       = this.state,
+	            props       = this.props,
+	            step        = state.tooltip ? state.tooltip : props.steps[state.index],
+	            showTooltip = state.tooltip ? true : state.showTooltip,
+	            component,
+	            position,
+	            body,
+	            target,
+	            placement   = {
+	                x: -1000,
+	                y: -1000
+	            };
+	
+	        if (step) {
+	            position = step.position;
+	            body = document.body.getBoundingClientRect();
+	            target = document.querySelector(step.selector).getBoundingClientRect();
+	            component = this._getElementDimensions((showTooltip ? '.joyride-tooltip' : '.joyride-beacon'));
+	
+	            // Change the step position in the tooltip won't fit in the window
+	            if (/^left/.test(position) && target.left - (component.width + props.tooltipOffset) < 0) {
+	                position = 'top';
+	            }
+	            else if (/^right/.test(position) && target.left + target.width + (component.width + props.tooltipOffset) > body.width) {
+	                position = 'bottom';
+	            }
+	
+	            // Calculate x position
+	            if (/^left/.test(position)) {
+	                placement.x = target.left - (showTooltip ? component.width + props.tooltipOffset : component.width / 2);
+	            }
+	            else if (/^right/.test(position)) {
+	                placement.x = target.left + target.width - (showTooltip ? -props.tooltipOffset : component.width / 2);
+	            }
+	            else {
+	                placement.x = target.left + target.width / 2 - component.width / 2;
+	            }
+	
+	            // Calculate y position
+	            if (/^top/.test(position)) {
+	                placement.y = (target.top - body.top) - (showTooltip ? component.height + props.tooltipOffset : component.height / 2);
+	            }
+	            else if (/^bottom/.test(position)) {
+	                placement.y = (target.top - body.top) + target.height - (showTooltip ? -props.tooltipOffset : component.height / 2);
+	            }
+	            else {
+	                placement.y = (target.top - body.top) + target.height / 2 - component.height / 2 + (showTooltip ? props.tooltipOffset : 0);
+	            }
+	
+	            if (/^bottom|^top/.test(position)) {
+	                if (/left/.test(position)) {
+	                    placement.x = target.left - (showTooltip ? props.tooltipOffset : component.width / 2);
+	                }
+	                else if (/right/.test(position)) {
+	                    placement.x = target.left + target.width - (showTooltip ? component.width - props.tooltipOffset : component.width / 2);
+	                }
+	            }
+	
+	            this.setState({
+	                xPos: this._preventWindowOverflow(Math.ceil(placement.x), 'x', component.width, component.height),
+	                yPos: this._preventWindowOverflow(Math.ceil(placement.y), 'y', component.width, component.height)
+	            });
+	        }
+	    },
+	
+	    /**
+	     * Prevent tooltip to render outside the window
+	     * @param {Number} value - The axis position
+	     * @param {String} axis - The Axis X or Y
+	     * @param {Number} elWidth - The target element width
+	     * @param {Number} elHeight - The target element height
+	     * @returns {Number}
+	     */
+	    _preventWindowOverflow: function (value, axis, elWidth, elHeight) {
+	        var winWidth  = window.innerWidth,
+	            docHeight = document.body.offsetHeight,
+	            newValue  = value;
+	
+	        if (axis === 'x') {
+	            if (value + elWidth >= winWidth) {
+	                newValue = winWidth - elWidth - 15;
+	            }
+	            else if (value < 15) {
+	                newValue = 15;
+	            }
+	        }
+	        else if (axis === 'y') {
+	            if (value + elHeight >= docHeight) {
+	                newValue = docHeight - elHeight - 15;
+	            }
+	            else if (value < 15) {
+	                newValue = 15;
+	            }
+	        }
+	
+	        return newValue;
+	    },
+	
+	    /**
+	     *
+	     * @param {Boolean} update
+	     * @returns {*}
+	     * @private
+	     */
+	    _createComponent: function (update) {
+	        var state       = this.state,
+	            props       = this.props,
+	            currentStep = state.tooltip || props.steps[state.index],
+	            buttons     = {
+	                primary: props.locale.close
+	            },
+	            target      = currentStep && currentStep.selector ? document.querySelector(currentStep.selector) : null,
+	            cssPosition = target ? target.style.position : null,
+	            showOverlay = state.tooltip ? false : props.showOverlay,
+	            component;
+	
+	        this._log([
+	            'joyride:' + (update ? 'updateComponent' : 'createComponent'),
+	            'component:', state.showTooltip || state.tooltip ? 'Tooltip' : 'Beacon',
+	            'target:', target
+	        ]);
+	
+	        if (target) {
+	            if (state.showTooltip || state.tooltip) {
+	                if (!state.tooltip) {
+	                    if (props.type === 'continuous' || props.type === 'guided') {
+	                        buttons.primary = props.locale.last;
+	
+	                        if (Boolean(props.steps[state.index + 1])) {
+	                            buttons.primary = props.locale.next;
+	
+	                            if (props.showStepsProgress) {
+	                                buttons.primary += ' ' + (state.index + 1) + '/' + props.steps.length;
+	                            }
+	                        }
+	
+	                        if (props.showBackButton && state.index > 0) {
+	                            buttons.secondary = props.locale.back;
+	                        }
+	                    }
+	
+	                    if (props.showSkipButton) {
+	                        buttons.skip = props.locale.skip;
+	                    }
+	                }
+	
+	                component = React.createElement(Tooltip, {
+	                    animate: state.xPos > -1,
+	                    browser: this._getBrowser(),
+	                    buttons: buttons,
+	                    cssPosition: cssPosition,
+	                    showOverlay: showOverlay,
+	                    step: currentStep,
+	                    standalone: Boolean(state.tooltip),
+	                    xPos: state.xPos,
+	                    yPos: state.yPos,
+	                    onClick: this._onClickTooltip
+	                });
+	            }
+	            else {
+	                component = React.createElement(Beacon, {
+	                    cssPosition: cssPosition,
+	                    step: currentStep,
+	                    xPos: state.xPos,
+	                    yPos: state.yPos,
+	                    onTrigger: this._onBeaconTrigger,
+	                    eventType: currentStep.type || 'click'
+	                });
+	            }
+	        }
+	
+	        return component;
+	    },
+	
+	    render: function () {
+	        var state   = this.state,
+	            props   = this.props,
+	            hasStep = Boolean(props.steps[state.index]),
+	            component,
+	            standaloneTooltip;
+	
+	        if (state.play && state.xPos < 0 && hasStep) {
+	            this._log(['joyride:render', 'step:', props.steps[state.index]]);
+	        }
+	        else if (!state.play && state.tooltip) {
+	            this._log(['joyride:render', 'tooltip:', state.tooltip]);
+	        }
+	
+	        if (state.tooltip) {
+	            standaloneTooltip = this._createComponent();
+	        }
+	        else if (state.play && hasStep) {
+	            component = this._createComponent(state.xPos < 0);
+	        }
+	
+	        return React.createElement('div', {
+	                className: 'joyride'
+	            },
+	            component,
+	            standaloneTooltip
+	        );
+	    }
+	});
+	
+	module.exports = Component;
+
+
+/***/ },
+/* 567 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	module.exports = __webpack_require__(148);
+
+
+/***/ },
+/* 568 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var raf = __webpack_require__(569)
+	var ease = __webpack_require__(570)
+	
+	function scroll (prop, element, to, options, callback) {
+	  var start = +new Date
+	  var from = element[prop]
+	  var cancelled = false
+	  var type = 'inOutSine'
+	  var duration = 350
+	
+	  if (typeof options === 'function') {
+	    callback = options
 	  }
-	  return domElt.offsetTop + topPosition(domElt.offsetParent);
+	  else {
+	    options = options || {}
+	    type = options.ease || type
+	    duration = options.duration || duration
+	    callback = callback || function () {}
+	  }
+	
+	  var easing = ease[type]
+	
+	  if (from === to) {
+	    return callback(
+	      new Error('Element already at target scroll position'),
+	      element[prop]
+	    )
+	  }
+	
+	  function cancel () {
+	    cancelled = true
+	  }
+	
+	  function animate (timestamp) {
+	    if (cancelled) {
+	      return callback(
+	        new Error('Scroll cancelled'),
+	        element[prop]
+	      )
+	    }
+	
+	    var now = +new Date
+	    var time = Math.min(1, ((now - start) / duration))
+	    var eased = easing(time)
+	
+	    element[prop] = (eased * (to - from)) + from
+	
+	    time < 1 ?
+	      raf(animate) :
+	      callback(null, element[prop])
+	  }
+	
+	  raf(animate)
+	
+	  return cancel
 	}
 	
-	module.exports = function (React) {
-	  if (React.addons && React.addons.InfiniteScroll) {
-	    return React.addons.InfiniteScroll;
+	module.exports = {
+	  top: function (element, to, options, callback) {
+	    return scroll('scrollTop', element, to, options, callback)
+	  },
+	  left: function (element, to, options, callback) {
+	    return scroll('scrollLeft', element, to, options, callback)
 	  }
-	  React.addons = React.addons || {};
-	  var InfiniteScroll = React.addons.InfiniteScroll = React.createClass({
-	    getDefaultProps: function () {
-	      return {
-	        pageStart: 0,
-	        hasMore: false,
-	        loadMore: function () {},
-	        threshold: 250
-	      };
-	    },
-	    componentDidMount: function () {
-	      this.pageLoaded = this.props.pageStart;
-	      this.attachScrollListener();
-	    },
-	    componentDidUpdate: function () {
-	      this.attachScrollListener();
-	    },
-	    render: function () {
-	      var props = this.props;
-	      return React.DOM.div(null, props.children, props.hasMore && (props.loader || InfiniteScroll._defaultLoader));
-	    },
-	    scrollListener: function () {
-	      var el = this.getDOMNode();
-	      var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-	      if (topPosition(el) + el.offsetHeight - scrollTop - window.innerHeight < Number(this.props.threshold)) {
-	        this.detachScrollListener();
-	        // call loadMore after detachScrollListener to allow
-	        // for non-async loadMore functions
-	        this.props.loadMore(this.pageLoaded += 1);
-	      }
-	    },
-	    attachScrollListener: function () {
-	      if (!this.props.hasMore) {
-	        return;
-	      }
-	      window.addEventListener('scroll', this.scrollListener);
-	      window.addEventListener('resize', this.scrollListener);
-	      this.scrollListener();
-	    },
-	    detachScrollListener: function () {
-	      window.removeEventListener('scroll', this.scrollListener);
-	      window.removeEventListener('resize', this.scrollListener);
-	    },
-	    componentWillUnmount: function () {
-	      this.detachScrollListener();
-	    }
-	  });
-	  InfiniteScroll.setDefaultLoader = function (loader) {
-	    InfiniteScroll._defaultLoader = loader;
-	  };
-	  return InfiniteScroll;
+	}
+
+
+/***/ },
+/* 569 */
+/***/ function(module, exports) {
+
+	/**
+	 * Expose `requestAnimationFrame()`.
+	 */
+	
+	exports = module.exports = window.requestAnimationFrame
+	  || window.webkitRequestAnimationFrame
+	  || window.mozRequestAnimationFrame
+	  || window.oRequestAnimationFrame
+	  || window.msRequestAnimationFrame
+	  || fallback;
+	
+	/**
+	 * Fallback implementation.
+	 */
+	
+	var prev = new Date().getTime();
+	function fallback(fn) {
+	  var curr = new Date().getTime();
+	  var ms = Math.max(0, 16 - (curr - prev));
+	  var req = setTimeout(fn, ms);
+	  prev = curr;
+	  return req;
+	}
+	
+	/**
+	 * Cancel.
+	 */
+	
+	var cancel = window.cancelAnimationFrame
+	  || window.webkitCancelAnimationFrame
+	  || window.mozCancelAnimationFrame
+	  || window.oCancelAnimationFrame
+	  || window.msCancelAnimationFrame
+	  || window.clearTimeout;
+	
+	exports.cancel = function(id){
+	  cancel.call(window, id);
 	};
+
+
+/***/ },
+/* 570 */
+/***/ function(module, exports) {
+
+	
+	// easing functions from "Tween.js"
+	
+	exports.linear = function(n){
+	  return n;
+	};
+	
+	exports.inQuad = function(n){
+	  return n * n;
+	};
+	
+	exports.outQuad = function(n){
+	  return n * (2 - n);
+	};
+	
+	exports.inOutQuad = function(n){
+	  n *= 2;
+	  if (n < 1) return 0.5 * n * n;
+	  return - 0.5 * (--n * (n - 2) - 1);
+	};
+	
+	exports.inCube = function(n){
+	  return n * n * n;
+	};
+	
+	exports.outCube = function(n){
+	  return --n * n * n + 1;
+	};
+	
+	exports.inOutCube = function(n){
+	  n *= 2;
+	  if (n < 1) return 0.5 * n * n * n;
+	  return 0.5 * ((n -= 2 ) * n * n + 2);
+	};
+	
+	exports.inQuart = function(n){
+	  return n * n * n * n;
+	};
+	
+	exports.outQuart = function(n){
+	  return 1 - (--n * n * n * n);
+	};
+	
+	exports.inOutQuart = function(n){
+	  n *= 2;
+	  if (n < 1) return 0.5 * n * n * n * n;
+	  return -0.5 * ((n -= 2) * n * n * n - 2);
+	};
+	
+	exports.inQuint = function(n){
+	  return n * n * n * n * n;
+	}
+	
+	exports.outQuint = function(n){
+	  return --n * n * n * n * n + 1;
+	}
+	
+	exports.inOutQuint = function(n){
+	  n *= 2;
+	  if (n < 1) return 0.5 * n * n * n * n * n;
+	  return 0.5 * ((n -= 2) * n * n * n * n + 2);
+	};
+	
+	exports.inSine = function(n){
+	  return 1 - Math.cos(n * Math.PI / 2 );
+	};
+	
+	exports.outSine = function(n){
+	  return Math.sin(n * Math.PI / 2);
+	};
+	
+	exports.inOutSine = function(n){
+	  return .5 * (1 - Math.cos(Math.PI * n));
+	};
+	
+	exports.inExpo = function(n){
+	  return 0 == n ? 0 : Math.pow(1024, n - 1);
+	};
+	
+	exports.outExpo = function(n){
+	  return 1 == n ? n : 1 - Math.pow(2, -10 * n);
+	};
+	
+	exports.inOutExpo = function(n){
+	  if (0 == n) return 0;
+	  if (1 == n) return 1;
+	  if ((n *= 2) < 1) return .5 * Math.pow(1024, n - 1);
+	  return .5 * (-Math.pow(2, -10 * (n - 1)) + 2);
+	};
+	
+	exports.inCirc = function(n){
+	  return 1 - Math.sqrt(1 - n * n);
+	};
+	
+	exports.outCirc = function(n){
+	  return Math.sqrt(1 - (--n * n));
+	};
+	
+	exports.inOutCirc = function(n){
+	  n *= 2
+	  if (n < 1) return -0.5 * (Math.sqrt(1 - n * n) - 1);
+	  return 0.5 * (Math.sqrt(1 - (n -= 2) * n) + 1);
+	};
+	
+	exports.inBack = function(n){
+	  var s = 1.70158;
+	  return n * n * (( s + 1 ) * n - s);
+	};
+	
+	exports.outBack = function(n){
+	  var s = 1.70158;
+	  return --n * n * ((s + 1) * n + s) + 1;
+	};
+	
+	exports.inOutBack = function(n){
+	  var s = 1.70158 * 1.525;
+	  if ( ( n *= 2 ) < 1 ) return 0.5 * ( n * n * ( ( s + 1 ) * n - s ) );
+	  return 0.5 * ( ( n -= 2 ) * n * ( ( s + 1 ) * n + s ) + 2 );
+	};
+	
+	exports.inBounce = function(n){
+	  return 1 - exports.outBounce(1 - n);
+	};
+	
+	exports.outBounce = function(n){
+	  if ( n < ( 1 / 2.75 ) ) {
+	    return 7.5625 * n * n;
+	  } else if ( n < ( 2 / 2.75 ) ) {
+	    return 7.5625 * ( n -= ( 1.5 / 2.75 ) ) * n + 0.75;
+	  } else if ( n < ( 2.5 / 2.75 ) ) {
+	    return 7.5625 * ( n -= ( 2.25 / 2.75 ) ) * n + 0.9375;
+	  } else {
+	    return 7.5625 * ( n -= ( 2.625 / 2.75 ) ) * n + 0.984375;
+	  }
+	};
+	
+	exports.inOutBounce = function(n){
+	  if (n < .5) return exports.inBounce(n * 2) * .5;
+	  return exports.outBounce(n * 2 - 1) * .5 + .5;
+	};
+	
+	// aliases
+	
+	exports['in-quad'] = exports.inQuad;
+	exports['out-quad'] = exports.outQuad;
+	exports['in-out-quad'] = exports.inOutQuad;
+	exports['in-cube'] = exports.inCube;
+	exports['out-cube'] = exports.outCube;
+	exports['in-out-cube'] = exports.inOutCube;
+	exports['in-quart'] = exports.inQuart;
+	exports['out-quart'] = exports.outQuart;
+	exports['in-out-quart'] = exports.inOutQuart;
+	exports['in-quint'] = exports.inQuint;
+	exports['out-quint'] = exports.outQuint;
+	exports['in-out-quint'] = exports.inOutQuint;
+	exports['in-sine'] = exports.inSine;
+	exports['out-sine'] = exports.outSine;
+	exports['in-out-sine'] = exports.inOutSine;
+	exports['in-expo'] = exports.inExpo;
+	exports['out-expo'] = exports.outExpo;
+	exports['in-out-expo'] = exports.inOutExpo;
+	exports['in-circ'] = exports.inCirc;
+	exports['out-circ'] = exports.outCirc;
+	exports['in-out-circ'] = exports.inOutCirc;
+	exports['in-back'] = exports.inBack;
+	exports['out-back'] = exports.outBack;
+	exports['in-out-back'] = exports.inOutBack;
+	exports['in-bounce'] = exports.inBounce;
+	exports['out-bounce'] = exports.outBounce;
+	exports['in-out-bounce'] = exports.inOutBounce;
+
+
+/***/ },
+/* 571 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React    = __webpack_require__(1),
+	    hexToRGB = __webpack_require__(572).hexToRgb;
+	
+	var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+	
+	var Beacon = React.createClass({
+	    displayName: 'JoyrideBeacon',
+	    propTypes: {
+	        cssPosition: React.PropTypes.string.isRequired,
+	        eventType: React.PropTypes.string.isRequired,
+	        onTrigger: React.PropTypes.func.isRequired,
+	        xPos: React.PropTypes.oneOfType([
+	            React.PropTypes.number,
+	            React.PropTypes.string
+	        ]).isRequired,
+	        yPos: React.PropTypes.oneOfType([
+	            React.PropTypes.number,
+	            React.PropTypes.string
+	        ]).isRequired
+	    },
+	
+	    getDefaultProps: function () {
+	        return {
+	            cssPosition: 'absolute',
+	            xPos: -1000,
+	            yPos: -1000
+	        };
+	    },
+	
+	    render: function () {
+	        var props      = this.props,
+	            stepStyles = props.step.style || {},
+	            rgb,
+	            styles     = {
+	                beacon: {
+	                    left: props.xPos,
+	                    position: props.cssPosition === 'fixed' ? 'fixed' : 'absolute',
+	                    top: props.yPos
+	                },
+	                inner: {},
+	                outer: {}
+	            };
+	
+	        if (stepStyles.beacon) {
+	            if (typeof stepStyles.beacon === 'string') {
+	                rgb = hexToRGB(stepStyles.beacon);
+	
+	                styles.inner.backgroundColor = stepStyles.beacon;
+	                styles.outer = {
+	                    backgroundColor: 'rgba(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ', 0.2)',
+	                    borderColor: stepStyles.beacon
+	                };
+	            }
+	            else {
+	                if (stepStyles.beacon.inner) {
+	                    styles.inner.backgroundColor = stepStyles.beacon.inner;
+	                }
+	
+	                if (stepStyles.beacon.outer) {
+	                    rgb = hexToRGB(stepStyles.beacon.outer);
+	
+	                    styles.outer = {
+	                        backgroundColor: 'rgba(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ', 0.4)',
+	                        borderColor: stepStyles.beacon.outer
+	                    };
+	                }
+	            }
+	        }
+	
+	        return (
+	            React.createElement('a', {
+	                    href: '#',
+	                    className: 'joyride-beacon',
+	                    style: styles.beacon,
+	                    onClick: props.eventType === 'click' || isTouch ? props.onTrigger : null,
+	                    onMouseEnter: props.eventType === 'hover' && !isTouch ? props.onTrigger : null
+	                },
+	                React.createElement('span', {
+	                    className: 'inner',
+	                    style: styles.inner
+	                }),
+	                React.createElement('span', {
+	                    className: 'outer',
+	                    style: styles.outer
+	                })
+	            )
+	        );
+	    }
+	
+	});
+	
+	module.exports = Beacon;
+
+
+/***/ },
+/* 572 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	    hexToRgb: function (hex) {
+	        // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+	        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	        hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+	            return r + r + g + g + b + b;
+	        });
+	
+	        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	        return result ? {
+	            r: parseInt(result[1], 16),
+	            g: parseInt(result[2], 16),
+	            b: parseInt(result[3], 16)
+	        } : null;
+	    }
+	};
+
+
+/***/ },
+/* 573 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React  = __webpack_require__(1),
+	    assign = __webpack_require__(574);
+	
+	var Tooltip = React.createClass({
+	    displayName: 'JoyrideTooltip',
+	
+	    propTypes: {
+	        animate: React.PropTypes.bool.isRequired,
+	        browser: React.PropTypes.string.isRequired,
+	        buttons: React.PropTypes.object.isRequired,
+	        cssPosition: React.PropTypes.string.isRequired,
+	        onClick: React.PropTypes.func.isRequired,
+	        showOverlay: React.PropTypes.bool.isRequired,
+	        standalone: React.PropTypes.bool,
+	        step: React.PropTypes.object.isRequired,
+	        xPos: React.PropTypes.oneOfType([
+	            React.PropTypes.number,
+	            React.PropTypes.string
+	        ]).isRequired,
+	        yPos: React.PropTypes.oneOfType([
+	            React.PropTypes.number,
+	            React.PropTypes.string
+	        ]).isRequired
+	    },
+	
+	    getDefaultProps: function () {
+	        return {
+	            browser: 'chrome',
+	            buttons: {
+	                primary: 'Close'
+	            },
+	            cssPosition: 'absolute',
+	            step: {},
+	            xPos: -1000,
+	            yPos: -1000
+	        };
+	    },
+	
+	    _getArrowPosition: function (position) {
+	        var arrowPosition;
+	
+	        if (window.innerWidth < 480) {
+	            arrowPosition = (position < 8 ? 8 : (position > 92 ? 92 : position));
+	        }
+	        else if (window.innerWidth < 1024) {
+	            arrowPosition = (position < 6 ? 6 : (position > 94 ? 94 : position));
+	        }
+	        else {
+	            arrowPosition = (position < 5 ? 5 : (position > 95 ? 95 : position));
+	        }
+	
+	        return arrowPosition;
+	    },
+	
+	    _generateArrow: function (opts) {
+	        var width,
+	            height,
+	            rotate;
+	
+	        opts = opts || {};
+	        opts.location = opts.location || 'top';
+	        opts.color = opts.color || '#f04';
+	        opts.color = opts.color.replace('#', '%23');
+	
+	        opts.width = opts.width || 36;
+	        opts.height = opts.width / 2;
+	        opts.scale = opts.width / 16;
+	        opts.rotate = '0';
+	
+	        height = opts.height;
+	        rotate = opts.rotate;
+	        width = opts.width;
+	
+	        if (opts.location === 'bottom') {
+	            rotate = '180 8 4';
+	        }
+	        else if (opts.location === 'left') {
+	            height = opts.width;
+	            width = opts.height;
+	            rotate = '270 8 8';
+	        }
+	        else if (opts.location === 'right') {
+	            height = opts.width;
+	            width = opts.height;
+	            rotate = '90 4 4';
+	        }
+	
+	        return 'data:image/svg+xml,%3Csvg%20width%3D%22' + width + '%22%20height%3D%22' + height + '%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpolygon%20points%3D%220%2C%200%208%2C%208%2016%2C0%22%20fill%3D%22' + opts.color + '%22%20transform%3D%22scale%28' + opts.scale + '%29%20rotate%28' + rotate + '%29%22%3E%3C%2Fpolygon%3E%3C%2Fsvg%3E';
+	    },
+	
+	    _setStyles: function (opts, styles, stepStyles) {
+	        styles.hole = {
+	            top: Math.round((opts.target.top - document.body.getBoundingClientRect().top) - 5),
+	            left: Math.round(opts.target.left - 5),
+	            width: Math.round(opts.target.width + 10),
+	            height: Math.round(opts.target.height + 10)
+	        };
+	
+	        styles.buttons = {
+	            back: {},
+	            close: {},
+	            primary: {},
+	            skip: {}
+	        };
+	
+	        /* Styling */
+	        if (stepStyles) {
+	            if (stepStyles.backgroundColor) {
+	                styles.arrow.backgroundImage = 'url("' + this._generateArrow({
+	                        location: opts.positonBaseClass,
+	                        color: stepStyles.backgroundColor
+	                    }) + '")';
+	                styles.tooltip.backgroundColor = stepStyles.backgroundColor;
+	            }
+	
+	            if (stepStyles.borderRadius) {
+	                styles.tooltip.borderRadius = stepStyles.borderRadius;
+	            }
+	
+	            if (stepStyles.color) {
+	                styles.buttons.primary.color = stepStyles.color;
+	                styles.buttons.close.color = stepStyles.color;
+	                styles.buttons.skip.color = stepStyles.color;
+	                styles.header.color = stepStyles.color;
+	                styles.tooltip.color = stepStyles.color;
+	
+	                if (stepStyles.mainColor && stepStyles.mainColor === stepStyles.color) {
+	                    styles.buttons.primary.color = stepStyles.backgroundColor;
+	                }
+	            }
+	
+	            if (stepStyles.mainColor) {
+	                styles.buttons.primary.backgroundColor = stepStyles.mainColor;
+	                styles.buttons.back.color = stepStyles.mainColor;
+	                styles.header.borderColor = stepStyles.mainColor;
+	            }
+	
+	            if (stepStyles.textAlign) {
+	                styles.tooltip.textAlign = stepStyles.textAlign;
+	            }
+	
+	            if (stepStyles.width) {
+	                styles.tooltip.width = stepStyles.width;
+	            }
+	
+	            if (stepStyles.back) {
+	                styles.buttons.back = assign(styles.buttons.back, stepStyles.back);
+	            }
+	
+	            if (stepStyles.button) {
+	                styles.buttons.primary = assign(styles.buttons.primary, stepStyles.button);
+	            }
+	
+	            if (stepStyles.close) {
+	                styles.buttons.close = assign(styles.buttons.close, stepStyles.close);
+	            }
+	
+	            if (stepStyles.skip) {
+	                styles.buttons.skip = assign(styles.buttons.skip, stepStyles.skip);
+	            }
+	        }
+	
+	        return styles;
+	    },
+	
+	    render: function () {
+	        var props  = this.props,
+	            step   = props.step,
+	            opts   = {
+	                classes: ['joyride-tooltip'],
+	                target: document.querySelector(step.selector).getBoundingClientRect(),
+	                positionClass: step.position
+	            },
+	            styles = {
+	                arrow: {},
+	                buttons: {},
+	                header: {},
+	                hole: {},
+	                tooltip: {
+	                    position: this.props.cssPosition === 'fixed' ? 'fixed' : 'absolute',
+	                    top: Math.round(this.props.yPos),
+	                    left: Math.round(this.props.xPos)
+	                }
+	            };
+	
+	        opts.positonBaseClass = opts.positionClass.match(/-/) ? opts.positionClass.split('-')[0] : opts.positionClass;
+	
+	        if ((/^bottom$/.test(opts.positionClass) || /^top$/.test(opts.positionClass)) && props.xPos > -1) {
+	            opts.tooltip = document.querySelector('.joyride-tooltip').getBoundingClientRect();
+	            opts.targetMiddle = (opts.target.left + opts.target.width / 2);
+	            opts.arrowPosition = (((opts.targetMiddle - props.xPos) / opts.tooltip.width) * 100).toFixed(2);
+	            opts.arrowPosition = this._getArrowPosition(opts.arrowPosition) + '%';
+	
+	            styles.arrow.left = opts.arrowPosition;
+	        }
+	
+	        styles = this._setStyles(opts, styles, step.style)
+	
+	        if (props.standalone) {
+	            opts.classes.push('standalone');
+	        }
+	        if (opts.positonBaseClass) {
+	            opts.classes.push(opts.positonBaseClass);
+	        }
+	        opts.classes.push(opts.positionClass);
+	        if (props.animate) {
+	            opts.classes.push('animate');
+	        }
+	
+	        if (step.title) {
+	            opts.header = (
+	                React.createElement('div', {
+	                    className: 'joyride-tooltip__header',
+	                    style: styles.header
+	                }, step.title)
+	            );
+	        }
+	
+	        opts.tooltipElement = React.createElement('div', {
+	                className: opts.classes.join(' '),
+	                style: styles.tooltip,
+	                'data-target': step.selector
+	            },
+	            React.createElement('div', {
+	                className: 'triangle triangle-' + opts.positionClass,
+	                style: styles.arrow
+	            }),
+	            React.createElement('a', {
+	                href: '#',
+	                className: 'joyride-tooltip__close' + (opts.header ? ' joyride-tooltip__close--header' : ''),
+	                style: styles.buttons.close,
+	                'data-type': 'close',
+	                onClick: props.onClick
+	            }, '×'),
+	            opts.header,
+	            React.createElement('div', {
+	                className: 'joyride-tooltip__main',
+	                dangerouslySetInnerHTML: { __html: step.text || '' }
+	            }),
+	            React.createElement('div', {
+	                    className: 'joyride-tooltip__footer'
+	                },
+	                (props.buttons.skip ?
+	                    React.createElement('a', {
+	                        href: '#',
+	                        className: 'skip',
+	                        style: styles.buttons.skip,
+	                        'data-type': 'skip',
+	                        onClick: props.onClick
+	                    }, props.buttons.skip)
+	                    : false),
+	                (props.buttons.secondary ?
+	                    React.createElement('a', {
+	                        href: '#',
+	                        className: 'secondary',
+	                        style: styles.buttons.back,
+	                        'data-type': 'back',
+	                        onClick: props.onClick
+	                    }, props.buttons.secondary)
+	                    : false),
+	                React.createElement('a', {
+	                    href: '#',
+	                    className: 'primary',
+	                    style: styles.buttons.primary,
+	                    'data-type': 'next',
+	                    onClick: props.onClick
+	                }, props.buttons.primary)
+	            )
+	        );
+	
+	        if (props.showOverlay) {
+	            opts.hole = React.createElement('div', {
+	                className: 'joyride-hole ' + props.browser,
+	                style: styles.hole
+	            });
+	        }
+	
+	        if (!props.showOverlay) {
+	            return opts.tooltipElement;
+	        }
+	
+	        return React.createElement('div', {
+	                className: 'joyride-overlay',
+	                style: {
+	                    height: document.body.clientHeight
+	                },
+	                'data-type': 'close',
+	                onClick: props.onClick
+	            },
+	            opts.hole,
+	            opts.tooltipElement
+	        );
+	    }
+	});
+	
+	module.exports = Tooltip;
+
+
+/***/ },
+/* 574 */
+/***/ function(module, exports) {
+
+	/* eslint-disable no-unused-vars */
+	'use strict';
+	var hasOwnProperty = Object.prototype.hasOwnProperty;
+	var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+	
+	function toObject(val) {
+		if (val === null || val === undefined) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+	
+		return Object(val);
+	}
+	
+	module.exports = Object.assign || function (target, source) {
+		var from;
+		var to = toObject(target);
+		var symbols;
+	
+		for (var s = 1; s < arguments.length; s++) {
+			from = Object(arguments[s]);
+	
+			for (var key in from) {
+				if (hasOwnProperty.call(from, key)) {
+					to[key] = from[key];
+				}
+			}
+	
+			if (Object.getOwnPropertySymbols) {
+				symbols = Object.getOwnPropertySymbols(from);
+				for (var i = 0; i < symbols.length; i++) {
+					if (propIsEnumerable.call(from, symbols[i])) {
+						to[symbols[i]] = from[symbols[i]];
+					}
+				}
+			}
+		}
+	
+		return to;
+	};
+
 
 /***/ }
 /******/ ]);

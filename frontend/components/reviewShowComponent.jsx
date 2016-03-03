@@ -30,6 +30,25 @@ var ReviewShowComponent = React.createClass({
       editReviewModalIsOpen: false
     };
   },
+  componentDidMount: function() {
+    this.subscriptionListenerToken = SubscriptionStore.addListener(this.onSubscriptionChange);
+    this.userListenerToken = UserStore.addListener(this.onUserChange);
+  },
+  componentWillUnmount: function() {
+    this.subscriptionListenerToken.remove();
+    this.userListenerToken.remove();
+  },
+
+  onSubscriptionChange: function() {
+    this.setState({
+      subscription: SubscriptionStore.findById(this.props.review.subscription_id)
+    });
+  },
+  onUserChange: function() {
+    this.setState({
+      author: UserStore.findById(this.props.review.author_id)
+    });
+  },
 
   openSubscriptionPage: function() {
     BrowserHistory.push("/subscriptions/" + this.state.subscription.id);
@@ -67,6 +86,9 @@ var ReviewShowComponent = React.createClass({
 
   render: function() {
     // two cases -- if the currentUser has been passed down or if not
+    if (this.state.author === undefined || this.state.subscription === undefined) {
+        return <div>WAITING-FOR_LOAD</div>;
+    }
     if (this.props.currentUser) {
       return <li className="review-show container-fluid" key={this.props.review.id}>
         <div className="row-fluid">

@@ -2,6 +2,7 @@ var React = require('react');
 var Infinite = require('react-infinite');
 var InfiniteScroll = require('react-infinite-scroll')(React);
 var TransitionGroup = require('react-addons-css-transition-group');
+var BrowserHistory = require('react-router').browserHistory;
 
 var ReviewStore = require('../stores/review.js');
 
@@ -16,7 +17,59 @@ var ReviewFeed = React.createClass({
     };
   },
   componentDidMount: function() {
+    console.log("Review Feed Mount");
     this.listenerToken = ReviewStore.addListener(this.onReviewChange);
+    if (this.props.addSteps) {
+      setTimeout(function() {
+      this.props.addSteps([
+        {
+          title: 'Reviews',
+          text: "Check out user reviews from around the galaxy!",
+          selector: '.review-show',
+          position: 'top',
+          type: 'hover',
+          style: {
+            backgroundColor: '#fff',
+            mainColor: '#9BBEA8',
+            color: '#000',
+            borderRadius: '1rem',
+            textAlign: 'center',
+            width: '40rem'
+          }
+        },
+        {
+          title: 'Profile',
+          text: "Preview your profile, write and edit reviews, and edit your information",
+          selector: '.open-profile',
+          position: 'right',
+          type: 'hover',
+          style: {
+            backgroundColor: '#fff',
+            mainColor: '#9BBEA8',
+            color: '#000',
+            borderRadius: '1rem',
+            textAlign: 'center',
+            width: '40rem'
+          }
+        },
+        {
+          title: 'Write a Review',
+          text: "Write a review",
+          selector: '.write-new-review',
+          position: 'right',
+          type: 'hover',
+          style: {
+            backgroundColor: '#fff',
+            mainColor: '#9BBEA8',
+            color: '#000',
+            borderRadius: '1rem',
+            textAlign: 'center',
+            width: '40rem'
+          }
+        }
+        ]);
+      }.bind(this), 100);
+    }
   },
   componentWillUnmount: function() {
     this.listenerToken.remove();
@@ -45,17 +98,53 @@ var ReviewFeed = React.createClass({
     </InfiniteScroll>;
   },
 
-  render: function() {
+  openTour: function() {
+    BrowserHistory.push("/users/" + this.props.currentUser.id);
+  },
+  openProfile: function() {
+    BrowserHistory.push("/users/" + this.props.currentUser.id);
+  },
+  openStatistics: function() {
+    BrowserHistory.push("/statistics");
+  },
+  openServices: function() {
+    BrowserHistory.push("/subscriptions");
+  },
 
+
+  render: function() {
     if (this.state.reviews === undefined) {
       return <div>STAY TUNED</div>;
     } else {
       if (!this.props.loggedIn) {
         return <SplashPage />;
       } else {
-        return <div className="col-md-offset-1 col-md-10 review-feed">
-          <h2>Recent Reviews</h2>
-          { this.infiniteScrollComponent() }
+        return <div className="row review-feed">
+          <div className="container">
+            <div className="col-md-5 review-feed-title">
+              <h1>Recent Reviews</h1>
+            </div>
+            {this.props.startTourCallback ? <div className="col-md-7 right-justify">
+              <button onClick={this.props.startTourCallback} className="btn btn-default btn-lg tour-btn">What can I do on this site?</button>
+            </div> : null }
+          </div>
+          <br/>
+          <br/>
+          <br/>
+          <div className="col-md-2 col-sm-4 sidebar-div">
+            <ul id="sidebar" className="nav nav-stacked">
+              Σ
+              {this.props.startTourCallback ? <li className="sidebar-li" onClick={this.props.startTourCallback}>Take A Tour</li> : null }
+                <li className="sidebar-li open-profile" onClick={this.openProfile}>Profile</li>
+                <li className="sidebar-li" >Your Subscriptions<span className="caret"></span></li>
+                <li className="sidebar-li" onClick={this.openStatistics}>Statistics</li>
+                <li className="sidebar-li" onClick={this.openServices}>Services</li>
+                <li className="sidebar-li write-new-review" >Write A Review</li>
+            </ul>
+          </div>
+          <div className="col-md-9 col-sm-8">
+            { this.infiniteScrollComponent() }
+          </div>
         </div>;
       }
     }

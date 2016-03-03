@@ -120,35 +120,36 @@ var UserEditPage = React.createClass({
   render: function() {
       return <div className="user-edit-page">
         <form id="user-edit-form" onSubmit={this.handleSubmit}>
+          <div className="user-edit-form-title">
+            <h2>Edit Your Profile</h2>
+          </div>
+          <br/>
           { this.showAlert() }
-          <div className="col-md-4 col-md-offset-2">
-            <label>First Name
-              <br/>
-              <input type="string" name="user[first_name]" value={this.state.firstName}
+          <br/>
+          <br/>
+          <div className="col-md-2 col-md-offset-4">
+            <label>First Name:
+              <input type="string" className="edit-user-input" name="user[first_name]" value={this.state.firstName}
                   onChange={this.firstNameChange}/>
             </label>
             <br/>
-            <label>Last Name
-              <br/>
-              <input type="string" name="user[last_name]" value={this.state.lastName}
+            <label>Last Name:
+              <input type="string" className="edit-user-input" name="user[last_name]" value={this.state.lastName}
                   onChange={this.lastNameChange}/>
             </label>
             <br/>
-            <label>Email
-              <br/>
-              <input type="string" name="user[email]" value={this.state.email}
+            <label>Email:
+              <input type="string" className="edit-user-input" name="user[email]" value={this.state.email}
                   onChange={this.emailChange} />
             </label>
             <br/>
-            <label>Location
-              <br/>
-              <input type="string" name="user[location]" value={this.state.location}
+            <label>Location:
+              <input type="string" className="edit-user-input" name="user[location]" value={this.state.location}
                   onChange={this.locationChange} />
             </label>
             <br/>
-            <label>Date of Birth
-              <br/>
-              <input type="date" name="user[date_of_birth]" value={this.state.dateOfBirth}
+            <label>Date of Birth:
+              <input type="date" className="edit-user-input" name="user[date_of_birth]" value={this.state.dateOfBirth}
                   onChange={this.DOBChange} />
             </label>
           </div>
@@ -158,16 +159,17 @@ var UserEditPage = React.createClass({
               <img src={this.state.image}/>
               <br/>
               <br/>
-              <button className="btn btn-default btn-sm" onClick={this.openCloudinaryWidget}>Change Profile Picture</button>
+              <button className="btn btn-default btn-sm edit-form-image-btn" onClick={this.openCloudinaryWidget}>Change Profile Picture</button>
               <div id="my-widget-container"></div>
             </label>
           </div>
           <br/>
           <br/>
           <div className="row-fluid edit-profile-buttons">
-            <div><input value="Update My Profile" type="submit" className="btn create-review-btn"></input></div>
-            <br/>
-            <div><button className="btn btn-default" onClick={this.cancelUpdate}>Cancel</button></div>
+            <div>
+              <input value="Update" type="submit" className="btn create-review-btn edit-form-btn"></input>
+              <button className="btn btn-default edit-form-btn" onClick={this.cancelUpdate}>Cancel</button>
+            </div>
             <br/>
             <br/>
             <button className="btn delete-review-btn" onClick={this.deleteUser}>Delete My Account</button>

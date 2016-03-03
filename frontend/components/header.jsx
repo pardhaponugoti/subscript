@@ -19,11 +19,95 @@ var Header = React.createClass({
     };
   },
 
-  // componentWillReceiveProps: function(newProps) {
-  //   console.log(newProps);
-  //   console.log(newProps.currentUser);
-  //   console.log(newProps.loggedIn);
-  // },
+  componentDidMount: function() {
+
+    if (this.props.addSteps) {
+      setTimeout(function() {
+      this.props.addSteps([
+        {
+          title: 'Statistics',
+          text: "Click here to see statistics on our users",
+          selector: '.statistics-link',
+          position: 'bottom',
+          type: 'hover',
+          style: {
+            backgroundColor: '#fff',
+            borderRadius: '1rem',
+            mainColor: '#9BBEA8',
+            color: '#000',
+            textAlign: 'center',
+            width: '40rem'
+          }
+        },
+        {
+          title: 'Services',
+          text: "Click here to see all the subscriptions and services you can rate",
+          selector: '.services-link',
+          position: 'bottom',
+          type: 'hover',
+          style: {
+            backgroundColor: '#fff',
+            borderRadius: '1rem',
+            mainColor: '#9BBEA8',
+            color: '#000',
+            textAlign: 'center',
+            width: '40rem'
+          }
+        }
+        ]);
+      }.bind(this), 100);
+    }
+    // if (this.props.addTooltip) {
+    //   this.props.addTooltip({
+    //     title: 'Standalone Tooltips',
+    //     text: 'And even style them one by one!',
+    //     selector: '.title-centered',
+    //     event: 'hover',
+    //     position: 'bottom-right',
+    //     style: {
+    //       backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    //       borderRadius: '0',
+    //       color: '#fff',
+    //       mainColor: '#ff67b4',
+    //       textAlign: 'center',
+    //       width: '29rem'
+    //     }
+    //   });
+    //   this.props.addTooltip({
+    //     title: 'Standalone Tooltips',
+    //     text: 'And even style them one by one!',
+    //     selector: '.dropdown-toggle',
+    //     event: 'hover',
+    //     position: 'bottom-left',
+    //     style: {
+    //       backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    //       borderRadius: '0',
+    //       color: '#fff',
+    //       mainColor: '#ff67b4',
+    //       textAlign: 'center',
+    //       width: '29rem'
+    //     }
+    //   });
+    // }
+    // }
+    // if (this.props.addTooltip) {
+    //   this.props.addTooltip({
+    //     title: 'Standalone Tooltips',
+    //     text: 'And even style them one by one!',
+    //     selector: '.test-button',
+    //     event: 'hover',
+    //     position: 'bottom-right',
+    //     style: {
+    //       backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    //       borderRadius: '0',
+    //       color: '#fff',
+    //       mainColor: '#ff67b4',
+    //       textAlign: 'center',
+    //       width: '29rem'
+    //     }
+    //   });
+    // }
+  },
 
   currentUserUrl: function() {
     return "users/" + this.props.currentUser.id;
@@ -147,8 +231,8 @@ var Header = React.createClass({
       <div id="navbarCollapse" className="collapse navbar-collapse">
         {this.userDropdown()}
         <div className="navbar-right">
-          <a onClick={this.openStatisticsPage} className="navbar-text white-text">Statistics</a>
-          <a onClick={this.openSubscriptionsIndex} className="navbar-text white-text">Services</a>
+          <a onClick={this.openStatisticsPage} className="navbar-text white-text statistics-link">Statistics</a>
+          <a onClick={this.openSubscriptionsIndex} className="navbar-text white-text services-link">Services</a>
         </div>
       </div>
     </nav>;

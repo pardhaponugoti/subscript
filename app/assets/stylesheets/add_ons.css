@@ -38,6 +38,8 @@ li a:hover {
 
 .gold-stars {
   color: #FFD700;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  /*text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;*/
 }
 
 .demo-modal {
@@ -85,7 +87,20 @@ li a:hover {
 .navbar {
   background-color: #367d50;
   box-shadow: 0px 1px;
-  position: relative;
+  position: absolute;
+}
+
+.right-justify {
+  text-align: right;
+}
+
+.tour-btn {
+  margin-right: 50px;
+  margin-top: 30px;
+}
+
+.fifty-pixels {
+  height: 50px;
 }
 
 .modal-header {
@@ -183,10 +198,46 @@ li a:hover {
   padding-top: 20px;
 }
 
+.user-edit-page {
+  height: 100vh;
+  background-color: #f2f2f2;
+}
+
+#sidebar {
+  top: 30%;
+  position: fixed;
+  text-align: center;
+  background-color: #899EA7;
+  font-size: 24px;
+  border-radius: 0px 4px 4px 0px;
+  box-shadow: 1px 1px;
+}
+
+.sidebar-div {
+  text-align: left;
+}
+
+.sidebar-li {
+  background-color: #899EA7;
+  text-align: left;
+  letter-spacing: 0.04em;
+  font-size: 16px;
+  padding: 5px;
+  margin: 5px 0;
+  border-radius: 0 3px 3px 0;
+}
+
+.sidebar-li:hover {
+  background-color: #1E4959;
+  color: white;
+  cursor: pointer;
+}
+
 .profile-link-img {
   cursor: pointer;
   background-color: white;
   border-radius: 4px;
+  box-shadow: 1px 1px;
 }
 
 .profile-name {
@@ -314,8 +365,10 @@ li a:hover {
 .review-show {
   margin: 10px;
   padding: 10px;
-  border-bottom: 1px #bfbfbf solid;
-  background-color: #f2f2f2;
+  box-shadow: 2px 2px #bfbfbf;
+  /*border-bottom: 1px #bfbfbf solid;*/
+  /*background-color: #A6C3B1;*/
+  background-color: #9BBEA8;
   /*border: 1px gray solid;*/
 }
 
@@ -328,8 +381,13 @@ li a:hover {
   position: relative;
 }
 
-.review-feed h2{
-  text-align: center;
+.review-feed-title {
+  text-align: left;
+}
+
+
+.review-feed h1{
+  text-align: left;
 }
 
 .edit-review-btn {
@@ -518,52 +576,54 @@ a.visited {
   text-align: center;
 }
 
-.slideOne {
-	width: 50px;
-	height: 10px;
-	background: #333;
-	margin: 20px auto;
-
-	-webkit-border-radius: 50px;
-	-moz-border-radius: 50px;
-	border-radius: 50px;
-	position: relative;
-
-	-webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,0.2);
-	-moz-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,0.2);
-	box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,0.2);
+.edit-user-input {
+  margin: 10px 0;
 }
 
-.slideOne label {
-	display: block;
-	width: 16px;
-	height: 16px;
+.edit-form-image-btn {
+  margin: 0 50px;
+}
 
-	-webkit-border-radius: 50px;
-	-moz-border-radius: 50px;
-	border-radius: 50px;
+.edit-form-btn {
+  margin: 10px 30px;
+}
 
-	-webkit-transition: all .4s ease;
-	-moz-transition: all .4s ease;
-	-o-transition: all .4s ease;
-	-ms-transition: all .4s ease;
-	transition: all .4s ease;
-	cursor: pointer;
-	position: absolute;
-	top: -3px;
-	left: -3px;
+.user-edit-form-title{
+  text-align: center;
+}
 
-	-webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
-	-moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
-	box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
-	background: #fcfff4;
+/*input[type=checkbox] {
+  visibility: hidden;
+}*/
 
-	background: -webkit-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	background: -moz-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	background: -o-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	background: -ms-linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	background: linear-gradient(top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfff4', endColorstr='#b3bead',GradientType=0 );
+.checkboxOne {
+  width: 40px;
+  height: 10px;
+  background: #555;
+  margin: 20px 80px;
+  position: relative;
+  border-radius: 3px;
+}
+
+.checkboxOne label {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  -o-transition: all .5s ease;
+  -ms-transition: all .5s ease;
+  transition: all .5s ease;
+  cursor: pointer;
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  background: #ccc;
+}
+
+.checkboxOne input[type=checkbox]:checked + label {
+  left: 27px;
 }
 
 .slideOne input[type=checkbox]:checked + label {
