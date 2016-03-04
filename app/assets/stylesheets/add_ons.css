@@ -97,6 +97,7 @@ li a:hover {
 .tour-btn {
   margin-right: 50px;
   margin-top: 30px;
+  border: 1px solid green !important;
 }
 
 .fifty-pixels {
@@ -203,14 +204,17 @@ li a:hover {
   background-color: #f2f2f2;
 }
 
+
+
 #sidebar {
   top: 30%;
   position: fixed;
   text-align: center;
-  background-color: #899EA7;
+  background-color: #e6e6e6;
   font-size: 24px;
   border-radius: 0px 4px 4px 0px;
   box-shadow: 1px 1px;
+  color: #367d50;
 }
 
 .sidebar-div {
@@ -218,7 +222,8 @@ li a:hover {
 }
 
 .sidebar-li {
-  background-color: #899EA7;
+  color: black;
+  background-color: #e6e6e6;
   text-align: left;
   letter-spacing: 0.04em;
   font-size: 16px;
@@ -228,7 +233,7 @@ li a:hover {
 }
 
 .sidebar-li:hover {
-  background-color: #1E4959;
+  background-color: #367d50;
   color: white;
   cursor: pointer;
 }
@@ -362,13 +367,19 @@ li a:hover {
   /*background-color: #ffe6e6;*/
 }
 
+.horizontal-bar-charts-container {
+  text-align: center;
+}
+
 .review-show {
   margin: 10px;
   padding: 10px;
   box-shadow: 2px 2px #bfbfbf;
   /*border-bottom: 1px #bfbfbf solid;*/
   /*background-color: #A6C3B1;*/
-  background-color: #9BBEA8;
+  /*background-color: #9BBEA8;*/
+  /*background-color:#ccffcc;*/
+  background-color: #d9f2d9;
   /*border: 1px gray solid;*/
 }
 

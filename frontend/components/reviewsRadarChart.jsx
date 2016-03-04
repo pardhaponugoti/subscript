@@ -4,11 +4,11 @@ var RadarChart = require('react-chartjs').Radar;
 var ReviewsRadarChart = React.createClass({
   getInitialState: function() {
     return {
-      daily: true,
-      weekly: true,
-      monthly: true,
-      yearly: true,
-      never: true
+      daily: false,
+      weekly: false,
+      monthly: false,
+      yearly: false,
+      never: false
     };
   },
 
@@ -125,7 +125,6 @@ var ReviewsRadarChart = React.createClass({
     }
 
     return <div className="col-md-10 col-md-offset-1 reviews-radar-chart">
-      <h2 className="stats-page-title"><strong> Usage Statistics </strong></h2>
       <br/>
       <br/>
       <h3> Frequency of Use </h3>

@@ -16,7 +16,6 @@ var SubscriptionIndex = require('./components/subscriptionIndex.jsx');
 
 //test components
 var HeaderSearchComponent = require('./components/headerSearchComponent');
-var Chart = require('./components/chart.jsx');
 var AnalyticsPage = require('./components/analyticsPage.jsx');
 
 var routes = (

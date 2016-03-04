@@ -64,7 +64,6 @@
 	
 	//test components
 	var HeaderSearchComponent = __webpack_require__(462);
-	var Chart = __webpack_require__(518);
 	var AnalyticsPage = __webpack_require__(563);
 	
 	var routes = React.createElement(
@@ -24857,7 +24856,7 @@
 	      });
 	      setTimeout(function () {
 	        this.refs.joyride.start();
-	      }.bind(this), 2500);
+	      }.bind(this), 1000);
 	      return React.createElement(
 	        'div',
 	        { id: 'App' },
@@ -24866,6 +24865,7 @@
 	          steps: this.state.steps,
 	          type: this.state.joyrideType,
 	          showSkipButton: true,
+	          locale: { back: 'Back', close: 'Close', last: 'Last', next: 'Next', skip: 'Exit Tour' },
 	          showOverlay: this.state.joyrideOverlay,
 	          stepCallback: this._stepCallback,
 	          completeCallback: this._completeCallback,
@@ -24882,13 +24882,19 @@
 	            addTooltip: this._addTooltip })
 	        ),
 	        React.createElement('div', { className: 'fifty-pixels' }),
-	        React.createElement(ReviewFeed, { currentUser: this.state.currentUser,
-	          loggedIn: this.state.loggedIn,
-	          joyrideType: this.state.joyrideType,
-	          joyrideOverlay: this.state.joyrideOverlay,
-	          onClickSwitch: this._onClickSwitch,
-	          addSteps: this._addSteps,
-	          addTooltip: this._addTooltip })
+	        React.createElement(
+	          'div',
+	          null,
+	          this.props.children && React.cloneElement(this.props.children, {
+	            loggedIn: this.state.loggedIn,
+	            currentUser: this.state.currentUser,
+	            joyrideType: this.state.joyrideType,
+	            joyrideOverlay: this.state.joyrideOverlay,
+	            onClickSwitch: this._onClickSwitch,
+	            addSteps: this._addSteps,
+	            addTooltip: this._addTooltip
+	          })
+	        )
 	      );
 	    } else {
 	      return React.createElement(
@@ -52010,7 +52016,7 @@
 	var EditReviewForm = __webpack_require__(512);
 	var NewReviewForm = __webpack_require__(514);
 	var ReviewShowComponent = __webpack_require__(511);
-	var Chart = __webpack_require__(518);
+	var SubscriptionChart = __webpack_require__(575);
 	
 	function isNumeric(n) {
 	  return !isNaN(parseFloat(n)) && isFinite(n);
@@ -52230,7 +52236,7 @@
 	      if (this.state.showReviews) {
 	        input = this.reviewsUl();
 	      } else if (this.state.showCharts) {
-	        input = React.createElement(Chart, { subscription: this.state.currentSubscription, reviews: this.state.reviews });
+	        input = React.createElement(SubscriptionChart, { subscription: this.state.currentSubscription, reviews: this.state.reviews });
 	      }
 	      return React.createElement(
 	        'div',
@@ -52296,7 +52302,7 @@
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'subscription-show-container' },
+	          { className: 'subscription-show-container container' },
 	          input
 	        )
 	      );
@@ -52380,287 +52386,7 @@
 	};
 
 /***/ },
-/* 518 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	
-	var React = __webpack_require__(1);
-	var LineChart = __webpack_require__(519).Line;
-	var RadarChart = __webpack_require__(519).Radar;
-	var BarChart = __webpack_require__(519).Bar;
-	var DonutChart = __webpack_require__(519).Doughnut;
-	
-	var SubscriptionStore = __webpack_require__(491);
-	var ReviewStore = __webpack_require__(499);
-	
-	function add(a, b) {
-	  return a + b;
-	}
-	
-	function median(values) {
-	  values.sort(function (a, b) {
-	    return a - b;
-	  });
-	
-	  var half = Math.floor(values.length / 2);
-	
-	  if (values.length % 2) return values[half];else return (values[half - 1] + values[half]) / 2.0;
-	}
-	
-	var Chart = React.createClass({
-	  displayName: "Chart",
-	
-	  render: function render() {
-	    var ratingFrequencies = [0, 0, 0, 0, 0];
-	    var usageFrequencies = [0, 0, 0, 0, 0];
-	    var avgRating = 0;
-	    var avgUsage = 0;
-	    var medianRating = 0;
-	    var medianUsage = 0;
-	    var usage = [];
-	    var ratings = [];
-	
-	    if (this.props.reviews === undefined || this.props.subscription === undefined || this.props.reviews.length === 0 || this.props.subscription.length === 0) {
-	      return React.createElement(
-	        "div",
-	        null,
-	        "NO CHART DATA"
-	      );
-	    } else {
-	      this.props.reviews.forEach(function (review) {
-	        ratings.push(review.rating);
-	        ratingFrequencies[review.rating - 1] += 1;
-	        avgRating += review.rating;
-	
-	        usage.push(review.frequency);
-	        usageFrequencies[review.frequency - 1] += 1;
-	        avgUsage += review.frequency;
-	      });
-	
-	      var total = ratingFrequencies.reduce(add, 0);
-	
-	      avgRating = Number(Math.round(avgRating / total + 'e2') + 'e-2');
-	      medianRating = median(ratings);
-	
-	      avgUsage = Number(Math.round(avgUsage / total + 'e2') + 'e-2');
-	      medianUsage = median(usage);
-	
-	      ratingFrequencies = ratingFrequencies.map(function (freq) {
-	        return Math.round(freq / total * 100);
-	      });
-	
-	      var labels = ["★".repeat(1), "★".repeat(2), "★".repeat(3), "★".repeat(4), "★".repeat(5)];
-	
-	      var lineData = {
-	        labels: labels,
-	        datasets: [{
-	          label: "Ratings",
-	          fillColor: ["red", "orange", "yellow", "yellow-green", "green"],
-	          strokeColor: "rgba(220,220,220,1)",
-	          pointColor: "rgba(220,220,220,1)",
-	          pointStrokeColor: "#fff",
-	          pointHighlightFill: "#fff",
-	          pointHighlightStroke: "rgba(220,220,220,1)",
-	          data: ratingFrequencies
-	        }]
-	      };
-	
-	      var barData = {
-	        labels: labels,
-	        datasets: [{
-	          label: "Ratings",
-	          fillColor: "rgba(220,220,220,0.5)",
-	          strokeColor: "rgba(220,220,220,0.8)",
-	          highlightFill: "rgba(220,220,220,0.75)",
-	          highlightStroke: "rgba(220,220,220,1)",
-	          data: ratingFrequencies
-	        }]
-	      };
-	
-	      var donutData = [{
-	        value: ratingFrequencies[0],
-	        color: "#ff6666",
-	        highlight: "#ff0000",
-	        label: labels[0]
-	      }, {
-	        value: ratingFrequencies[1],
-	        color: "#ffb366",
-	        highlight: "#ff8000",
-	        label: labels[1]
-	      }, {
-	        value: ratingFrequencies[2],
-	        color: "#ffff66",
-	        highlight: "#ffff00",
-	        label: labels[2]
-	      }, {
-	        value: ratingFrequencies[3],
-	        color: "#d9ff66",
-	        highlight: "#bfff00",
-	        label: labels[3]
-	      }, {
-	        value: ratingFrequencies[4],
-	        color: "#00e600",
-	        highlight: "#40ff00",
-	        label: labels[4]
-	      }];
-	
-	      var radarData = {
-	        labels: ["Daily", "Weekly", "Monthly", "Yearly", "Never"],
-	        datasets: [{
-	          label: "Usage Rate",
-	          fillColor: "rgba(0,128,0,0.2)",
-	          strokeColor: "rgba(0,128,0,1)",
-	          pointColor: "rgba(0,128,0,1)",
-	          pointStrokeColor: "#fff",
-	          pointHighlightFill: "#fff",
-	          pointHighlightStroke: "rgba(144,238,144,1)",
-	          data: usageFrequencies.reverse()
-	        }]
-	      };
-	
-	      if (avgRating < 2) {
-	        var meancolor = "red";
-	      } else if (avgRating < 3) {
-	        var meancolor = "orange";
-	      } else if (avgRating < 4) {
-	        var meancolor = "#ace600";
-	      } else {
-	        var meancolor = "green";
-	      }
-	
-	      var meanStyle = {
-	        color: meancolor
-	      };
-	
-	      if (medianRating < 2) {
-	        var mediancolor = "red";
-	      } else if (medianRating < 3) {
-	        var mediancolor = "orange";
-	      } else if (medianRating < 4) {
-	        var mediancolor = "#ace600";
-	      } else {
-	        var mediancolor = "green";
-	      }
-	
-	      var medianStyle = {
-	        color: mediancolor
-	      };
-	
-	      return React.createElement(
-	        "div",
-	        { className: "col-md-8 col-md-offset-2 container-fluid" },
-	        React.createElement(
-	          "h2",
-	          { className: "chart-title" },
-	          this.props.subscription.name,
-	          " Ratings"
-	        ),
-	        React.createElement("br", null),
-	        React.createElement(
-	          "div",
-	          { className: "row" },
-	          React.createElement(
-	            "div",
-	            { className: "col-md-3" },
-	            React.createElement(
-	              "h4",
-	              null,
-	              "Average Rating:"
-	            ),
-	            React.createElement(
-	              "h2",
-	              { style: meanStyle },
-	              avgRating
-	            ),
-	            React.createElement(
-	              "h4",
-	              null,
-	              "Median Rating:"
-	            ),
-	            React.createElement(
-	              "h2",
-	              { style: medianStyle },
-	              medianRating
-	            ),
-	            React.createElement(
-	              "h4",
-	              null,
-	              "Most Common:"
-	            ),
-	            React.createElement(
-	              "h2",
-	              null,
-	              medianRating
-	            )
-	          ),
-	          React.createElement(
-	            "div",
-	            { className: "col-md-9" },
-	            React.createElement(DonutChart, { data: donutData, options: { responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>", segmentStrokeColor: "#fff", segmentStrokeWidth: 2 } })
-	          )
-	        ),
-	        React.createElement("br", null),
-	        React.createElement("br", null),
-	        React.createElement(
-	          "div",
-	          { className: "row" },
-	          React.createElement(
-	            "div",
-	            { className: "col-md-3" },
-	            React.createElement(
-	              "h4",
-	              null,
-	              "Average Usage:"
-	            ),
-	            React.createElement(
-	              "h2",
-	              null,
-	              avgUsage
-	            ),
-	            React.createElement(
-	              "h4",
-	              null,
-	              "Median Usage:"
-	            ),
-	            React.createElement(
-	              "h2",
-	              null,
-	              medianUsage
-	            ),
-	            React.createElement(
-	              "h4",
-	              null,
-	              "Most Common:"
-	            ),
-	            React.createElement(
-	              "h2",
-	              null,
-	              medianUsage
-	            )
-	          ),
-	          React.createElement(
-	            "div",
-	            { className: "col-md-9" },
-	            React.createElement(RadarChart, { data: radarData, options: { responsive: true, scaleLineColor: "#707070" } })
-	          )
-	        ),
-	        React.createElement(
-	          "div",
-	          null,
-	          "INSERT FILTERS HERE"
-	        )
-	      );
-	    }
-	  }
-	});
-	
-	// <BarChart data={barData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}}/>
-	// <LineChart data={lineData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}} />
-	
-	module.exports = Chart;
-
-/***/ },
+/* 518 */,
 /* 519 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -56415,7 +56141,7 @@
 	          }
 	        }, {
 	          title: 'Write a Review',
-	          text: "Write a review",
+	          text: "Review a subscription or service that you use!",
 	          selector: '.write-new-review',
 	          position: 'right',
 	          type: 'hover',
@@ -56505,7 +56231,7 @@
 	              React.createElement(
 	                'button',
 	                { onClick: this.props.startTourCallback, className: 'btn btn-default btn-lg tour-btn' },
-	                'What can I do on this site?'
+	                'Take a Quick Tour'
 	              )
 	            ) : null
 	          ),
@@ -56519,11 +56245,6 @@
 	              'ul',
 	              { id: 'sidebar', className: 'nav nav-stacked' },
 	              'Σ',
-	              this.props.startTourCallback ? React.createElement(
-	                'li',
-	                { className: 'sidebar-li', onClick: this.props.startTourCallback },
-	                'Take A Tour'
-	              ) : null,
 	              React.createElement(
 	                'li',
 	                { className: 'sidebar-li open-profile', onClick: this.openProfile },
@@ -58570,7 +58291,7 @@
 	  signInUser: function signInUser(email) {
 	    var successCallback = function (id) {
 	      this.unblurBackground();
-	      BrowserHistory.push("/users/" + id);
+	      BrowserHistory.push("/");
 	    }.bind(this);
 	    var errorCallback = function errorCallback(error) {
 	      console.log("error signing in demo");
@@ -61867,13 +61588,13 @@
 	var React = __webpack_require__(1);
 	var RadarChart = __webpack_require__(519).Radar;
 	var LineChart = __webpack_require__(519).Line;
-	var BarChart = __webpack_require__(519).Bar;
 	var DonutChart = __webpack_require__(519).Doughnut;
 	
 	var SubscriptionStore = __webpack_require__(491);
 	var ReviewStore = __webpack_require__(499);
 	
 	var ReviewsRadarChart = __webpack_require__(564);
+	var HorizontalBarChart = __webpack_require__(576);
 	
 	var AnalyticsPage = React.createClass({
 	  displayName: 'AnalyticsPage',
@@ -61914,6 +61635,8 @@
 	    } else {
 	      var radarData = {};
 	      var labels = [];
+	      var avgUsage = {};
+	      var avgRating = {};
 	      var dailyUsageData = [];
 	      var weeklyUsageData = [];
 	      var monthlyUsageData = [];
@@ -61937,6 +61660,9 @@
 	          return;
 	        }
 	
+	        var totalUsageSum = 0;
+	        var totalRatingSum = 0;
+	
 	        currentSubDaily = currentSubReviews.filter(function (review) {
 	          return review.frequency === 5;
 	        });
@@ -61953,7 +61679,14 @@
 	          return review.frequency === 1;
 	        });
 	
+	        currentSubReviews.forEach(function (review) {
+	          totalUsageSum += review.frequency;
+	          totalRatingSum += review.rating;
+	        });
+	
 	        labels.push(subscription.name);
+	        avgUsage[subscription.name] = totalUsageSum / totalReviews;
+	        avgRating[subscription.name] = totalRatingSum / totalReviews;
 	        dailyUsageData.push(Math.round(currentSubDaily.length / totalReviews * 100));
 	        weeklyUsageData.push(Math.round(currentSubWeekly.length / totalReviews * 100));
 	        monthlyUsageData.push(Math.round(currentSubMonthly.length / totalReviews * 100));
@@ -61961,12 +61694,118 @@
 	        neverUsageData.push(Math.round(currentSubNever.length / totalReviews * 100));
 	      });
 	
+	      var sortedUsage = [];
+	      var sortedRating = [];
+	      for (var name in avgUsage) {
+	        sortedUsage.push([name, avgUsage[name]]);
+	        sortedRating.push([name, avgRating[name]]);
+	      }
+	      sortedUsage.sort(function (a, b) {
+	        return a[1] - b[1];
+	      });
+	      sortedRating.sort(function (a, b) {
+	        return a[1] - b[1];
+	      });
+	
+	      var horizontalBarUsageLabels = [];
+	      var horizontalBarUsageData = [];
+	      var horizontalBarRatingLabels = [];
+	      var horizontalBarRatingData = [];
+	
+	      var horizontalBarLeastUsedLabels = [];
+	      var horizontalBarLeastUsedData = [];
+	      var horizontalBarMostUsedLabels = [];
+	      var horizontalBarMostUsedData = [];
+	      sortedUsage.forEach(function (subInfo, usage) {
+	        horizontalBarUsageLabels.push(subInfo[0]);
+	        horizontalBarUsageData.push(Number(Math.round(subInfo[1] + 'e2') + 'e-2'));
+	      });
+	
+	      var horizontalBarLeastRatedLabels = [];
+	      var horizontalBarLeastRatedData = [];
+	      var horizontalBarMostRatedLabels = [];
+	      var horizontalBarMostRatedData = [];
+	      sortedRating.forEach(function (subInfo) {
+	        horizontalBarRatingLabels.push(subInfo[0]);
+	        horizontalBarRatingData.push(Number(Math.round(subInfo[1] + 'e2') + 'e-2'));
+	      });
+	
+	      for (var i = 0; i < 5; i++) {
+	        horizontalBarLeastRatedLabels.push([horizontalBarRatingLabels[i]]);
+	        horizontalBarLeastRatedData.push([horizontalBarRatingData[i]]);
+	        horizontalBarMostRatedLabels.push([horizontalBarRatingLabels[horizontalBarRatingLabels.length - i - 1]]);
+	        horizontalBarMostRatedData.push([horizontalBarRatingData[horizontalBarRatingLabels.length - i - 1]]);
+	        horizontalBarLeastUsedLabels.push([horizontalBarUsageLabels[i]]);
+	        horizontalBarLeastUsedData.push([horizontalBarUsageData[i]]);
+	        horizontalBarMostUsedLabels.push([horizontalBarUsageLabels[horizontalBarUsageLabels.length - i - 1]]);
+	        horizontalBarMostUsedData.push([horizontalBarUsageData[horizontalBarUsageLabels.length - i - 1]]);
+	      }
+	      debugger;
+	
 	      return React.createElement(
 	        'div',
 	        null,
-	        React.createElement(ReviewsRadarChart, { dailyUsageData: dailyUsageData, weeklyUsageData: weeklyUsageData,
-	          monthlyUsageData: monthlyUsageData, yearlyUsageData: yearlyUsageData,
-	          neverUsageData: neverUsageData, labels: labels })
+	        React.createElement(
+	          'div',
+	          { className: 'container horizontal-bar-charts-container' },
+	          React.createElement(
+	            'h1',
+	            null,
+	            ' Ratings and Usage Statistics '
+	          ),
+	          React.createElement(ReviewsRadarChart, { dailyUsageData: dailyUsageData, weeklyUsageData: weeklyUsageData,
+	            monthlyUsageData: monthlyUsageData, yearlyUsageData: yearlyUsageData,
+	            neverUsageData: neverUsageData, labels: labels }),
+	          React.createElement('br', null),
+	          React.createElement(
+	            'div',
+	            { className: 'row' },
+	            React.createElement(
+	              'div',
+	              { className: 'col-md-6 col-sm-6' },
+	              React.createElement(
+	                'h4',
+	                null,
+	                ' Highest Rated Services '
+	              ),
+	              React.createElement(HorizontalBarChart, { data: horizontalBarMostRatedData, labels: horizontalBarMostRatedLabels, colors: ['#58CF6C'], horizontal: true })
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'col-md-6 col-sm-6' },
+	              React.createElement(
+	                'h4',
+	                null,
+	                ' Most Used Services '
+	              ),
+	              React.createElement(HorizontalBarChart, { data: horizontalBarMostUsedData, labels: horizontalBarMostUsedLabels, colors: ['#58CF6C'], horizontal: true })
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'row' },
+	            React.createElement(
+	              'div',
+	              { className: 'col-md-6 col-sm-6' },
+	              React.createElement(
+	                'h4',
+	                null,
+	                ' Lowest Rated Services '
+	              ),
+	              React.createElement(HorizontalBarChart, { data: horizontalBarLeastRatedData, labels: horizontalBarLeastRatedLabels, colors: ['#FF9824'], horizontal: true })
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'col-md-6 col-sm-6' },
+	              React.createElement(
+	                'h4',
+	                null,
+	                ' Least Used Services '
+	              ),
+	              React.createElement(HorizontalBarChart, { data: horizontalBarLeastUsedData, labels: horizontalBarLeastUsedLabels, colors: ['#FF9824'], horizontal: true })
+	            )
+	          )
+	        )
 	      );
 	    }
 	  }
@@ -61988,11 +61827,11 @@
 	
 	  getInitialState: function getInitialState() {
 	    return {
-	      daily: true,
-	      weekly: true,
-	      monthly: true,
-	      yearly: true,
-	      never: true
+	      daily: false,
+	      weekly: false,
+	      monthly: false,
+	      yearly: false,
+	      never: false
 	    };
 	  },
 	
@@ -62105,15 +61944,6 @@
 	    return React.createElement(
 	      'div',
 	      { className: 'col-md-10 col-md-offset-1 reviews-radar-chart' },
-	      React.createElement(
-	        'h2',
-	        { className: 'stats-page-title' },
-	        React.createElement(
-	          'strong',
-	          null,
-	          ' Usage Statistics '
-	        )
-	      ),
 	      React.createElement('br', null),
 	      React.createElement('br', null),
 	      React.createElement(
@@ -63665,6 +63495,390 @@
 		return to;
 	};
 
+
+/***/ },
+/* 575 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	var React = __webpack_require__(1);
+	var LineChart = __webpack_require__(519).Line;
+	var RadarChart = __webpack_require__(519).Radar;
+	var BarChart = __webpack_require__(519).Bar;
+	var DonutChart = __webpack_require__(519).Doughnut;
+	
+	var SubscriptionStore = __webpack_require__(491);
+	var ReviewStore = __webpack_require__(499);
+	
+	function add(a, b) {
+	  return a + b;
+	}
+	
+	function median(values) {
+	  values.sort(function (a, b) {
+	    return a - b;
+	  });
+	
+	  var half = Math.floor(values.length / 2);
+	
+	  if (values.length % 2) return values[half];else return (values[half - 1] + values[half]) / 2.0;
+	}
+	
+	var Chart = React.createClass({
+	  displayName: "Chart",
+	
+	  render: function render() {
+	    var ratingFrequencies = [0, 0, 0, 0, 0];
+	    var usageFrequencies = [0, 0, 0, 0, 0];
+	    var avgRating = 0;
+	    var avgUsage = 0;
+	    var medianRating = 0;
+	    var medianUsage = 0;
+	    var usage = [];
+	    var ratings = [];
+	
+	    if (this.props.reviews === undefined || this.props.subscription === undefined || this.props.reviews.length === 0 || this.props.subscription.length === 0) {
+	      return React.createElement(
+	        "div",
+	        null,
+	        "NO CHART DATA"
+	      );
+	    } else {
+	      this.props.reviews.forEach(function (review) {
+	        ratings.push(review.rating);
+	        ratingFrequencies[review.rating - 1] += 1;
+	        avgRating += review.rating;
+	
+	        usage.push(review.frequency);
+	        usageFrequencies[review.frequency - 1] += 1;
+	        avgUsage += review.frequency;
+	      });
+	
+	      var total = ratingFrequencies.reduce(add, 0);
+	
+	      avgRating = Number(Math.round(avgRating / total + 'e2') + 'e-2');
+	      medianRating = median(ratings);
+	
+	      avgUsage = Number(Math.round(avgUsage / total + 'e2') + 'e-2');
+	      medianUsage = median(usage);
+	
+	      ratingFrequencies = ratingFrequencies.map(function (freq) {
+	        return Math.round(freq / total * 100);
+	      });
+	
+	      var labels = ["★".repeat(1), "★".repeat(2), "★".repeat(3), "★".repeat(4), "★".repeat(5)];
+	
+	      var lineData = {
+	        labels: labels,
+	        datasets: [{
+	          label: "Ratings",
+	          fillColor: ["red", "orange", "yellow", "yellow-green", "green"],
+	          strokeColor: "rgba(220,220,220,1)",
+	          pointColor: "rgba(220,220,220,1)",
+	          pointStrokeColor: "#fff",
+	          pointHighlightFill: "#fff",
+	          pointHighlightStroke: "rgba(220,220,220,1)",
+	          data: ratingFrequencies
+	        }]
+	      };
+	
+	      var barData = {
+	        labels: labels,
+	        datasets: [{
+	          label: "Ratings",
+	          fillColor: "rgba(220,220,220,0.5)",
+	          strokeColor: "rgba(220,220,220,0.8)",
+	          highlightFill: "rgba(220,220,220,0.75)",
+	          highlightStroke: "rgba(220,220,220,1)",
+	          data: ratingFrequencies
+	        }]
+	      };
+	
+	      var donutData = [{
+	        value: ratingFrequencies[0],
+	        color: "#ff6666",
+	        highlight: "#ff0000",
+	        label: labels[0]
+	      }, {
+	        value: ratingFrequencies[1],
+	        color: "#ffb366",
+	        highlight: "#ff8000",
+	        label: labels[1]
+	      }, {
+	        value: ratingFrequencies[2],
+	        color: "#ffff66",
+	        highlight: "#ffff00",
+	        label: labels[2]
+	      }, {
+	        value: ratingFrequencies[3],
+	        color: "#d9ff66",
+	        highlight: "#bfff00",
+	        label: labels[3]
+	      }, {
+	        value: ratingFrequencies[4],
+	        color: "#00e600",
+	        highlight: "#40ff00",
+	        label: labels[4]
+	      }];
+	
+	      var radarData = {
+	        labels: ["Daily", "Weekly", "Monthly", "Yearly", "Never"],
+	        datasets: [{
+	          label: "Usage Rate",
+	          fillColor: "rgba(0,128,0,0.2)",
+	          strokeColor: "rgba(0,128,0,1)",
+	          pointColor: "rgba(0,128,0,1)",
+	          pointStrokeColor: "#fff",
+	          pointHighlightFill: "#fff",
+	          pointHighlightStroke: "rgba(144,238,144,1)",
+	          data: usageFrequencies.reverse()
+	        }]
+	      };
+	
+	      if (avgRating < 2) {
+	        var meancolor = "red";
+	      } else if (avgRating < 3) {
+	        var meancolor = "orange";
+	      } else if (avgRating < 4) {
+	        var meancolor = "#ace600";
+	      } else {
+	        var meancolor = "green";
+	      }
+	
+	      var meanStyle = {
+	        color: meancolor
+	      };
+	
+	      if (medianRating < 2) {
+	        var mediancolor = "red";
+	      } else if (medianRating < 3) {
+	        var mediancolor = "orange";
+	      } else if (medianRating < 4) {
+	        var mediancolor = "#ace600";
+	      } else {
+	        var mediancolor = "green";
+	      }
+	
+	      var medianStyle = {
+	        color: mediancolor
+	      };
+	
+	      return React.createElement(
+	        "div",
+	        { className: "col-md-8 col-md-offset-2 container-fluid" },
+	        React.createElement(
+	          "h2",
+	          { className: "chart-title" },
+	          this.props.subscription.name,
+	          " Ratings"
+	        ),
+	        React.createElement("br", null),
+	        React.createElement(
+	          "div",
+	          { className: "row" },
+	          React.createElement(
+	            "div",
+	            { className: "col-md-3" },
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Average Rating:"
+	            ),
+	            React.createElement(
+	              "h2",
+	              { style: meanStyle },
+	              avgRating
+	            ),
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Median Rating:"
+	            ),
+	            React.createElement(
+	              "h2",
+	              { style: medianStyle },
+	              medianRating
+	            ),
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Most Common:"
+	            ),
+	            React.createElement(
+	              "h2",
+	              null,
+	              medianRating
+	            )
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "col-md-9" },
+	            React.createElement(DonutChart, { data: donutData, options: { responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>", segmentStrokeColor: "#fff", segmentStrokeWidth: 2 } })
+	          )
+	        ),
+	        React.createElement("br", null),
+	        React.createElement("br", null),
+	        React.createElement(
+	          "div",
+	          { className: "row" },
+	          React.createElement(
+	            "div",
+	            { className: "col-md-3" },
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Average Usage:"
+	            ),
+	            React.createElement(
+	              "h2",
+	              null,
+	              avgUsage
+	            ),
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Median Usage:"
+	            ),
+	            React.createElement(
+	              "h2",
+	              null,
+	              medianUsage
+	            ),
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Most Common:"
+	            ),
+	            React.createElement(
+	              "h2",
+	              null,
+	              medianUsage
+	            )
+	          ),
+	          React.createElement(
+	            "div",
+	            { className: "col-md-9" },
+	            React.createElement(RadarChart, { data: radarData, options: { responsive: true, scaleLineColor: "#707070" } })
+	          )
+	        ),
+	        React.createElement(
+	          "div",
+	          null,
+	          "INSERT FILTERS HERE"
+	        )
+	      );
+	    }
+	  }
+	});
+	
+	// <BarChart data={barData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}}/>
+	// <LineChart data={lineData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}} />
+	
+	module.exports = Chart;
+
+/***/ },
+/* 576 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(1);
+	
+	var Charts = React.createClass({
+		displayName: 'Charts',
+	
+		render: function render() {
+			var self = this,
+			    data = this.props.data,
+			    layered = this.props.grouping === 'layered' ? true : false,
+			    stacked = this.props.grouping === 'stacked' ? true : false,
+			    opaque = this.props.opaque,
+			    max = 0;
+	
+			for (var i = data.length; i--;) {
+				for (var j = data[i].length; j--;) {
+					if (data[i][j] > max) {
+						max = data[i][j];
+					}
+				}
+			}
+	
+			return React.createElement(
+				'div',
+				{ className: 'Charts' + (this.props.horizontal ? ' horizontal' : '') },
+				data.map(function (serie, serieIndex) {
+					var sortedSerie = serie.slice(0),
+					    sum;
+	
+					sum = serie.reduce(function (carry, current) {
+						return carry + current;
+					}, 0);
+					sortedSerie.sort(compareNumbers);
+	
+					return React.createElement(
+						'div',
+						{ className: 'Charts--serie ' + self.props.grouping,
+							key: serieIndex,
+							style: { height: self.props.height ? self.props.height : 'auto' }
+						},
+						React.createElement(
+							'label',
+							null,
+							self.props.labels[serieIndex]
+						),
+						serie.map(function (item, itemIndex) {
+							var color = self.props.colors[itemIndex],
+							    style,
+							    size = item / (stacked ? sum : max) * 100;
+	
+							style = {
+								backgroundColor: color,
+								opacity: opaque ? 1 : item / max + .05,
+								zIndex: item
+							};
+	
+							if (self.props.horizontal) {
+								style['width'] = size + '%';
+							} else {
+								style['height'] = size + '%';
+							}
+	
+							if (layered && !self.props.horizontal) {
+								//console.log(sortedSerie, serie, sortedSerie.indexOf(item));
+								style['right'] = sortedSerie.indexOf(item) / (serie.length + 1) * 100 + '%';
+								// style['left'] = (itemIndex * 10) + '%';
+							}
+	
+							return React.createElement(
+								'div',
+								{
+									className: 'Charts--item ' + self.props.grouping,
+									style: style,
+									key: itemIndex
+								},
+								React.createElement(
+									'b',
+									{ style: { color: color } },
+									item
+								)
+							);
+						})
+					);
+				})
+			);
+		}
+	});
+	
+	function getRandomInt(min, max) {
+		return Math.floor(Math.random() * (max - min)) + min;
+	}
+	
+	function compareNumbers(a, b) {
+		return a - b;
+	}
+	
+	module.exports = Charts;
 
 /***/ }
 /******/ ]);

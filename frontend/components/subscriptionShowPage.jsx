@@ -13,7 +13,7 @@ var SubscriptionStore = require('../stores/subscription.js');
 var EditReviewForm = require('./editReviewForm.jsx');
 var NewReviewForm = require('./newReviewForm.jsx');
 var ReviewShowComponent = require('./reviewShowComponent.jsx');
-var Chart = require('./chart.jsx');
+var SubscriptionChart = require('./subscriptionChart.jsx');
 
 function isNumeric(n) { return !isNaN(parseFloat(n)) && isFinite(n); }
 
@@ -174,7 +174,7 @@ var SubscriptionShowPage = React.createClass({
       if (this.state.showReviews) {
         input = this.reviewsUl();
       } else if (this.state.showCharts) {
-        input= <Chart subscription={this.state.currentSubscription} reviews={this.state.reviews}/>;
+        input= <SubscriptionChart subscription={this.state.currentSubscription} reviews={this.state.reviews}/>;
       }
       return <div className="container">
         <div className="row">
@@ -190,7 +190,7 @@ var SubscriptionShowPage = React.createClass({
           <li key="1" className={this.state.showReviews ? "active" : ""}><a onClick={this.showReviews}>Reviews</a></li>
           <li key="2" className={this.state.showCharts ? "active" : ""}><a onClick={this.showCharts}>Charts</a></li>
         </ul>
-        <div className="subscription-show-container">
+        <div className="subscription-show-container container">
           {input}
         </div>
       </div>;

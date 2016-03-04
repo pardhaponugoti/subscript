@@ -54,7 +54,7 @@ var ReviewFeed = React.createClass({
         },
         {
           title: 'Write a Review',
-          text: "Write a review",
+          text: "Review a subscription or service that you use!",
           selector: '.write-new-review',
           position: 'right',
           type: 'hover',
@@ -125,7 +125,7 @@ var ReviewFeed = React.createClass({
               <h1>Recent Reviews</h1>
             </div>
             {this.props.startTourCallback ? <div className="col-md-7 right-justify">
-              <button onClick={this.props.startTourCallback} className="btn btn-default btn-lg tour-btn">What can I do on this site?</button>
+              <button onClick={this.props.startTourCallback} className="btn btn-default btn-lg tour-btn">Take a Quick Tour</button>
             </div> : null }
           </div>
           <br/>
@@ -134,7 +134,6 @@ var ReviewFeed = React.createClass({
           <div className="col-md-2 col-sm-4 sidebar-div">
             <ul id="sidebar" className="nav nav-stacked">
               Σ
-              {this.props.startTourCallback ? <li className="sidebar-li" onClick={this.props.startTourCallback}>Take A Tour</li> : null }
                 <li className="sidebar-li open-profile" onClick={this.openProfile}>Profile</li>
                 <li className="sidebar-li" >Your Subscriptions<span className="caret"></span></li>
                 <li className="sidebar-li" onClick={this.openStatistics}>Statistics</li>

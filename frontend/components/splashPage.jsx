@@ -69,7 +69,7 @@ var SplashPage = React.createClass({
   signInUser: function(email) {
     var successCallback = function(id) {
       this.unblurBackground();
-      BrowserHistory.push("/users/"+id);
+      BrowserHistory.push("/");
     }.bind(this);
     var errorCallback=function(error) {
       console.log("error signing in demo");

@@ -134,13 +134,14 @@ var App = React.createClass({
       });
       setTimeout(function() {
         this.refs.joyride.start();
-      }.bind(this), 2500);
+      }.bind(this), 1000);
       return <div id='App'>
         <Joyride  ref="joyride"
           debug={true}
           steps={this.state.steps}
           type={this.state.joyrideType}
           showSkipButton={true}
+          locale= {{ back: 'Back', close: 'Close', last: 'Last', next: 'Next', skip: 'Exit Tour' }}
           showOverlay={this.state.joyrideOverlay}
           stepCallback={this._stepCallback}
           completeCallback={this._completeCallback}
@@ -154,13 +155,15 @@ var App = React.createClass({
           addTooltip={this._addTooltip} />
         </div>
         <div className="fifty-pixels"></div>
-        <ReviewFeed currentUser={this.state.currentUser}
-          loggedIn={this.state.loggedIn}
-          joyrideType={this.state.joyrideType}
-          joyrideOverlay={this.state.joyrideOverlay}
-          onClickSwitch={this._onClickSwitch}
-          addSteps={this._addSteps}
-          addTooltip={this._addTooltip} />
+          <div>{this.props.children && React.cloneElement(this.props.children, {
+                   loggedIn: this.state.loggedIn,
+                   currentUser: this.state.currentUser,
+                   joyrideType: this.state.joyrideType,
+                   joyrideOverlay: this.state.joyrideOverlay,
+                   onClickSwitch: this._onClickSwitch,
+                   addSteps: this._addSteps,
+                   addTooltip: this._addTooltip
+                 })}</div>
       </div>;
     } else {
       return <div id='App'>
