@@ -96,9 +96,8 @@ li a:hover {
 }
 
 .tour-btn {
-  margin-right: 50px;
-  margin-top: 30px;
   border: 1px solid green !important;
+  margin-top: 20px;
 }
 
 .fifty-pixels {
@@ -178,8 +177,11 @@ li a:hover {
   margin-left: 10px;
   height: 50px;
 }
+
 .header-search-li:hover {
   cursor: pointer;
+  background-color: #367d50;
+  color: white;
 }
 
 .header-search-img {
@@ -208,13 +210,13 @@ li a:hover {
 
 
 #sidebar {
-  top: 30%;
+  top: 184px;
   position: fixed;
   text-align: center;
-  background-color: #e6e6e6;
+  /*background-color: #e6e6e6;*/
   font-size: 24px;
   border-radius: 4px;
-  box-shadow: 2px 2px;
+  /*box-shadow: 2px 2px;*/
   color: #367d50;
 }
 
@@ -228,7 +230,7 @@ li a:hover {
   text-align: left;
   letter-spacing: 0.04em;
   font-size: 16px;
-  padding: 5px;
+  padding: 10px;
   margin: 5px 0;
   border-radius: 0 3px 3px 0;
 }
@@ -268,6 +270,7 @@ li a:hover {
 }
 
 .create-review-btn {
+  font-weight: bold !important;
   background-color: #99e699;
 }
 
@@ -376,12 +379,13 @@ li a:hover {
 .review-show {
   margin: 10px;
   padding: 10px;
-  box-shadow: 2px 2px #bfbfbf;
+  box-shadow: 2px 2px #000;
   /*border-bottom: 1px #bfbfbf solid;*/
+  background-color: #d9d9d9;
   /*background-color: #A6C3B1;*/
   /*background-color: #9BBEA8;*/
   /*background-color:#ccffcc;*/
-  background-color: #d9f2d9;
+  /*background-color: #d9f2d9;*/
   /*border: 1px gray solid;*/
 }
 
@@ -399,6 +403,9 @@ li a:hover {
   text-align: left;
 }
 
+.review-feed-title h1 {
+  display: inline-block;
+}
 
 .review-feed h1{
   text-align: left;
@@ -407,9 +414,11 @@ li a:hover {
 .edit-review-btn {
   padding: 5px;
   margin: 5px;
+  font-weight: bold !important;
 }
 
 .delete-review-btn {
+  font-weight: bold !important;
   background-color: #ffb3b3;
   padding: 5px;
   margin: 5px;

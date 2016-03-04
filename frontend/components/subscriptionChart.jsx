@@ -3,6 +3,9 @@ var LineChart = require("react-chartjs").Line;
 var RadarChart = require("react-chartjs").Radar;
 var BarChart = require("react-chartjs").Bar;
 var DonutChart = require("react-chartjs").Doughnut;
+var ReactD3 = require("react-d3-components");
+var d3 = require("react-d3-components").d3;
+var ScatterPlot = require("react-d3-components").ScatterPlot;
 
 var SubscriptionStore = require('../stores/subscription.js');
 var ReviewStore = require('../stores/review.js');
@@ -44,6 +47,9 @@ var Chart = React.createClass({
     var medianUsage = 0;
     var usage = [];
     var ratings = [];
+    var scatterData = {};
+    scatterData.label = "Ratings vs. Frequency";
+    scatterData.values = [];
 
 
     if (this.props.reviews === undefined || this.props.subscription === undefined ||
@@ -58,6 +64,11 @@ var Chart = React.createClass({
         usage.push(review.frequency);
         usageFrequencies[review.frequency-1] += 1;
         avgUsage += review.frequency;
+
+        scatterData.values.push(
+          {x: review.frequency + Math.random() * (0.3) - 0.15,
+           y: review.rating + Math.random() * (0.3) - 0.15}
+         );
       });
 
       var total = ratingFrequencies.reduce(add, 0);
@@ -155,22 +166,28 @@ var Chart = React.createClass({
         ]
       };
 
+      var xScale = d3.scale.ordinal().domain(["Never", "Yearly", "Monthly", "Weekly", "Daily"]).range([1,2,3,4,5]);
+
       return <div className="col-md-8 col-md-offset-2 container-fluid">
-        <h2 className="chart-title">{this.props.subscription.name} Ratings</h2>
         <br/>
         <div className="row">
+          <h4 className="chart-title">{this.props.subscription.name} Ratings</h4>
           <div className="col-md-3">
             <h4>Average Rating:</h4><h2 style={returnStyle(avgRating)}>{avgRating}</h2>
             <h4>Median Rating:</h4><h2 style={returnStyle(medianRating)}>{medianRating}</h2>
             <h4>Most Common:</h4><h2 style={returnStyle(modeRating)}>{modeRating}</h2>
           </div>
           <div className="col-md-9">
-            <DonutChart data={donutData}  options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>", segmentStrokeColor : "#fff", segmentStrokeWidth : 2}}/>
+            <DonutChart data={donutData}  options={{responsive: true,
+                tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>",
+                segmentStrokeColor : "#fff",
+                segmentStrokeWidth : 2}}/>
           </div>
         </div>
         <br/>
         <br/>
         <div className="row">
+          <h4 className="chart-title">{this.props.subscription.name} Usage Rate </h4>
           <div className="col-md-3">
             <h4>Average Usage:</h4><h2 style={returnStyle(avgUsage)}>{avgUsage}</h2>
             <h4>Median Usage:</h4><h2 style={returnStyle(medianUsage)}>{medianUsage}</h2>
@@ -180,11 +197,25 @@ var Chart = React.createClass({
             <RadarChart data={radarData}  options={{responsive: true, scaleLineColor : "#707070"}}/>
           </div>
         </div>
+        <br/>
+        <br/>
+        <div className="scatter-plot-div">
+          <h4 className="chart-title"> Ratings vs Frequency Scatter Plot </h4>
+          <br/>
+          <ScatterPlot
+                data={scatterData}
+                xAxis={{label: "Frequency of Use"}}
+                yAxis={{label: "Rating"}}
+                width={600}
+                height={600}
+                margin={{top: 10, bottom: 50, left: 50, right: 10}}/>
+        </div>
       </div>;
       }
   }
 });
 
+// xScale = {xScale}
 // <BarChart data={barData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}}/>
 // <LineChart data={lineData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}} />
 

@@ -20,55 +20,55 @@ var ReviewFeed = React.createClass({
     console.log("Review Feed Mount");
     this.listenerToken = ReviewStore.addListener(this.onReviewChange);
     if (this.props.addSteps) {
-      setTimeout(function() {
-      this.props.addSteps([
-        {
-          title: 'Reviews',
-          text: "Check out user reviews from around the galaxy!",
-          selector: '.review-show',
-          position: 'top',
-          type: 'hover',
-          style: {
-            backgroundColor: '#fff',
-            mainColor: '#9BBEA8',
-            color: '#000',
-            borderRadius: '1rem',
-            textAlign: 'center',
-            width: '40rem'
-          }
-        },
-        {
-          title: 'Profile',
-          text: "Preview your profile, write and edit reviews, and edit your information",
-          selector: '.open-profile',
-          position: 'right',
-          type: 'hover',
-          style: {
-            backgroundColor: '#fff',
-            mainColor: '#9BBEA8',
-            color: '#000',
-            borderRadius: '1rem',
-            textAlign: 'center',
-            width: '40rem'
-          }
-        },
-        {
-          title: 'Write a Review',
-          text: "Review a subscription or service that you use!",
-          selector: '.write-new-review',
-          position: 'right',
-          type: 'hover',
-          style: {
-            backgroundColor: '#fff',
-            mainColor: '#9BBEA8',
-            color: '#000',
-            borderRadius: '1rem',
-            textAlign: 'center',
-            width: '40rem'
-          }
-        }
-        ]);
-      }.bind(this), 100);
+      // setTimeout(function() {
+      // this.props.addSteps([
+      //   {
+      //     title: 'Reviews',
+      //     text: "Check out user reviews from around the galaxy!",
+      //     selector: '.review-show',
+      //     position: 'top',
+      //     type: 'hover',
+      //     style: {
+      //       backgroundColor: '#fff',
+      //       mainColor: '#9BBEA8',
+      //       color: '#000',
+      //       borderRadius: '1rem',
+      //       textAlign: 'center',
+      //       width: '40rem'
+      //     }
+      //   },
+      //   {
+      //     title: 'Profile',
+      //     text: "Preview your profile, write and edit reviews, and edit your information",
+      //     selector: '.open-profile',
+      //     position: 'right',
+      //     type: 'hover',
+      //     style: {
+      //       backgroundColor: '#fff',
+      //       mainColor: '#9BBEA8',
+      //       color: '#000',
+      //       borderRadius: '1rem',
+      //       textAlign: 'center',
+      //       width: '40rem'
+      //     }
+      //   },
+      //   {
+      //     title: 'Write a Review',
+      //     text: "Review a subscription or service that you use!",
+      //     selector: '.write-new-review',
+      //     position: 'right',
+      //     type: 'hover',
+      //     style: {
+      //       backgroundColor: '#fff',
+      //       mainColor: '#9BBEA8',
+      //       color: '#000',
+      //       borderRadius: '1rem',
+      //       textAlign: 'center',
+      //       width: '40rem'
+      //     }
+      //   }
+      //   ]);
+      // }.bind(this), 100);
     }
   },
   componentWillUnmount: function() {
@@ -121,19 +121,18 @@ var ReviewFeed = React.createClass({
       } else {
         return <div className="row review-feed">
           <div className="container">
-            <div className="col-md-5 review-feed-title">
+            <br/>
+            <div className="col-md-5 col-sm-6 review-feed-title">
               <h1>Recent Reviews</h1>
             </div>
-            {this.props.startTourCallback ? <div className="col-md-7 right-justify">
+            {this.props.startTourCallback ? <div className="col-md-7 col-sm-6 right-justify">
               <button onClick={this.props.startTourCallback} className="btn btn-default btn-lg tour-btn">Take a Quick Tour</button>
             </div> : null }
           </div>
           <br/>
           <br/>
-          <br/>
-          <div className="col-md-2 col-sm-4 col-md-offset-1 sidebar-div">
+          <div className="col-md-2 col-sm-4 sidebar-div">
             <ul id="sidebar" className="nav nav-stacked">
-              Σ
                 <li className="sidebar-li open-profile" onClick={this.openProfile}>Profile</li>
                 <li className="sidebar-li" >Your Subscriptions<span className="caret"></span></li>
                 <li className="sidebar-li" onClick={this.openStatistics}>Statistics</li>
@@ -141,7 +140,7 @@ var ReviewFeed = React.createClass({
                 <li className="sidebar-li write-new-review" >Write A Review</li>
             </ul>
           </div>
-          <div className="col-md-8 col-sm-8">
+          <div className="col-md-8 col-sm-7 col-md-offset-1 col-sm-offset-1">
             { this.infiniteScrollComponent() }
           </div>
         </div>;

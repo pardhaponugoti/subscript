@@ -80,6 +80,9 @@ var App = React.createClass({
   },
 
   _stepCallback: function(step) {
+      if (step.title === "Services") {
+        BrowserHistory.push("/statistics");
+      }
       console.log('••• stepCallback', step);
   },
 
