@@ -22,6 +22,18 @@ function median(values) {
         return (values[half-1] + values[half]) / 2.0;
 }
 
+function returnStyle(value) {
+  if (value < 2) {
+    return {color:"red"};
+  } else if (value < 3) {
+    return {color: "orange"};
+  } else if (value < 4) {
+    return {color: "#ace600"};
+  } else {
+    return {color: "green"};
+  }
+}
+
 var Chart = React.createClass({
   render: function() {
     var ratingFrequencies = [0, 0, 0, 0, 0];
@@ -52,9 +64,11 @@ var Chart = React.createClass({
 
       avgRating = Number(Math.round((avgRating/total)+'e2')+'e-2');
       medianRating = median(ratings);
+      var modeRating = ratingFrequencies.indexOf(Math.max.apply(Math, ratingFrequencies)) + 1;
 
       avgUsage = Number(Math.round((avgUsage/total)+'e2')+'e-2');
       medianUsage = median(usage);
+      var modeUsage = usageFrequencies.indexOf(Math.max.apply(Math, usageFrequencies)) + 1;
 
       ratingFrequencies = ratingFrequencies.map(function(freq) {
         return Math.round(freq/total * 100);
@@ -141,42 +155,14 @@ var Chart = React.createClass({
         ]
       };
 
-      if (avgRating < 2) {
-        var meancolor="red";
-      } else if (avgRating < 3) {
-        var meancolor = "orange";
-      } else if (avgRating < 4) {
-        var meancolor = "#ace600";
-      } else {
-        var meancolor = "green";
-      }
-
-      var meanStyle = {
-        color: meancolor
-      };
-
-      if (medianRating < 2) {
-        var mediancolor="red";
-      } else if (medianRating < 3) {
-        var mediancolor = "orange";
-      } else if (medianRating < 4) {
-        var mediancolor = "#ace600";
-      } else {
-        var mediancolor = "green";
-      }
-
-      var medianStyle = {
-        color: mediancolor,
-      };
-
       return <div className="col-md-8 col-md-offset-2 container-fluid">
         <h2 className="chart-title">{this.props.subscription.name} Ratings</h2>
         <br/>
         <div className="row">
           <div className="col-md-3">
-            <h4>Average Rating:</h4><h2 style={meanStyle}>{avgRating}</h2>
-            <h4>Median Rating:</h4><h2 style={medianStyle}>{medianRating}</h2>
-            <h4>Most Common:</h4><h2>{medianRating}</h2>
+            <h4>Average Rating:</h4><h2 style={returnStyle(avgRating)}>{avgRating}</h2>
+            <h4>Median Rating:</h4><h2 style={returnStyle(medianRating)}>{medianRating}</h2>
+            <h4>Most Common:</h4><h2 style={returnStyle(modeRating)}>{modeRating}</h2>
           </div>
           <div className="col-md-9">
             <DonutChart data={donutData}  options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>", segmentStrokeColor : "#fff", segmentStrokeWidth : 2}}/>
@@ -186,16 +172,13 @@ var Chart = React.createClass({
         <br/>
         <div className="row">
           <div className="col-md-3">
-            <h4>Average Usage:</h4><h2>{avgUsage}</h2>
-            <h4>Median Usage:</h4><h2>{medianUsage}</h2>
-            <h4>Most Common:</h4><h2>{medianUsage}</h2>
+            <h4>Average Usage:</h4><h2 style={returnStyle(avgUsage)}>{avgUsage}</h2>
+            <h4>Median Usage:</h4><h2 style={returnStyle(medianUsage)}>{medianUsage}</h2>
+            <h4>Most Common:</h4><h2 style={returnStyle(modeUsage)}>{modeUsage}</h2>
           </div>
           <div className="col-md-9">
             <RadarChart data={radarData}  options={{responsive: true, scaleLineColor : "#707070"}}/>
           </div>
-        </div>
-        <div>
-          INSERT FILTERS HERE
         </div>
       </div>;
       }

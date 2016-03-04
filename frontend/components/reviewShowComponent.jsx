@@ -139,9 +139,9 @@ var ReviewShowComponent = React.createClass({
           <div>Uses Service: {FREQUENCY[this.props.review.frequency]}</div>
         </div>
         <div className="col-md-9">
-          <div><h4><a className="subscription-name-link" onClick={this.openSubscriptionPage}>
+          <div><a className="subscription-name-link" onClick={this.openSubscriptionPage}>
             {this.state.subscription.name}
-          </a></h4></div>
+          </a></div>
           <div className="gold-stars">{"★".repeat(this.props.review.rating)}</div>
           <div className="review-comment">
               { this.props.review.comment ? "\"" + this.props.review.comment + "\"" : "" }

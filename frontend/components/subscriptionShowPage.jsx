@@ -23,8 +23,8 @@ var SubscriptionShowPage = React.createClass({
       currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId)),
       reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)),
       shownReviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)).slice(0, 30),
-      showReviews: true,
-      showCharts: false,
+      showReviews: false,
+      showCharts: true,
       modalIsOpen: false
     };
   },
@@ -187,8 +187,8 @@ var SubscriptionShowPage = React.createClass({
           </div>
         </div>
         <ul className="nav nav-tabs list-inline borderless" role="tablist">
-          <li key="1" className={this.state.showReviews ? "active" : ""}><a onClick={this.showReviews}>Reviews</a></li>
-          <li key="2" className={this.state.showCharts ? "active" : ""}><a onClick={this.showCharts}>Charts</a></li>
+          <li key="1" className={this.state.showCharts ? "active" : ""}><a onClick={this.showCharts}>Charts</a></li>
+          <li key="2" className={this.state.showReviews ? "active" : ""}><a onClick={this.showReviews}>Reviews</a></li>
         </ul>
         <div className="subscription-show-container container">
           {input}

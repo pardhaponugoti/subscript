@@ -131,7 +131,7 @@ var ReviewFeed = React.createClass({
           <br/>
           <br/>
           <br/>
-          <div className="col-md-2 col-sm-4 sidebar-div">
+          <div className="col-md-2 col-sm-4 col-md-offset-1 sidebar-div">
             <ul id="sidebar" className="nav nav-stacked">
               Σ
                 <li className="sidebar-li open-profile" onClick={this.openProfile}>Profile</li>
@@ -141,7 +141,7 @@ var ReviewFeed = React.createClass({
                 <li className="sidebar-li write-new-review" >Write A Review</li>
             </ul>
           </div>
-          <div className="col-md-9 col-sm-8">
+          <div className="col-md-8 col-sm-8">
             { this.infiniteScrollComponent() }
           </div>
         </div>;

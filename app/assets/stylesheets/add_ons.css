@@ -38,6 +38,7 @@ li a:hover {
 
 .gold-stars {
   color: #FFD700;
+  font-size: 20px;
   text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
   /*text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;*/
 }
@@ -212,8 +213,8 @@ li a:hover {
   text-align: center;
   background-color: #e6e6e6;
   font-size: 24px;
-  border-radius: 0px 4px 4px 0px;
-  box-shadow: 1px 1px;
+  border-radius: 4px;
+  box-shadow: 2px 2px;
   color: #367d50;
 }
 
@@ -334,6 +335,7 @@ li a:hover {
 }
 
 .subscription-name-link {
+  font-size: 20px;
   text-align: center;
   color: black;
 }
@@ -384,6 +386,7 @@ li a:hover {
 }
 
 .review-comment {
+  font-size: 16px;
   font-style: italic;
 }
 
