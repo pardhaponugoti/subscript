@@ -145,7 +145,6 @@ var AnalyticsPage = React.createClass({
         horizontalBarMostUsedLabels.push([horizontalBarUsageLabels[horizontalBarUsageLabels.length - i - 1]]);
         horizontalBarMostUsedData.push([horizontalBarUsageData[horizontalBarUsageLabels.length - i - 1]]);
       }
-      debugger;
 
       return <div>
         <div className="container horizontal-bar-charts-container">
@@ -153,8 +152,9 @@ var AnalyticsPage = React.createClass({
           <ReviewsRadarChart dailyUsageData={dailyUsageData} weeklyUsageData={weeklyUsageData}
             monthlyUsageData={monthlyUsageData} yearlyUsageData={yearlyUsageData}
             neverUsageData={neverUsageData} labels={labels}/>
-          <br/>
           <div className="row">
+            <br/>
+            <br/>
             <div className="col-md-6 col-sm-6">
               <h4> Highest Rated Services </h4>
               <HorizontalBarChart data={horizontalBarMostRatedData} labels={horizontalBarMostRatedLabels} colors={['#58CF6C']} horizontal={true} />

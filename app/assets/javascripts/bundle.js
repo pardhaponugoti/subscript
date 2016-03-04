@@ -63483,7 +63483,6 @@
 	        horizontalBarMostUsedLabels.push([horizontalBarUsageLabels[horizontalBarUsageLabels.length - i - 1]]);
 	        horizontalBarMostUsedData.push([horizontalBarUsageData[horizontalBarUsageLabels.length - i - 1]]);
 	      }
-	      debugger;
 	
 	      return React.createElement(
 	        'div',
@@ -63499,10 +63498,11 @@
 	          React.createElement(ReviewsRadarChart, { dailyUsageData: dailyUsageData, weeklyUsageData: weeklyUsageData,
 	            monthlyUsageData: monthlyUsageData, yearlyUsageData: yearlyUsageData,
 	            neverUsageData: neverUsageData, labels: labels }),
-	          React.createElement('br', null),
 	          React.createElement(
 	            'div',
 	            { className: 'row' },
+	            React.createElement('br', null),
+	            React.createElement('br', null),
 	            React.createElement(
 	              'div',
 	              { className: 'col-md-6 col-sm-6' },
