@@ -54,7 +54,9 @@ var Chart = React.createClass({
 
     if (this.props.reviews === undefined || this.props.subscription === undefined ||
     this.props.reviews.length === 0 || this.props.subscription.length === 0) {
-      return <div>NO CHART DATA</div>;
+      return <div className="loading-container">
+        <div className="jawn"></div>
+      </div>;
     } else {
       this.props.reviews.forEach(function(review) {
         ratings.push(review.rating);

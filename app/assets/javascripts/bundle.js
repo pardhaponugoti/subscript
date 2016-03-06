@@ -54911,11 +54911,11 @@
 	
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'subscription-search-container' },
 	      'Start typing in a service to review',
 	      React.createElement('br', null),
 	      React.createElement('input', { type: 'text', value: this.state.searchString, onChange: this.handleChange,
-	        name: this.props.searchName, placeholder: 'Subscription' }),
+	        name: this.props.searchName, placeholder: 'Subscription', className: 'subscription-search-input' }),
 	      subUl
 	    );
 	  }
@@ -56317,8 +56317,8 @@
 	    if (this.props.reviews === undefined || this.props.subscription === undefined || this.props.reviews.length === 0 || this.props.subscription.length === 0) {
 	      return React.createElement(
 	        "div",
-	        null,
-	        "NO CHART DATA"
+	        { className: "loading-container" },
+	        React.createElement("div", { className: "jawn" })
 	      );
 	    } else {
 	      this.props.reviews.forEach(function (review) {

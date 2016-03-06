@@ -486,6 +486,9 @@ li a:hover {
 .dropdown-menu {
   position: absolute;
 }
+.subscription-search-container {
+  height: 80px;
+}
 
 .subscription-search-li {
   width: 150px;
@@ -562,6 +565,7 @@ button:active {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
+
 
 .white-text {
   color: white;

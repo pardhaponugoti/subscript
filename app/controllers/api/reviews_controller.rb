@@ -32,7 +32,7 @@ class Api::ReviewsController < ApplicationController
     if @review
       if @review.destroy
         @reviews = Review.all
-        render json @reviews
+        render json: @reviews
       else
         render json: { status: 404 }
       end

@@ -64,11 +64,11 @@ var SubscriptionSearch = React.createClass({
         </ul>;
       }
 
-      return <div>
+      return <div className="subscription-search-container">
         Start typing in a service to review
         <br/>
         <input type="text" value={this.state.searchString} onChange={this.handleChange}
-          name={this.props.searchName} placeholder="Subscription" />
+          name={this.props.searchName} placeholder="Subscription" className="subscription-search-input" />
         {subUl}
       </div>;
     }
