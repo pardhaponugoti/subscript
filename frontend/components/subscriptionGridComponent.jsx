@@ -15,8 +15,4 @@ var SubscriptionGridComponent = React.createClass({
   }
 });
 
-// <div className="row">
-//   <h6>{this.props.subscription.description}</h6>
-// </div>
-
 module.exports = SubscriptionGridComponent;

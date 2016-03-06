@@ -22,91 +22,115 @@ var Header = React.createClass({
   componentDidMount: function() {
 
     if (this.props.addSteps) {
+
       setTimeout(function() {
-      this.props.addSteps([
-        {
-          title: 'Statistics',
-          text: "Click here to see statistics on our users",
-          selector: '.statistics-link',
-          position: 'bottom',
-          type: 'hover',
-          style: {
-            backgroundColor: '#fff',
-            borderRadius: '1rem',
-            mainColor: '#9BBEA8',
-            color: '#000',
-            textAlign: 'center',
-            width: '40rem'
-          }
-        },
-        {
-          title: 'Services',
-          text: "Click here to see all the subscriptions and services you can rate",
-          selector: '.services-link',
-          position: 'bottom',
-          type: 'hover',
-          style: {
-            backgroundColor: '#fff',
-            borderRadius: '1rem',
-            mainColor: '#9BBEA8',
-            color: '#000',
-            textAlign: 'center',
-            width: '40rem'
-          }
-        }
-        ]);
-      }.bind(this), 100);
-    }
-    // if (this.props.addTooltip) {
-    //   this.props.addTooltip({
-    //     title: 'Standalone Tooltips',
-    //     text: 'And even style them one by one!',
-    //     selector: '.title-centered',
-    //     event: 'hover',
-    //     position: 'bottom-right',
-    //     style: {
-    //       backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    //       borderRadius: '0',
-    //       color: '#fff',
-    //       mainColor: '#ff67b4',
-    //       textAlign: 'center',
-    //       width: '29rem'
-    //     }
-    //   });
-    //   this.props.addTooltip({
-    //     title: 'Standalone Tooltips',
-    //     text: 'And even style them one by one!',
-    //     selector: '.dropdown-toggle',
-    //     event: 'hover',
-    //     position: 'bottom-left',
-    //     style: {
-    //       backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    //       borderRadius: '0',
-    //       color: '#fff',
-    //       mainColor: '#ff67b4',
-    //       textAlign: 'center',
-    //       width: '29rem'
-    //     }
-    //   });
-    // }
-    // }
-    // if (this.props.addTooltip) {
-    //   this.props.addTooltip({
-    //     title: 'Standalone Tooltips',
-    //     text: 'And even style them one by one!',
-    //     selector: '.test-button',
-    //     event: 'hover',
-    //     position: 'bottom-right',
-    //     style: {
-    //       backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    //       borderRadius: '0',
-    //       color: '#fff',
-    //       mainColor: '#ff67b4',
-    //       textAlign: 'center',
-    //       width: '29rem'
-    //     }
-    //   });
-    // }
+        this.props.addSteps([
+          { title: 'This is the Review Feed',
+                    text: "Check out user reviews from around the galaxy!",
+                    selector: '.review-show',
+                    position: 'top',
+                    type: 'hover',
+                    style: {
+                      backgroundColor: '#fff',
+                      mainColor: '#9BBEA8',
+                      color: '#000',
+                      borderRadius: '1rem',
+                      textAlign: 'center',
+                      width: '40rem'
+                    }
+                } ,
+          { title: 'Profile',
+                    text: "Click here to see your profile, write new reviews, or edit your old reviews.",
+                    selector: '.open-profile',
+                    position: 'right',
+                    type: 'hover',
+                    style: {
+                      backgroundColor: '#fff',
+                      mainColor: '#9BBEA8',
+                      color: '#000',
+                      borderRadius: '1rem',
+                      textAlign: 'center',
+                      width: '40rem'
+                    }
+                } ,
+          { title: 'Write a new review',
+                    text: "Click here to write a new review!",
+                    selector: '.write-new-review',
+                    position: 'right',
+                    type: 'hover',
+                    style: {
+                      backgroundColor: '#fff',
+                      mainColor: '#9BBEA8',
+                      color: '#000',
+                      borderRadius: '1rem',
+                      textAlign: 'center',
+                      width: '40rem'
+                    }
+                } ,
+          {
+            title: 'Search Bar',
+            text: "Search for companies or users",
+            selector: '.header-search-box',
+            position: 'bottom',
+            type: 'hover',
+            style: {
+              backgroundColor: '#fff',
+              mainColor: '#9BBEA8',
+              color: '#000',
+              borderRadius: '1rem',
+              textAlign: 'center',
+              width: '40rem'
+            }
+          },
+          {
+            title: 'Statistics',
+            text: "Click here to see summary statistics for all the services on the site",
+            selector: '.statistics-link',
+            position: 'bottom',
+            type: 'hover',
+            style: {
+              backgroundColor: '#fff',
+              mainColor: '#9BBEA8',
+              color: '#000',
+              borderRadius: '1rem',
+              textAlign: 'center',
+              width: '40rem'
+            }
+          },
+          {
+            title: 'Services',
+            text: "Click here to browse all the services reviewed on the site.",
+            selector: '.services-link',
+            position: 'bottom',
+            type: 'hover',
+            style: {
+              backgroundColor: '#fff',
+              mainColor: '#9BBEA8',
+              color: '#000',
+              borderRadius: '1rem',
+              textAlign: 'center',
+              width: '40rem'
+            }
+          },
+          {
+            title: 'subscript',
+            text: "Click here to go back to the review feed from anywhere in the site.  Enjoy!",
+            selector: '.title-centered',
+            position: 'bottom',
+            type: 'hover',
+            style: {
+              backgroundColor: '#fff',
+              mainColor: '#9BBEA8',
+              color: '#000',
+              borderRadius: '1rem',
+              textAlign: 'center',
+              width: '40rem'
+            }
+          },
+
+       ]);
+     }.bind(this), 250);
+   }
   },
 
   currentUserUrl: function() {

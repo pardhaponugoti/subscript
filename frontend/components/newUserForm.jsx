@@ -148,7 +148,6 @@ var NewUserForm = React.createClass({
       BrowserHistory.push("/users/"+id+"/edit");
     }.bind(this);
     var errorCallback=function(error) {
-      console.log("new user error callback: " + error);
       this.setState({
         alertVisible: true,
         errors: JSON.parse(error)

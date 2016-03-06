@@ -214,9 +214,4 @@ var Chart = React.createClass({
       }
   }
 });
-
-// xScale = {xScale}
-// <BarChart data={barData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}}/>
-// <LineChart data={lineData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}} />
-
 module.exports = Chart;

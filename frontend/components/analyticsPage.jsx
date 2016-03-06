@@ -57,7 +57,9 @@ var AnalyticsPage = React.createClass({
   render: function() {
     if (this.state.subscriptions === undefined || this.state.reviews === undefined ||
       this.state.subscriptions.length === 0 || this.state.reviews.length === 0) {
-      return <div>WAITING-FOR-LOAD</div>;
+        return <div className="container">
+          <div className="jawn"></div>
+        </div>;
     } else {
       var radarData = {};
       var labels = [];

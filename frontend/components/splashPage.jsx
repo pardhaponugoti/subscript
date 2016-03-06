@@ -72,7 +72,6 @@ var SplashPage = React.createClass({
       BrowserHistory.push("/");
     }.bind(this);
     var errorCallback=function(error) {
-      console.log("error signing in demo");
     };
     // $("#App").css({
     //   "-webkit-filter": "blur(0px)",

@@ -48,6 +48,42 @@ var UserShowPage = React.createClass({
     this.userListenerToken = UserStore.addListener(this.userChange);
     this.reviewListenerToken = ReviewStore.addListener(this.reviewChange);
     this.subscriptionListenerToken = SubscriptionStore.addListener(this.subscriptionChange);
+
+    // if (this.props.addSteps) {
+    //
+    //   this.props.addSteps([
+    //     {
+    //       title: 'Profile Page',
+    //       text: "This is your profile page.  You can write new reviews, edit your old reviews, or change your profile.",
+    //       selector: '.profile-name',
+    //       position: 'bottom-left',
+    //       type: 'hover',
+    //       style: {
+    //         backgroundColor: '#fff',
+    //         mainColor: '#9BBEA8',
+    //         color: '#000',
+    //         borderRadius: '1rem',
+    //         textAlign: 'center',
+    //         width: '40rem'
+    //       }
+    //     },
+    //     {
+    //       title: 'Services',
+    //       text: "On the services page you can browse services that people have rated.  You can click on any of the services to their information.  Let's check out Uber's page.",
+    //       selector: '.services-link',
+    //       position: 'bottom',
+    //       type: 'hover',
+    //       style: {
+    //         backgroundColor: '#fff',
+    //         mainColor: '#9BBEA8',
+    //         color: '#000',
+    //         borderRadius: '1rem',
+    //         textAlign: 'center',
+    //         width: '40rem'
+    //       }
+    //     }
+    //    ]);
+    // }
   },
   componentWillUnmount: function() {
     this.userListenerToken.remove();
@@ -71,13 +107,11 @@ var UserShowPage = React.createClass({
 
 
   userChange: function() {
-    console.log("userShowPageRenderFromUserStoreChange");
     this.setState({
       currentShowUser: UserStore.findById(this.props.params.userId)
     });
   },
   reviewChange: function() {
-    console.log("setting state for user show page");
     this.setState({
       currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
     });
@@ -110,29 +144,17 @@ var UserShowPage = React.createClass({
       newReviewModalIsOpen: false
     });
   },
-  // toggleEditReviewModal: function() {
-  //   this.setState({
-  //     editReviewModalIsOpen: !this.state.editReviewModalIsOpen
-  //   });
-  // },
-  // closeEditReviewModal: function() {
-  //   this.setState({
-  //     editReviewModalIsOpen: false
-  //   });
-  // },
-  // deleteReview: function(reviewId) {
-  //   ReviewBackendActions.deleteReview(reviewId);
-  // },
 
   openSubscriptionPage: function(id) {
     BrowserHistory.push("/subscriptions/" + id);
   },
 
   render: function() {
-    console.log("render show page");
     if (this.state.currentShowUser === undefined || this.state.currentShowUserReviews === undefined) {
       // Insert Loading Symbol Here -- waiting for the userstore to update
-      return <div id="WAITING-FOR-LOAD"></div>;
+      return <div className="loading-container">
+        <div className="jawn"></div>
+      </div>;
     } else {
       var self = this;
       return <div className="user-show-page">
@@ -190,23 +212,3 @@ var UserShowPage = React.createClass({
 });
 
 module.exports = UserShowPage;
-
-
-// { parseInt(self.props.params.userId) === parseInt(self.props.currentUser.id) ?
-//   <span>
-//     <button className="btn btn-default btn-sm" onClick={self.toggleEditReviewModal}>Edit Review</button>
-//     <button className="btn btn-default btn-sm" onClick={self.deleteReview.bind(self, userReview.id)}>Delete Review</button>
-//   </span> : "" }
-//   <Modal show={self.state.editReviewModalIsOpen} onHide={self.closeEditReviewModal}>
-//     <Modal.Header closeButton>
-//       <Modal.Title>Edit Review</Modal.Title>
-//     </Modal.Header>
-//     <Modal.Body>
-//       <EditReviewForm review={userReview} currentUser={self.props.currentUser}
-//         closeModalCallback={self.closeEditReviewModal}/>
-//     </Modal.Body>
-//     <Modal.Footer>
-//       <Button onClick={self.closeEditReviewModal}>Never Mind</Button>
-//     </Modal.Footer>
-//   </Modal>
-//   <br/>

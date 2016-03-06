@@ -87,7 +87,9 @@ var ReviewShowComponent = React.createClass({
   render: function() {
     // two cases -- if the currentUser has been passed down or if not
     if (this.state.author === undefined || this.state.subscription === undefined) {
-        return <div>WAITING-FOR_LOAD</div>;
+      return <div className="container">
+        <div className="jawn"></div>
+      </div>;
     }
     if (this.props.currentUser) {
       return <li className="review-show container-fluid" key={this.props.review.id}>

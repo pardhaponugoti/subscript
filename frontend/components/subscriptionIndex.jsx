@@ -14,20 +14,18 @@ var SubscriptionIndex = React.createClass({
     };
   },
   componentDidMount: function() {
-    console.log("subscriptionIndexMounting");
     this.setState({
       subscriptions: SubscriptionStore.all()
     });
     this.listenerToken = SubscriptionStore.addListener(this.onChange);
   },
   componentWillUnmount: function() {
-    console.log("subscriptionIndexUnmounting");
     this.setState({
       subscriptions: []
     });
     this.listenerToken.remove();
   },
-  
+
   onChange: function() {
     this.setState({
       subscriptions: SubscriptionStore.all()

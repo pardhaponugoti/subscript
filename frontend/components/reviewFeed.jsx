@@ -3,74 +3,27 @@ var Infinite = require('react-infinite');
 var InfiniteScroll = require('react-infinite-scroll')(React);
 var TransitionGroup = require('react-addons-css-transition-group');
 var BrowserHistory = require('react-router').browserHistory;
+var Modal = require('react-bootstrap').Modal;
+var Button = require('react-bootstrap').Button;
 
 var ReviewStore = require('../stores/review.js');
 
 var ReviewShowComponent = require('./reviewShowComponent.jsx');
 var SplashPage = require('./splashPage.jsx');
 
+var NewReviewForm = require('./newReviewForm.jsx');
+
 var ReviewFeed = React.createClass({
   getInitialState: function() {
     return {
       reviews: ReviewStore.sortedByAge(),
-      shownReviews: ReviewStore.sortedByAge().slice(0, 30)
+      shownReviews: ReviewStore.sortedByAge().slice(0, 30),
+      modalIsOpen: false
     };
   },
   componentDidMount: function() {
-    console.log("Review Feed Mount");
     this.listenerToken = ReviewStore.addListener(this.onReviewChange);
-    if (this.props.addSteps) {
-      // setTimeout(function() {
-      // this.props.addSteps([
-      //   {
-      //     title: 'Reviews',
-      //     text: "Check out user reviews from around the galaxy!",
-      //     selector: '.review-show',
-      //     position: 'top',
-      //     type: 'hover',
-      //     style: {
-      //       backgroundColor: '#fff',
-      //       mainColor: '#9BBEA8',
-      //       color: '#000',
-      //       borderRadius: '1rem',
-      //       textAlign: 'center',
-      //       width: '40rem'
-      //     }
-      //   },
-      //   {
-      //     title: 'Profile',
-      //     text: "Preview your profile, write and edit reviews, and edit your information",
-      //     selector: '.open-profile',
-      //     position: 'right',
-      //     type: 'hover',
-      //     style: {
-      //       backgroundColor: '#fff',
-      //       mainColor: '#9BBEA8',
-      //       color: '#000',
-      //       borderRadius: '1rem',
-      //       textAlign: 'center',
-      //       width: '40rem'
-      //     }
-      //   },
-      //   {
-      //     title: 'Write a Review',
-      //     text: "Review a subscription or service that you use!",
-      //     selector: '.write-new-review',
-      //     position: 'right',
-      //     type: 'hover',
-      //     style: {
-      //       backgroundColor: '#fff',
-      //       mainColor: '#9BBEA8',
-      //       color: '#000',
-      //       borderRadius: '1rem',
-      //       textAlign: 'center',
-      //       width: '40rem'
-      //     }
-      //   }
-      //   ]);
-      // }.bind(this), 100);
-    }
-  },
+ },
   componentWillUnmount: function() {
     this.listenerToken.remove();
   },
@@ -111,10 +64,23 @@ var ReviewFeed = React.createClass({
     BrowserHistory.push("/subscriptions");
   },
 
+  openModal: function() {
+    this.setState({
+      modalIsOpen: true
+    });
+  },
+  closeModal: function() {
+    this.setState({
+      modalIsOpen: false
+    });
+  },
+
 
   render: function() {
     if (this.state.reviews === undefined) {
-      return <div>STAY TUNED</div>;
+      return <div className="loading-container">
+        <div className="jawn"></div>
+      </div>;
     } else {
       if (!this.props.loggedIn) {
         return <SplashPage />;
@@ -134,10 +100,22 @@ var ReviewFeed = React.createClass({
           <div className="col-md-2 col-sm-4 sidebar-div">
             <ul id="sidebar" className="nav nav-stacked">
                 <li className="sidebar-li open-profile" onClick={this.openProfile}>Profile</li>
-                <li className="sidebar-li" >Your Subscriptions<span className="caret"></span></li>
                 <li className="sidebar-li" onClick={this.openStatistics}>Statistics</li>
                 <li className="sidebar-li" onClick={this.openServices}>Services</li>
-                <li className="sidebar-li write-new-review" >Write A Review</li>
+                <li className="sidebar-li write-new-review" onClick={this.openModal}>Write A Review</li>
+                  <Modal bsSize="lg"
+                    show={this.state.modalIsOpen}
+                    onHide={this.closeModal}>
+                    <Modal.Header closeButton>
+                      <Modal.Title>Write a New Review</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <NewReviewForm currentUser={this.props.currentUser} closeModalCallback={this.closeModal}/>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button onClick={this.closeModal}>Never Mind</Button>
+                    </Modal.Footer>
+                  </Modal>
             </ul>
           </div>
           <div className="col-md-8 col-sm-7 col-md-offset-1 col-sm-offset-1">

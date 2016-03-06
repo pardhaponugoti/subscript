@@ -7,14 +7,12 @@ var SessionUtil = {
       url : "/api/session/new",
       type: "GET",
       success: function(data) {
-        console.log("userDataSuccess:" + data);
         SessionFrontendActions.receiveUserSignIn(data);
         if (callback) {
           callback();
         }
       },
       error: function(data) {
-        console.log("userDataError:" + data);
         SessionFrontendActions.signOutUser();
       }
     });

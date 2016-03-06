@@ -8,14 +8,12 @@ var ReviewUtil = {
       type: "POST",
       data: reviewParams,
       success: function(data) {
-        console.log("success: " + data);
         if (successCallback) {
           successCallback();
         }
         ReviewFrontendActions.receiveNewReview(data);
       },
       error: function(data) {
-        console.log("error: " + data);
         errorCallback(data.responseText);
       }
     });

@@ -168,7 +168,9 @@ var SubscriptionShowPage = React.createClass({
   render: function() {
     if(this.state.currentSubscription.name === undefined || this.props === undefined || this.state.reviews === undefined) {
       // INSERT LOADING SYMBOL HERE
-      return <div>WAITING-FOR-LOAD</div>;
+      return <div className="loading-container">
+        <div className="jawn"></div>
+      </div>;
     } else {
       var input;
       if (this.state.showReviews) {

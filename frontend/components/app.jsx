@@ -60,19 +60,19 @@ var App = React.createClass({
   },
 
   _addSteps: function(steps) {
-      var joyride = this.refs.joyride;
+    var joyride = this.refs.joyride;
 
-      if (!Array.isArray(steps)) {
-          steps = [steps];
-      }
+    if (!Array.isArray(steps)) {
+      steps = [steps];
+    }
 
-      if (!steps.length) {
-          return false;
-      }
+    if (!steps.length) {
+      return false;
+    }
 
-      this.setState({
-        steps: this.state.steps.concat(joyride.parseSteps(steps))
-      });
+    this.setState({
+       steps: this.state.steps.concat(joyride.parseSteps(steps))
+    });
   },
 
   _addTooltip: function(data) {
@@ -80,14 +80,11 @@ var App = React.createClass({
   },
 
   _stepCallback: function(step) {
-      if (step.title === "Services") {
-        BrowserHistory.push("/statistics");
-      }
-      console.log('••• stepCallback', step);
+      // console.log('••• stepCallback', step);
   },
 
   _completeCallback: function(steps, skipped) {
-      console.log('••• completeCallback', steps, skipped);
+      // console.log('••• completeCallback', steps, skipped);
       $("body").css({
         "padding-top": "50px"
       });
@@ -130,17 +127,16 @@ var App = React.createClass({
   },
 
   render: function() {
-    console.log("App ready: " + this.state.ready);
     if (this.state.ready) {
       $("body").css({
         "padding-top": "0px"
       });
       setTimeout(function() {
-        this.refs.joyride.start();
-      }.bind(this), 1000);
+        this.refs.joyride.start(false);
+      }.bind(this), 1500);
       return <div id='App'>
         <Joyride  ref="joyride"
-          debug={true}
+          debug={false}
           steps={this.state.steps}
           type={this.state.joyrideType}
           showSkipButton={true}
@@ -166,7 +162,8 @@ var App = React.createClass({
                    onClickSwitch: this._onClickSwitch,
                    addSteps: this._addSteps,
                    addTooltip: this._addTooltip
-                 })}</div>
+            })}
+          </div>
       </div>;
     } else {
       return <div id='App'>

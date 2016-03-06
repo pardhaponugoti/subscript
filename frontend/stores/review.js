@@ -12,7 +12,6 @@ var _reviewsBySubscriptionId = {};
 ReviewStore.__onDispatch = function(payload) {
   switch(payload.actionType) {
     case (ReviewConstants.RECEIVE_NEW_REVIEW):
-      console.log("ReviewReceivedByStore");
       ReviewStore.addReview(payload.data);
       ReviewStore.__emitChange();
       break;
@@ -22,7 +21,6 @@ ReviewStore.__onDispatch = function(payload) {
     //   ReviewStore.__emitChange();
     //   break;
     case (ReviewConstants.RECEIVE_ALL_REVIEWS):
-      console.log("allReviewsReceivedByStore");
       ReviewStore.updateReviews(payload.data);
       ReviewStore.__emitChange();
       break;

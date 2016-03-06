@@ -9,7 +9,6 @@ var _subscriptions = {};
 SubscriptionStore.__onDispatch = function(payload) {
   switch(payload.actionType) {
     case (SubscriptionConstants.RECEIVE_ALL_SUBSCRIPTIONS):
-      console.log("subscriptionsReceivedByStore");
       SubscriptionStore.updateSubscriptions(payload.data);
       SubscriptionStore.__emitChange();
       break;

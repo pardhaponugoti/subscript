@@ -24802,14 +24802,11 @@
 	  },
 	
 	  _stepCallback: function _stepCallback(step) {
-	    if (step.title === "Services") {
-	      BrowserHistory.push("/statistics");
-	    }
-	    console.log('••• stepCallback', step);
+	    // console.log('••• stepCallback', step);
 	  },
 	
 	  _completeCallback: function _completeCallback(steps, skipped) {
-	    console.log('••• completeCallback', steps, skipped);
+	    // console.log('••• completeCallback', steps, skipped);
 	    $("body").css({
 	      "padding-top": "50px"
 	    });
@@ -24852,19 +24849,18 @@
 	  },
 	
 	  render: function render() {
-	    console.log("App ready: " + this.state.ready);
 	    if (this.state.ready) {
 	      $("body").css({
 	        "padding-top": "0px"
 	      });
 	      setTimeout(function () {
-	        this.refs.joyride.start();
-	      }.bind(this), 1000);
+	        this.refs.joyride.start(false);
+	      }.bind(this), 1500);
 	      return React.createElement(
 	        'div',
 	        { id: 'App' },
 	        React.createElement(Joyride, { ref: 'joyride',
-	          debug: true,
+	          debug: false,
 	          steps: this.state.steps,
 	          type: this.state.joyrideType,
 	          showSkipButton: true,
@@ -26442,88 +26438,106 @@
 	  componentDidMount: function componentDidMount() {
 	
 	    if (this.props.addSteps) {
+	
 	      setTimeout(function () {
-	        this.props.addSteps([{
+	        this.props.addSteps([{ title: 'This is the Review Feed',
+	          text: "Check out user reviews from around the galaxy!",
+	          selector: '.review-show',
+	          position: 'top',
+	          type: 'hover',
+	          style: {
+	            backgroundColor: '#fff',
+	            mainColor: '#9BBEA8',
+	            color: '#000',
+	            borderRadius: '1rem',
+	            textAlign: 'center',
+	            width: '40rem'
+	          }
+	        }, { title: 'Profile',
+	          text: "Click here to see your profile, write new reviews, or edit your old reviews.",
+	          selector: '.open-profile',
+	          position: 'right',
+	          type: 'hover',
+	          style: {
+	            backgroundColor: '#fff',
+	            mainColor: '#9BBEA8',
+	            color: '#000',
+	            borderRadius: '1rem',
+	            textAlign: 'center',
+	            width: '40rem'
+	          }
+	        }, { title: 'Write a new review',
+	          text: "Click here to write a new review!",
+	          selector: '.write-new-review',
+	          position: 'right',
+	          type: 'hover',
+	          style: {
+	            backgroundColor: '#fff',
+	            mainColor: '#9BBEA8',
+	            color: '#000',
+	            borderRadius: '1rem',
+	            textAlign: 'center',
+	            width: '40rem'
+	          }
+	        }, {
+	          title: 'Search Bar',
+	          text: "Search for companies or users",
+	          selector: '.header-search-box',
+	          position: 'bottom',
+	          type: 'hover',
+	          style: {
+	            backgroundColor: '#fff',
+	            mainColor: '#9BBEA8',
+	            color: '#000',
+	            borderRadius: '1rem',
+	            textAlign: 'center',
+	            width: '40rem'
+	          }
+	        }, {
 	          title: 'Statistics',
-	          text: "Click here to see statistics on our users",
+	          text: "Click here to see summary statistics for all the services on the site",
 	          selector: '.statistics-link',
 	          position: 'bottom',
 	          type: 'hover',
 	          style: {
 	            backgroundColor: '#fff',
-	            borderRadius: '1rem',
 	            mainColor: '#9BBEA8',
 	            color: '#000',
+	            borderRadius: '1rem',
 	            textAlign: 'center',
 	            width: '40rem'
 	          }
 	        }, {
 	          title: 'Services',
-	          text: "Click here to see all the subscriptions and services you can rate",
+	          text: "Click here to browse all the services reviewed on the site.",
 	          selector: '.services-link',
 	          position: 'bottom',
 	          type: 'hover',
 	          style: {
 	            backgroundColor: '#fff',
-	            borderRadius: '1rem',
 	            mainColor: '#9BBEA8',
 	            color: '#000',
+	            borderRadius: '1rem',
+	            textAlign: 'center',
+	            width: '40rem'
+	          }
+	        }, {
+	          title: 'subscript',
+	          text: "Click here to go back to the review feed from anywhere in the site.  Enjoy!",
+	          selector: '.title-centered',
+	          position: 'bottom',
+	          type: 'hover',
+	          style: {
+	            backgroundColor: '#fff',
+	            mainColor: '#9BBEA8',
+	            color: '#000',
+	            borderRadius: '1rem',
 	            textAlign: 'center',
 	            width: '40rem'
 	          }
 	        }]);
-	      }.bind(this), 100);
+	      }.bind(this), 250);
 	    }
-	    // if (this.props.addTooltip) {
-	    //   this.props.addTooltip({
-	    //     title: 'Standalone Tooltips',
-	    //     text: 'And even style them one by one!',
-	    //     selector: '.title-centered',
-	    //     event: 'hover',
-	    //     position: 'bottom-right',
-	    //     style: {
-	    //       backgroundColor: 'rgba(0, 0, 0, 0.8)',
-	    //       borderRadius: '0',
-	    //       color: '#fff',
-	    //       mainColor: '#ff67b4',
-	    //       textAlign: 'center',
-	    //       width: '29rem'
-	    //     }
-	    //   });
-	    //   this.props.addTooltip({
-	    //     title: 'Standalone Tooltips',
-	    //     text: 'And even style them one by one!',
-	    //     selector: '.dropdown-toggle',
-	    //     event: 'hover',
-	    //     position: 'bottom-left',
-	    //     style: {
-	    //       backgroundColor: 'rgba(0, 0, 0, 0.8)',
-	    //       borderRadius: '0',
-	    //       color: '#fff',
-	    //       mainColor: '#ff67b4',
-	    //       textAlign: 'center',
-	    //       width: '29rem'
-	    //     }
-	    //   });
-	    // }
-	    // }
-	    // if (this.props.addTooltip) {
-	    //   this.props.addTooltip({
-	    //     title: 'Standalone Tooltips',
-	    //     text: 'And even style them one by one!',
-	    //     selector: '.test-button',
-	    //     event: 'hover',
-	    //     position: 'bottom-right',
-	    //     style: {
-	    //       backgroundColor: 'rgba(0, 0, 0, 0.8)',
-	    //       borderRadius: '0',
-	    //       color: '#fff',
-	    //       mainColor: '#ff67b4',
-	    //       textAlign: 'center',
-	    //       width: '29rem'
-	    //     }
-	    //   });
-	    // }
 	  },
 	
 	  currentUserUrl: function currentUserUrl() {
@@ -51041,7 +51055,6 @@
 	SubscriptionStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case SubscriptionConstants.RECEIVE_ALL_SUBSCRIPTIONS:
-	      console.log("subscriptionsReceivedByStore");
 	      SubscriptionStore.updateSubscriptions(payload.data);
 	      SubscriptionStore.__emitChange();
 	      break;
@@ -51142,14 +51155,12 @@
 	      url: "/api/session/new",
 	      type: "GET",
 	      success: function success(data) {
-	        console.log("userDataSuccess:" + data);
 	        SessionFrontendActions.receiveUserSignIn(data);
 	        if (callback) {
 	          callback();
 	        }
 	      },
 	      error: function error(data) {
-	        console.log("userDataError:" + data);
 	        SessionFrontendActions.signOutUser();
 	      }
 	    });
@@ -51576,7 +51587,6 @@
 	      BrowserHistory.push("/users/" + id + "/edit");
 	    }.bind(this);
 	    var errorCallback = function (error) {
-	      console.log("new user error callback: " + error);
 	      this.setState({
 	        alertVisible: true,
 	        errors: JSON.parse(error)
@@ -51719,7 +51729,6 @@
 	ReviewStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case ReviewConstants.RECEIVE_NEW_REVIEW:
-	      console.log("ReviewReceivedByStore");
 	      ReviewStore.addReview(payload.data);
 	      ReviewStore.__emitChange();
 	      break;
@@ -51729,7 +51738,6 @@
 	    //   ReviewStore.__emitChange();
 	    //   break;
 	    case ReviewConstants.RECEIVE_ALL_REVIEWS:
-	      console.log("allReviewsReceivedByStore");
 	      ReviewStore.updateReviews(payload.data);
 	      ReviewStore.__emitChange();
 	      break;
@@ -52053,14 +52061,12 @@
 	      type: "POST",
 	      data: reviewParams,
 	      success: function success(data) {
-	        console.log("success: " + data);
 	        if (successCallback) {
 	          successCallback();
 	        }
 	        ReviewFrontendActions.receiveNewReview(data);
 	      },
 	      error: function error(data) {
-	        console.log("error: " + data);
 	        errorCallback(data.responseText);
 	      }
 	    });
@@ -52169,11 +52175,15 @@
 	var InfiniteScroll = __webpack_require__(534)(React);
 	var TransitionGroup = __webpack_require__(535);
 	var BrowserHistory = __webpack_require__(159).browserHistory;
+	var Modal = __webpack_require__(228).Modal;
+	var Button = __webpack_require__(228).Button;
 	
 	var ReviewStore = __webpack_require__(509);
 	
 	var ReviewShowComponent = __webpack_require__(542);
 	var SplashPage = __webpack_require__(545);
+	
+	var NewReviewForm = __webpack_require__(547);
 	
 	var ReviewFeed = React.createClass({
 	  displayName: 'ReviewFeed',
@@ -52181,63 +52191,12 @@
 	  getInitialState: function getInitialState() {
 	    return {
 	      reviews: ReviewStore.sortedByAge(),
-	      shownReviews: ReviewStore.sortedByAge().slice(0, 30)
+	      shownReviews: ReviewStore.sortedByAge().slice(0, 30),
+	      modalIsOpen: false
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
-	    console.log("Review Feed Mount");
 	    this.listenerToken = ReviewStore.addListener(this.onReviewChange);
-	    if (this.props.addSteps) {
-	      // setTimeout(function() {
-	      // this.props.addSteps([
-	      //   {
-	      //     title: 'Reviews',
-	      //     text: "Check out user reviews from around the galaxy!",
-	      //     selector: '.review-show',
-	      //     position: 'top',
-	      //     type: 'hover',
-	      //     style: {
-	      //       backgroundColor: '#fff',
-	      //       mainColor: '#9BBEA8',
-	      //       color: '#000',
-	      //       borderRadius: '1rem',
-	      //       textAlign: 'center',
-	      //       width: '40rem'
-	      //     }
-	      //   },
-	      //   {
-	      //     title: 'Profile',
-	      //     text: "Preview your profile, write and edit reviews, and edit your information",
-	      //     selector: '.open-profile',
-	      //     position: 'right',
-	      //     type: 'hover',
-	      //     style: {
-	      //       backgroundColor: '#fff',
-	      //       mainColor: '#9BBEA8',
-	      //       color: '#000',
-	      //       borderRadius: '1rem',
-	      //       textAlign: 'center',
-	      //       width: '40rem'
-	      //     }
-	      //   },
-	      //   {
-	      //     title: 'Write a Review',
-	      //     text: "Review a subscription or service that you use!",
-	      //     selector: '.write-new-review',
-	      //     position: 'right',
-	      //     type: 'hover',
-	      //     style: {
-	      //       backgroundColor: '#fff',
-	      //       mainColor: '#9BBEA8',
-	      //       color: '#000',
-	      //       borderRadius: '1rem',
-	      //       textAlign: 'center',
-	      //       width: '40rem'
-	      //     }
-	      //   }
-	      //   ]);
-	      // }.bind(this), 100);
-	    }
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.listenerToken.remove();
@@ -52281,12 +52240,23 @@
 	    BrowserHistory.push("/subscriptions");
 	  },
 	
+	  openModal: function openModal() {
+	    this.setState({
+	      modalIsOpen: true
+	    });
+	  },
+	  closeModal: function closeModal() {
+	    this.setState({
+	      modalIsOpen: false
+	    });
+	  },
+	
 	  render: function render() {
 	    if (this.state.reviews === undefined) {
 	      return React.createElement(
 	        'div',
-	        null,
-	        'STAY TUNED'
+	        { className: 'loading-container' },
+	        React.createElement('div', { className: 'jawn' })
 	      );
 	    } else {
 	      if (!this.props.loggedIn) {
@@ -52333,12 +52303,6 @@
 	              ),
 	              React.createElement(
 	                'li',
-	                { className: 'sidebar-li' },
-	                'Your Subscriptions',
-	                React.createElement('span', { className: 'caret' })
-	              ),
-	              React.createElement(
-	                'li',
 	                { className: 'sidebar-li', onClick: this.openStatistics },
 	                'Statistics'
 	              ),
@@ -52349,8 +52313,37 @@
 	              ),
 	              React.createElement(
 	                'li',
-	                { className: 'sidebar-li write-new-review' },
+	                { className: 'sidebar-li write-new-review', onClick: this.openModal },
 	                'Write A Review'
+	              ),
+	              React.createElement(
+	                Modal,
+	                { bsSize: 'lg',
+	                  show: this.state.modalIsOpen,
+	                  onHide: this.closeModal },
+	                React.createElement(
+	                  Modal.Header,
+	                  { closeButton: true },
+	                  React.createElement(
+	                    Modal.Title,
+	                    null,
+	                    'Write a New Review'
+	                  )
+	                ),
+	                React.createElement(
+	                  Modal.Body,
+	                  null,
+	                  React.createElement(NewReviewForm, { currentUser: this.props.currentUser, closeModalCallback: this.closeModal })
+	                ),
+	                React.createElement(
+	                  Modal.Footer,
+	                  null,
+	                  React.createElement(
+	                    Button,
+	                    { onClick: this.closeModal },
+	                    'Never Mind'
+	                  )
+	                )
 	              )
 	            )
 	          ),
@@ -54459,8 +54452,8 @@
 	    if (this.state.author === undefined || this.state.subscription === undefined) {
 	      return React.createElement(
 	        'div',
-	        null,
-	        'WAITING-FOR_LOAD'
+	        { className: 'container' },
+	        React.createElement('div', { className: 'jawn' })
 	      );
 	    }
 	    if (this.props.currentUser) {
@@ -55011,9 +55004,7 @@
 	      this.unblurBackground();
 	      BrowserHistory.push("/");
 	    }.bind(this);
-	    var errorCallback = function errorCallback(error) {
-	      console.log("error signing in demo");
-	    };
+	    var errorCallback = function errorCallback(error) {};
 	    // $("#App").css({
 	    //   "-webkit-filter": "blur(0px)",
 	    //   "filter": "blur(0px)",
@@ -55242,6 +55233,42 @@
 	    this.userListenerToken = UserStore.addListener(this.userChange);
 	    this.reviewListenerToken = ReviewStore.addListener(this.reviewChange);
 	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.subscriptionChange);
+	
+	    // if (this.props.addSteps) {
+	    //
+	    //   this.props.addSteps([
+	    //     {
+	    //       title: 'Profile Page',
+	    //       text: "This is your profile page.  You can write new reviews, edit your old reviews, or change your profile.",
+	    //       selector: '.profile-name',
+	    //       position: 'bottom-left',
+	    //       type: 'hover',
+	    //       style: {
+	    //         backgroundColor: '#fff',
+	    //         mainColor: '#9BBEA8',
+	    //         color: '#000',
+	    //         borderRadius: '1rem',
+	    //         textAlign: 'center',
+	    //         width: '40rem'
+	    //       }
+	    //     },
+	    //     {
+	    //       title: 'Services',
+	    //       text: "On the services page you can browse services that people have rated.  You can click on any of the services to their information.  Let's check out Uber's page.",
+	    //       selector: '.services-link',
+	    //       position: 'bottom',
+	    //       type: 'hover',
+	    //       style: {
+	    //         backgroundColor: '#fff',
+	    //         mainColor: '#9BBEA8',
+	    //         color: '#000',
+	    //         borderRadius: '1rem',
+	    //         textAlign: 'center',
+	    //         width: '40rem'
+	    //       }
+	    //     }
+	    //    ]);
+	    // }
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.userListenerToken.remove();
@@ -55264,13 +55291,11 @@
 	  },
 	
 	  userChange: function userChange() {
-	    console.log("userShowPageRenderFromUserStoreChange");
 	    this.setState({
 	      currentShowUser: UserStore.findById(this.props.params.userId)
 	    });
 	  },
 	  reviewChange: function reviewChange() {
-	    console.log("setting state for user show page");
 	    this.setState({
 	      currentShowUserReviews: ReviewStore.findByUserId(this.props.params.userId)
 	    });
@@ -55303,29 +55328,19 @@
 	      newReviewModalIsOpen: false
 	    });
 	  },
-	  // toggleEditReviewModal: function() {
-	  //   this.setState({
-	  //     editReviewModalIsOpen: !this.state.editReviewModalIsOpen
-	  //   });
-	  // },
-	  // closeEditReviewModal: function() {
-	  //   this.setState({
-	  //     editReviewModalIsOpen: false
-	  //   });
-	  // },
-	  // deleteReview: function(reviewId) {
-	  //   ReviewBackendActions.deleteReview(reviewId);
-	  // },
 	
 	  openSubscriptionPage: function openSubscriptionPage(id) {
 	    BrowserHistory.push("/subscriptions/" + id);
 	  },
 	
 	  render: function render() {
-	    console.log("render show page");
 	    if (this.state.currentShowUser === undefined || this.state.currentShowUserReviews === undefined) {
 	      // Insert Loading Symbol Here -- waiting for the userstore to update
-	      return React.createElement('div', { id: 'WAITING-FOR-LOAD' });
+	      return React.createElement(
+	        'div',
+	        { className: 'loading-container' },
+	        React.createElement('div', { className: 'jawn' })
+	      );
 	    } else {
 	      var self = this;
 	      return React.createElement(
@@ -55454,25 +55469,6 @@
 	});
 	
 	module.exports = UserShowPage;
-	
-	// { parseInt(self.props.params.userId) === parseInt(self.props.currentUser.id) ?
-	//   <span>
-	//     <button className="btn btn-default btn-sm" onClick={self.toggleEditReviewModal}>Edit Review</button>
-	//     <button className="btn btn-default btn-sm" onClick={self.deleteReview.bind(self, userReview.id)}>Delete Review</button>
-	//   </span> : "" }
-	//   <Modal show={self.state.editReviewModalIsOpen} onHide={self.closeEditReviewModal}>
-	//     <Modal.Header closeButton>
-	//       <Modal.Title>Edit Review</Modal.Title>
-	//     </Modal.Header>
-	//     <Modal.Body>
-	//       <EditReviewForm review={userReview} currentUser={self.props.currentUser}
-	//         closeModalCallback={self.closeEditReviewModal}/>
-	//     </Modal.Body>
-	//     <Modal.Footer>
-	//       <Button onClick={self.closeEditReviewModal}>Never Mind</Button>
-	//     </Modal.Footer>
-	//   </Modal>
-	//   <br/>
 
 /***/ },
 /* 547 */
@@ -56169,8 +56165,8 @@
 	      // INSERT LOADING SYMBOL HERE
 	      return React.createElement(
 	        'div',
-	        null,
-	        'WAITING-FOR-LOAD'
+	        { className: 'loading-container' },
+	        React.createElement('div', { className: 'jawn' })
 	      );
 	    } else {
 	      var input;
@@ -56553,11 +56549,6 @@
 	    }
 	  }
 	});
-	
-	// xScale = {xScale}
-	// <BarChart data={barData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}}/>
-	// <LineChart data={lineData} options={{responsive: true, tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>"}} />
-	
 	module.exports = Chart;
 
 /***/ },
@@ -60278,14 +60269,12 @@
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
-	    console.log("subscriptionIndexMounting");
 	    this.setState({
 	      subscriptions: SubscriptionStore.all()
 	    });
 	    this.listenerToken = SubscriptionStore.addListener(this.onChange);
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
-	    console.log("subscriptionIndexUnmounting");
 	    this.setState({
 	      subscriptions: []
 	    });
@@ -63362,10 +63351,6 @@
 	  }
 	});
 	
-	// <div className="row">
-	//   <h6>{this.props.subscription.description}</h6>
-	// </div>
-	
 	module.exports = SubscriptionGridComponent;
 
 /***/ },
@@ -63435,8 +63420,8 @@
 	    if (this.state.subscriptions === undefined || this.state.reviews === undefined || this.state.subscriptions.length === 0 || this.state.reviews.length === 0) {
 	      return React.createElement(
 	        'div',
-	        null,
-	        'WAITING-FOR-LOAD'
+	        { className: 'container' },
+	        React.createElement('div', { className: 'jawn' })
 	      );
 	    } else {
 	      var radarData = {};
