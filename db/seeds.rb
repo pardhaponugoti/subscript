@@ -125,19 +125,49 @@ logarithmic = [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5]
   13.times do |j|
     if j == 0
       rating = bimodal.sample
-      frequency = bimodal.sample
+      if rating == 1
+        frequency = logarithmic.sample
+      elsif rating == 2
+        frequency = logarithmic.sample
+      elsif rating == 3
+        frequency = uniform.sample
+      elsif rating == 4
+        frequency = exponential.sample
+      elsif rating == 5
+        frequency = exponential.sample
+      end
     elsif j == 1
       rating = uniform.sample
       frequency = uniform.sample
     elsif j == 2
       rating = exponential.sample
-      frequency = uniform.sample
+      if rating == 1
+        frequency = logarithmic.sample
+      elsif rating == 2
+        frequency = logarithmic.sample
+      elsif rating == 3
+        frequency = uniform.sample
+      elsif rating == 4
+        frequency = exponential.sample
+      elsif rating == 5
+        frequency = exponential.sample
+      end
     elsif j == 3
       rating = normal.sample
       frequency = logarithmic.sample
     elsif j == 4
       rating = exponential.sample
-      frequency = bimodal.sample
+      if rating == 1
+        frequency = logarithmic.sample
+      elsif rating == 2
+        frequency = logarithmic.sample
+      elsif rating == 3
+        frequency = uniform.sample
+      elsif rating == 4
+        frequency = exponential.sample
+      elsif rating == 5
+        frequency = exponential.sample
+      end
     elsif j == 5
       rating = normal.sample
       frequency = uniform.sample
@@ -163,3 +193,273 @@ logarithmic = [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5]
     })
   end
 end
+
+Review.create({
+  author_id: 1,
+  subscription_id: 1,
+  rating: 5,
+  frequency: 5,
+  comment: "Useful, Uber is."
+})
+
+Review.create({
+  author_id: 2,
+  subscription_id: 2,
+  rating: 5,
+  frequency: 5,
+  comment: "I find their lack of LyftSpaceships... disturbing."
+})
+Review.create({
+  author_id: 1,
+  subscription_id: 2,
+  rating: 5,
+  frequency: 5,
+  comment: "A wise choice, Lyft is."
+})
+
+
+
+Review.create({
+  author_id: 1,
+  subscription_id: 8,
+  rating: 5,
+  frequency: 5,
+  comment: "A good source of music, Spotify is."
+})
+Review.create({
+  author_id: 2,
+  subscription_id: 10,
+  rating: 5,
+  frequency: 5,
+  comment: "Great color scheme."
+})
+
+Review.create({
+  author_id: 3,
+  subscription_id: 1,
+  rating: 5,
+  frequency: 5,
+  comment: "beep beep."
+})
+Review.create({
+  author_id: 3,
+  subscription_id: 2,
+  rating: 5,
+  frequency: 5,
+  comment: "beep boop beep."
+})
+Review.create({
+  author_id: 3,
+  subscription_id: 3,
+  rating: 5,
+  frequency: 5,
+  comment: "beep beep beep boop beep."
+})
+
+Review.create({
+  author_id: 3,
+  subscription_id: 9,
+  rating: 5,
+  frequency: 5,
+  comment: "beep boop boop beep."
+})
+Review.create({
+  author_id: 3,
+  subscription_id: 11,
+  rating: 5,
+  frequency: 5,
+  comment: "boop beep."
+})
+
+Review.create({
+  author_id: 5,
+  subscription_id: 1,
+  rating: 5,
+  frequency: 5,
+  comment: "Uber.. it's a trap!"
+})
+Review.create({
+  author_id: 5,
+  subscription_id: 2,
+  rating: 5,
+  frequency: 5,
+  comment: "Lyft.. it's a trap!"
+})
+Review.create({
+  author_id: 5,
+  subscription_id: 3,
+  rating: 5,
+  frequency: 5,
+  comment: "Netflix.. it's a trap!"
+})
+
+
+
+Review.create({
+  author_id: 10,
+  subscription_id: 1,
+  rating: 5,
+  frequency: 5,
+  comment: "Rawwrrrrrrr!"
+})
+Review.create({
+  author_id: 10,
+  subscription_id: 2,
+  rating: 5,
+  frequency: 5,
+  comment: "Aaaaaaaaaaaaaaaarrrgh!"
+})
+
+Review.create({
+  author_id: 10,
+  subscription_id: 11,
+  rating: 5,
+  frequency: 5,
+  comment: "Aaaaaaaaaaaaaaaarrrgh!"
+})
+Review.create({
+  author_id: 10,
+  subscription_id: 9,
+  rating: 5,
+  frequency: 5,
+  comment: "Aaaaaaaarrrgh!!"
+})
+
+
+Review.create({
+  author_id: 9,
+  subscription_id: 2,
+  rating: 5,
+  frequency: 5,
+  comment: "Could be useful for smuggling"
+})
+Review.create({
+  author_id: 9,
+  subscription_id: 5,
+  rating: 5,
+  frequency: 5,
+  comment: "So they deliver stuff for you?  Seems like a good deal."
+})
+
+Review.create({
+  author_id: 8,
+  subscription_id: 1,
+  rating: 5,
+  frequency: 5,
+  comment: "A useful tool, but should be used with caution."
+})
+Review.create({
+  author_id: 8,
+  subscription_id: 2,
+  rating: 5,
+  frequency: 5,
+  comment: "A useful ride sharing service, however one must wield it cautiously."
+})
+
+
+Review.create({
+  author_id: 11,
+  subscription_id: 1,
+  rating: 5,
+  frequency: 5,
+  comment: "A useful tool.. for the dark side."
+})
+
+Review.create({
+  author_id: 11,
+  subscription_id: 5,
+  rating: 5,
+  frequency: 5,
+  comment: "Amazon prime would be a great addition to the dark side."
+})
+
+
+
+
+
+
+
+
+
+Review.create({
+  author_id: 10,
+  subscription_id: 3,
+  rating: 5,
+  frequency: 5,
+  comment: "Arrrrrrrrrrrrrgh!"
+})
+
+
+Review.create({
+  author_id: 8,
+  subscription_id: 5,
+  rating: 5,
+  frequency: 5,
+  comment: "Amazon prime is a convenient service, however it must be used with caution."
+})
+Review.create({
+  author_id: 1,
+  subscription_id: 5,
+  rating: 5,
+  frequency: 5,
+  comment: "Convenient, Amazon Prime is."
+})
+
+Review.create({
+  author_id: 5,
+  subscription_id: 11,
+  rating: 5,
+  frequency: 5,
+  comment: "Pretty sure this one's a trap!"
+})
+
+Review.create({
+  author_id: 9,
+  subscription_id: 1,
+  rating: 5,
+  frequency: 5,
+  comment: "Could be useful for smuggling"
+})
+Review.create({
+  author_id: 2,
+  subscription_id: 5,
+  rating: 5,
+  frequency: 5,
+  comment: "I like their use of drones."
+})
+Review.create({
+  author_id: 5,
+  subscription_id: 9,
+  rating: 1,
+  frequency: 1,
+  comment: "Not completely sure, but I have a feeling Apple Music is a trap!"
+})
+Review.create({
+  author_id: 3,
+  subscription_id: 6,
+  rating: 5,
+  frequency: 5,
+  comment: "beep boop beep boop."
+})
+Review.create({
+  author_id: 11,
+  subscription_id: 2,
+  rating: 5,
+  frequency: 5,
+  comment: "Perhaps they should come over to the dark side."
+})
+Review.create({
+  author_id: 1,
+  subscription_id: 3,
+  rating: 5,
+  frequency: 5,
+  comment: "Entertaining, Netflix is. However, with moderation, one must use it."
+})
+
+Review.create({
+  author_id: 2,
+  subscription_id: 1,
+  rating: 5,
+  frequency: 5,
+  comment: "I find their lack of UberSpaceships... disturbing."
+})

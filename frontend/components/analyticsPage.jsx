@@ -17,24 +17,6 @@ var AnalyticsPage = React.createClass({
     };
   },
   componentDidMount: function() {
-    if(this.props.addSteps) {
-      this.props.addSteps([
-        {
-          title: 'Statistics',
-          text: "Click here to see statistics on our users",
-          selector: '.reviews-radar-chart',
-          position: 'bottom',
-          type: 'hover',
-          style: {
-            backgroundColor: '#fff',
-            borderRadius: '1rem',
-            mainColor: '#9BBEA8',
-            color: '#000',
-            textAlign: 'center',
-            width: '40rem'
-          }
-        }]);
-    }
     this.subscriptionListenerToken = SubscriptionStore.addListener(this.onSubscriptionChange);
     this.reviewListenerToken = ReviewStore.addListener(this.onReviewChange);
   },

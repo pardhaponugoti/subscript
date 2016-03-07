@@ -126,7 +126,7 @@ var Header = React.createClass({
               textAlign: 'center',
               width: '40rem'
             }
-          },
+          }
 
        ]);
      }.bind(this), 250);
