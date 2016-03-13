@@ -30,6 +30,7 @@ The backend is designed to only handle API requests for data on users, subscript
 #### Here is the schema for the site:
 
 **users**
+
 column name     | data type | details
 ----------------|-----------|-----------------------
 id              | integer   | not null, primary key
@@ -45,6 +46,7 @@ created_at      | datetime  | not null
 updated_at      | datetime  | not null
 
 **subscriptions**
+
 column name     | data type | details
 ----------------|-----------|-----------------------
 id              | integer   | not null, primary key
@@ -56,6 +58,7 @@ created_at      | datetime  | not null
 updated_at      | datetime  | not null
 
 **reviews**
+
 column name     | data type | details
 ----------------|-----------|-----------------------
 id              | integer   | not null, primary key
