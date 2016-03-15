@@ -52298,7 +52298,7 @@
 	            ),
 	            React.createElement(
 	              'div',
-	              { className: 'col-md-10 col-sm-6 review-feed-title' },
+	              { className: 'col-md-10 col-sm-10 review-feed-title' },
 	              React.createElement(
 	                'h3',
 	                null,
@@ -52307,7 +52307,7 @@
 	            ),
 	            this.props.startTourCallback ? React.createElement(
 	              'div',
-	              { className: 'col-md-2 col-sm-6 right-justify' },
+	              { className: 'col-md-2 col-sm-2 right-justify' },
 	              React.createElement(
 	                'button',
 	                { onClick: this.props.startTourCallback, className: 'btn-lg tour-btn' },
@@ -52376,7 +52376,7 @@
 	          ),
 	          React.createElement(
 	            'div',
-	            { className: 'col-md-8 col-sm-7 col-md-offset-1 col-sm-offset-1' },
+	            { className: 'col-md-8 col-sm-7 col-md-offset-1' },
 	            this.infiniteScrollComponent()
 	          )
 	        );

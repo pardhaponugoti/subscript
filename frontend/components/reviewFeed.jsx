@@ -91,10 +91,10 @@ var ReviewFeed = React.createClass({
             <br/>
             <h1 className="green-text"> Welcome to subscript!</h1>
             <h4> This is a site for you to review your paid subscriptions and services, such as Uber, Netflix, and Spotify. </h4>
-            <div className="col-md-10 col-sm-6 review-feed-title">
+            <div className="col-md-10 col-sm-10 review-feed-title">
               <h3> Below are the most recent reviews from our users from around the universe </h3>
             </div>
-            {this.props.startTourCallback ? <div className="col-md-2 col-sm-6 right-justify">
+            {this.props.startTourCallback ? <div className="col-md-2 col-sm-2 right-justify">
               <button onClick={this.props.startTourCallback} className="btn-lg tour-btn">Take a Tour!</button>
             </div> : null }
           </div>
@@ -121,7 +121,7 @@ var ReviewFeed = React.createClass({
                   </Modal>
             </ul>
           </div>
-          <div className="col-md-8 col-sm-7 col-md-offset-1 col-sm-offset-1">
+          <div className="col-md-8 col-sm-7 col-md-offset-1">
             { this.infiniteScrollComponent() }
           </div>
         </div>;
