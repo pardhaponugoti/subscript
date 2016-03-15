@@ -124,39 +124,40 @@ var ReviewsRadarChart = React.createClass({
       chartData.datasets = data.datasets;
     }
 
-    return <div className="col-md-10 col-md-offset-1 reviews-radar-chart">
+    return <div className="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 reviews-radar-chart">
       <br/>
       <br/>
-      <h3> Frequency of Use </h3>
+      <h2> Frequency of Use </h2>
+      <h5> Percentage of each service's users who use it daily, weekly, monthly, etc. </h5>
       <br/>
       <br/>
       <div className="row">
-        <div className="col-md-10">
+        <div className="col-sm-9 col-md-9 col-lg-10">
           <RadarChart redraw={true} data={chartData} options={chartOptions}/>
         </div>
-        <div className="col-md-2">
+        <div className="col-sm-3 col-md-3 col-lg-2">
           <form className="container-fluid reviews-radar-checkbox">
-            <label style={{color: data.datasets[0].strokeColor}}>
+            <label className="checkbox-label" style={{color: data.datasets[0].strokeColor}}>
               <input type="checkbox" value="5" checked={this.state.daily} onClick={this.handleClick}/>
               Daily
             </label>
             <br/>
-            <label style={{color: data.datasets[1].strokeColor}}>
+            <label className="checkbox-label" style={{color: data.datasets[1].strokeColor}}>
               <input type="checkbox" value="4" checked={this.state.weekly} onClick={this.handleClick}/>
               Weekly
             </label>
             <br/>
-            <label style={{color: data.datasets[2].strokeColor}}>
+            <label className="checkbox-label" style={{color: data.datasets[2].strokeColor}}>
               <input type="checkbox" value="3" checked={this.state.monthly} onClick={this.handleClick}/>
               Monthly
             </label>
             <br/>
-            <label style={{color: data.datasets[3].strokeColor}}>
+            <label className="checkbox-label" style={{color: data.datasets[3].strokeColor}}>
               <input type="checkbox" value="2" checked={this.state.yearly} onClick={this.handleClick}/>
               Yearly
             </label>
             <br/>
-            <label style={{color: data.datasets[4].strokeColor}}>
+            <label className="checkbox-label" style={{color: data.datasets[4].strokeColor}}>
               <input type="checkbox" value="1" checked={this.state.never} onClick={this.handleClick}/>
               Never
             </label>

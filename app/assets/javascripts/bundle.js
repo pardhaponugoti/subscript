@@ -61,9 +61,6 @@
 	var SubscriptionShowPage = __webpack_require__(549);
 	var ReviewFeed = __webpack_require__(520);
 	var SubscriptionIndex = __webpack_require__(583);
-	
-	//test components
-	var HeaderSearchComponent = __webpack_require__(472);
 	var AnalyticsPage = __webpack_require__(595);
 	
 	var routes = React.createElement(
@@ -24854,8 +24851,8 @@
 	        "padding-top": "0px"
 	      });
 	      setTimeout(function () {
-	        this.refs.joyride.start(false);
-	      }.bind(this), 1500);
+	        this.refs.joyride.start(true);
+	      }.bind(this), 500);
 	      return React.createElement(
 	        'div',
 	        { id: 'App' },
@@ -26441,7 +26438,7 @@
 	
 	      setTimeout(function () {
 	        this.props.addSteps([{ title: 'This is the Review Feed',
-	          text: "Check out user reviews from around the galaxy!",
+	          text: "Check out user reviews from galaxies far far away!",
 	          selector: '.review-show',
 	          position: 'top',
 	          type: 'hover',
@@ -26453,33 +26450,36 @@
 	            textAlign: 'center',
 	            width: '40rem'
 	          }
-	        }, { title: 'Profile',
-	          text: "Click here to see your profile, write new reviews, or edit your old reviews.",
-	          selector: '.open-profile',
-	          position: 'right',
-	          type: 'hover',
-	          style: {
-	            backgroundColor: '#fff',
-	            mainColor: '#9BBEA8',
-	            color: '#000',
-	            borderRadius: '1rem',
-	            textAlign: 'center',
-	            width: '40rem'
-	          }
-	        }, { title: 'Write a new review',
-	          text: "Click here to write a new review!",
-	          selector: '.write-new-review',
-	          position: 'right',
-	          type: 'hover',
-	          style: {
-	            backgroundColor: '#fff',
-	            mainColor: '#9BBEA8',
-	            color: '#000',
-	            borderRadius: '1rem',
-	            textAlign: 'center',
-	            width: '40rem'
-	          }
-	        }, {
+	        },
+	        // { title: 'Profile',
+	        //           text: "Click here to see your profile, write new reviews, or edit your old reviews.",
+	        //           selector: '.open-profile',
+	        //           position: 'right',
+	        //           type: 'hover',
+	        //           style: {
+	        //             backgroundColor: '#fff',
+	        //             mainColor: '#9BBEA8',
+	        //             color: '#000',
+	        //             borderRadius: '1rem',
+	        //             textAlign: 'center',
+	        //             width: '40rem'
+	        //           }
+	        //       } ,
+	        // { title: 'Write a new review',
+	        //           text: "Click here to write a new review!",
+	        //           selector: '.write-new-review',
+	        //           position: 'right',
+	        //           type: 'hover',
+	        //           style: {
+	        //             backgroundColor: '#fff',
+	        //             mainColor: '#9BBEA8',
+	        //             color: '#000',
+	        //             borderRadius: '1rem',
+	        //             textAlign: 'center',
+	        //             width: '40rem'
+	        //           }
+	        //       } ,
+	        {
 	          title: 'Search Bar',
 	          text: "Search for companies or users",
 	          selector: '.header-search-box',
@@ -26521,11 +26521,10 @@
 	            textAlign: 'center',
 	            width: '40rem'
 	          }
-	        }, {
-	          title: 'subscript',
-	          text: "Click here to go back to the review feed from anywhere in the site.  Enjoy!",
-	          selector: '.title-centered',
-	          position: 'bottom',
+	        }, { title: 'Profile',
+	          text: "Click here to view and edit your profile.",
+	          selector: '.header-dropdown',
+	          position: 'bottom-right',
 	          type: 'hover',
 	          style: {
 	            backgroundColor: '#fff',
@@ -26535,8 +26534,25 @@
 	            textAlign: 'center',
 	            width: '40rem'
 	          }
-	        }]);
-	      }.bind(this), 250);
+	        }
+	        // {
+	        //   title: 'subscript',
+	        //   text: "Click here to go back to the review feed from anywhere in the site.  Enjoy!",
+	        //   selector: '.title-centered',
+	        //   position: 'bottom',
+	        //   type: 'hover',
+	        //   style: {
+	        //     backgroundColor: '#fff',
+	        //     mainColor: '#9BBEA8',
+	        //     color: '#000',
+	        //     borderRadius: '1rem',
+	        //     textAlign: 'center',
+	        //     width: '40rem'
+	        //   }
+	        // }
+	
+	        ]);
+	      }.bind(this), 0);
 	    }
 	  },
 	
@@ -52182,6 +52198,7 @@
 	
 	var ReviewShowComponent = __webpack_require__(542);
 	var SplashPage = __webpack_require__(545);
+	var SubscriptionIndex = __webpack_require__(583);
 	
 	var NewReviewForm = __webpack_require__(546);
 	
@@ -52270,21 +52287,31 @@
 	            { className: 'container' },
 	            React.createElement('br', null),
 	            React.createElement(
+	              'h1',
+	              { className: 'green-text' },
+	              ' Welcome to subscript!'
+	            ),
+	            React.createElement(
+	              'h4',
+	              null,
+	              ' This is a site for you to review your paid subscriptions and services, such as Uber, Netflix, and Spotify. '
+	            ),
+	            React.createElement(
 	              'div',
-	              { className: 'col-md-5 col-sm-6 review-feed-title' },
+	              { className: 'col-md-10 col-sm-6 review-feed-title' },
 	              React.createElement(
-	                'h1',
+	                'h3',
 	                null,
-	                'Recent Reviews'
+	                ' Below are the most recent reviews from our users from around the universe '
 	              )
 	            ),
 	            this.props.startTourCallback ? React.createElement(
 	              'div',
-	              { className: 'col-md-7 col-sm-6 right-justify' },
+	              { className: 'col-md-2 col-sm-6 right-justify' },
 	              React.createElement(
 	                'button',
-	                { onClick: this.props.startTourCallback, className: 'btn btn-default btn-lg tour-btn' },
-	                'Take a Quick Tour'
+	                { onClick: this.props.startTourCallback, className: 'btn-lg tour-btn' },
+	                'Take a Tour!'
 	              )
 	            ) : null
 	          ),
@@ -52359,6 +52386,12 @@
 	});
 	
 	module.exports = ReviewFeed;
+	
+	// <h5> Be sure to check out the <a onClick={this.openStatistics}>Statistics</a> Page to see summary data about our users and the <a onClick={this.openServices}>Services</a> Page to see the services that you can review. </h5>
+
+	// <div className="col-md-12 col-sm-12">
+	//   <SubscriptionIndex/>
+	// </div>
 
 /***/ },
 /* 521 */
@@ -55005,31 +55038,8 @@
 	      BrowserHistory.push("/");
 	    }.bind(this);
 	    var errorCallback = function errorCallback(error) {};
-	    // $("#App").css({
-	    //   "-webkit-filter": "blur(0px)",
-	    //   "filter": "blur(0px)",
-	    //   "-o-filter": "blur(0px)",
-	    //   "-moz-filter": "blur(0px)"
-	    // });
 	    SessionBackendActions.signInUser({ user: { email: email,
 	        password: "password1" } }, successCallback, errorCallback);
-	    // console.log(email);
-	    // this.setState({
-	    //   modalIsOpen: true,
-	    //   demo: false,
-	    //   signInOpen: true
-	    // },
-	    //   function() {
-	    //     setTimeout( function() {
-	    //     console.log("should be setting email and password");
-	    //     console.log($( "new-session-email" ).length);
-	    //     console.log($( "new-session-password" ).length);
-	    //
-	    //     $("new-session-email").val(email);
-	    //     $("new-session-password").val("password1");
-	    //   }, 2000);
-	    //   }
-	    // );
 	  },
 	
 	  demoOptions: function demoOptions() {
@@ -55455,42 +55465,6 @@
 	    this.userListenerToken = UserStore.addListener(this.userChange);
 	    this.reviewListenerToken = ReviewStore.addListener(this.reviewChange);
 	    this.subscriptionListenerToken = SubscriptionStore.addListener(this.subscriptionChange);
-	
-	    // if (this.props.addSteps) {
-	    //
-	    //   this.props.addSteps([
-	    //     {
-	    //       title: 'Profile Page',
-	    //       text: "This is your profile page.  You can write new reviews, edit your old reviews, or change your profile.",
-	    //       selector: '.profile-name',
-	    //       position: 'bottom-left',
-	    //       type: 'hover',
-	    //       style: {
-	    //         backgroundColor: '#fff',
-	    //         mainColor: '#9BBEA8',
-	    //         color: '#000',
-	    //         borderRadius: '1rem',
-	    //         textAlign: 'center',
-	    //         width: '40rem'
-	    //       }
-	    //     },
-	    //     {
-	    //       title: 'Services',
-	    //       text: "On the services page you can browse services that people have rated.  You can click on any of the services to their information.  Let's check out Uber's page.",
-	    //       selector: '.services-link',
-	    //       position: 'bottom',
-	    //       type: 'hover',
-	    //       style: {
-	    //         backgroundColor: '#fff',
-	    //         mainColor: '#9BBEA8',
-	    //         color: '#000',
-	    //         borderRadius: '1rem',
-	    //         textAlign: 'center',
-	    //         width: '40rem'
-	    //       }
-	    //     }
-	    //    ]);
-	    // }
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.userListenerToken.remove();
@@ -55557,7 +55531,6 @@
 	
 	  render: function render() {
 	    if (this.state.currentShowUser === undefined || this.state.currentShowUserReviews === undefined) {
-	      // Insert Loading Symbol Here -- waiting for the userstore to update
 	      return React.createElement(
 	        'div',
 	        { className: 'loading-container' },
@@ -55570,7 +55543,7 @@
 	        { className: 'user-show-page' },
 	        React.createElement(
 	          'div',
-	          { className: 'col-md-3 col-md-offset-1 container-fluid' },
+	          { className: 'col-md-4 col-md-offset-1 col-sm-5 col-sm-offset-1 col-lg-3 col-lg-offset-1 container-fluid' },
 	          React.createElement('img', { src: this.state.currentShowUser.image, className: 'profile-img' }),
 	          React.createElement('br', null),
 	          React.createElement(
@@ -55578,7 +55551,7 @@
 	            null,
 	            React.createElement(
 	              'h3',
-	              null,
+	              { className: 'green-text' },
 	              'Subscriptions'
 	            ),
 	            this.state.currentShowUserReviews.map(function (review) {
@@ -55596,7 +55569,7 @@
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'col-md-7 container-fluid profile-info' },
+	          { className: 'col-md-7 col-sm-6 col-lg-7 container-fluid profile-info' },
 	          React.createElement(
 	            'div',
 	            { className: 'profile-name' },
@@ -55670,7 +55643,7 @@
 	          React.createElement('br', null),
 	          React.createElement(
 	            'h3',
-	            null,
+	            { className: 'green-text' },
 	            'Reviews'
 	          ),
 	          React.createElement(
@@ -56162,7 +56135,6 @@
 	
 	  render: function render() {
 	    if (this.state.currentSubscription.name === undefined || this.props === undefined || this.state.reviews === undefined) {
-	      // INSERT LOADING SYMBOL HERE
 	      return React.createElement(
 	        'div',
 	        { className: 'loading-container' },
@@ -56177,13 +56149,13 @@
 	      }
 	      return React.createElement(
 	        'div',
-	        { className: 'container' },
+	        { className: 'container charts-container' },
 	        React.createElement(
 	          'div',
 	          { className: 'row' },
 	          React.createElement(
 	            'div',
-	            { className: 'col-md-4' },
+	            { className: 'col-md-4 col-lg-4' },
 	            React.createElement(
 	              'h1',
 	              null,
@@ -56192,7 +56164,7 @@
 	          ),
 	          React.createElement(
 	            'div',
-	            { className: 'col-md-8' },
+	            { className: 'col-md-8 col-lg-8' },
 	            React.createElement(
 	              'h1',
 	              null,
@@ -56216,31 +56188,24 @@
 	          )
 	        ),
 	        React.createElement(
-	          'ul',
-	          { className: 'nav nav-tabs list-inline borderless', role: 'tablist' },
+	          'div',
+	          { className: 'row charts-div center-justify' },
 	          React.createElement(
-	            'li',
-	            { key: '1', className: this.state.showCharts ? "active" : "" },
-	            React.createElement(
-	              'a',
-	              { onClick: this.showCharts },
-	              'Charts'
-	            )
+	            'h2',
+	            { className: 'green-text' },
+	            'Charts'
 	          ),
-	          React.createElement(
-	            'li',
-	            { key: '2', className: this.state.showReviews ? "active" : "" },
-	            React.createElement(
-	              'a',
-	              { onClick: this.showReviews },
-	              'Reviews'
-	            )
-	          )
+	          React.createElement(SubscriptionChart, { subscription: this.state.currentSubscription, reviews: this.state.reviews })
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'subscription-show-container container' },
-	          input
+	          { className: 'row col-md-10 col-md-offset-1 center-justify' },
+	          React.createElement(
+	            'h2',
+	            { className: 'green-text' },
+	            'Reviews'
+	          ),
+	          this.reviewsUl()
 	        )
 	      );
 	    }
@@ -56249,7 +56214,15 @@
 	});
 	
 	module.exports = SubscriptionShowPage;
-	
+	// <ul className="nav nav-tabs list-inline borderless" role="tablist">
+	//   <li key="1" className={this.state.showCharts ? "active" : ""}><a onClick={this.showCharts}>Charts</a></li>
+	//   <li key="2" className={this.state.showReviews ? "active" : ""}><a onClick={this.showReviews}>Reviews</a></li>
+	// </ul>
+
+	// <div className="subscription-show-container container">
+	//   {input}
+	// </div>
+
 	// {this.state.reviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
 	//   return <ReviewShowComponent key={review.id} review={review} />;
 	// })}
@@ -56292,7 +56265,7 @@
 	  } else if (value < 3) {
 	    return { color: "orange" };
 	  } else if (value < 4) {
-	    return { color: "#ace600" };
+	    return { color: "#67991c" };
 	  } else {
 	    return { color: "green" };
 	  }
@@ -56421,135 +56394,162 @@
 	
 	      return React.createElement(
 	        "div",
-	        { className: "col-md-8 col-md-offset-2 container-fluid" },
+	        { className: "col-md-12 container" },
 	        React.createElement("br", null),
 	        React.createElement(
 	          "div",
-	          { className: "row" },
-	          React.createElement(
-	            "h4",
-	            { className: "chart-title" },
-	            this.props.subscription.name,
-	            " Ratings"
-	          ),
+	          { className: "row container-fluid" },
 	          React.createElement(
 	            "div",
-	            { className: "col-md-3" },
+	            { className: "col-md-4 col-lg-4 center-justify" },
 	            React.createElement(
 	              "h4",
+	              null,
+	              "Ratings"
+	            ),
+	            React.createElement(DonutChart, { data: donutData, options: { responsive: true,
+	                tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>",
+	                segmentStrokeColor: "#fff",
+	                segmentStrokeWidth: 2 } }),
+	            React.createElement(
+	              "h6",
 	              null,
 	              "Average Rating:"
 	            ),
 	            React.createElement(
-	              "h2",
+	              "h6",
 	              { style: returnStyle(avgRating) },
 	              avgRating
 	            ),
 	            React.createElement(
-	              "h4",
+	              "h6",
 	              null,
 	              "Median Rating:"
 	            ),
 	            React.createElement(
-	              "h2",
+	              "h6",
 	              { style: returnStyle(medianRating) },
 	              medianRating
 	            ),
 	            React.createElement(
-	              "h4",
+	              "h6",
 	              null,
 	              "Most Common:"
 	            ),
 	            React.createElement(
-	              "h2",
+	              "h6",
 	              { style: returnStyle(modeRating) },
 	              modeRating
 	            )
 	          ),
 	          React.createElement(
 	            "div",
-	            { className: "col-md-9" },
-	            React.createElement(DonutChart, { data: donutData, options: { responsive: true,
-	                tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>",
-	                segmentStrokeColor: "#fff",
-	                segmentStrokeWidth: 2 } })
-	          )
-	        ),
-	        React.createElement("br", null),
-	        React.createElement("br", null),
-	        React.createElement(
-	          "div",
-	          { className: "row" },
-	          React.createElement(
-	            "h4",
-	            { className: "chart-title" },
-	            this.props.subscription.name,
-	            " Usage Rate "
-	          ),
-	          React.createElement(
-	            "div",
-	            { className: "col-md-3" },
+	            { className: "col-md-4 col-lg-4 center-justify" },
 	            React.createElement(
 	              "h4",
+	              null,
+	              "Usage Rate"
+	            ),
+	            React.createElement(RadarChart, { data: radarData, options: { responsive: true, scaleLineColor: "#707070" } }),
+	            React.createElement(
+	              "h6",
 	              null,
 	              "Average Usage:"
 	            ),
 	            React.createElement(
-	              "h2",
+	              "h6",
 	              { style: returnStyle(avgUsage) },
 	              avgUsage
 	            ),
 	            React.createElement(
-	              "h4",
+	              "h6",
 	              null,
 	              "Median Usage:"
 	            ),
 	            React.createElement(
-	              "h2",
+	              "h6",
 	              { style: returnStyle(medianUsage) },
 	              medianUsage
 	            ),
 	            React.createElement(
-	              "h4",
+	              "h6",
 	              null,
 	              "Most Common:"
 	            ),
 	            React.createElement(
-	              "h2",
+	              "h6",
 	              { style: returnStyle(modeUsage) },
 	              modeUsage
 	            )
 	          ),
 	          React.createElement(
 	            "div",
-	            { className: "col-md-9" },
-	            React.createElement(RadarChart, { data: radarData, options: { responsive: true, scaleLineColor: "#707070" } })
+	            { className: "col-md-4 col-lg-4 center-justify" },
+	            React.createElement(
+	              "h4",
+	              null,
+	              "Ratings vs Frequency Scatterplot"
+	            ),
+	            React.createElement(
+	              "div",
+	              { className: "scatter-plot-div" },
+	              React.createElement("br", null),
+	              React.createElement(ScatterPlot, {
+	                data: scatterData,
+	                xAxis: { label: "Frequency of Use" },
+	                yAxis: { label: "Rating" },
+	                width: 300,
+	                height: 300,
+	                margin: { top: 10, bottom: 50, left: 50, right: 10 } })
+	            )
 	          )
-	        ),
-	        React.createElement("br", null),
-	        React.createElement("br", null),
-	        React.createElement(
-	          "div",
-	          { className: "scatter-plot-div" },
-	          React.createElement(
-	            "h4",
-	            { className: "chart-title" },
-	            " Ratings vs Frequency Scatter Plot "
-	          ),
-	          React.createElement("br", null),
-	          React.createElement(ScatterPlot, {
-	            data: scatterData,
-	            xAxis: { label: "Frequency of Use" },
-	            yAxis: { label: "Rating" },
-	            width: 600,
-	            height: 600,
-	            margin: { top: 10, bottom: 50, left: 50, right: 10 } })
 	        )
 	      );
 	    }
 	  }
 	});
 	module.exports = Chart;
+	
+	// <div className="row">
+	//   <h4 className="chart-title">{this.props.subscription.name} Ratings</h4>
+	//   <div className="col-md-3">
+	//     <h4>Average Rating:</h4><h2 style={returnStyle(avgRating)}>{avgRating}</h2>
+	//     <h4>Median Rating:</h4><h2 style={returnStyle(medianRating)}>{medianRating}</h2>
+	//     <h4>Most Common:</h4><h2 style={returnStyle(modeRating)}>{modeRating}</h2>
+	//   </div>
+	//   <div className="col-md-9">
+	//     <DonutChart data={donutData}  options={{responsive: true,
+	//         tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>",
+	//         segmentStrokeColor : "#fff",
+	//         segmentStrokeWidth : 2}}/>
+	//     </div>
+	//   </div>
+	//   <br/>
+	//   <br/>
+	//   <div className="row">
+	//     <h4 className="chart-title">{this.props.subscription.name} Usage Rate </h4>
+	//     <div className="col-md-3">
+	//       <h4>Average Usage:</h4><h2 style={returnStyle(avgUsage)}>{avgUsage}</h2>
+	//       <h4>Median Usage:</h4><h2 style={returnStyle(medianUsage)}>{medianUsage}</h2>
+	//       <h4>Most Common:</h4><h2 style={returnStyle(modeUsage)}>{modeUsage}</h2>
+	//     </div>
+	//     <div className="col-md-9">
+	//       <RadarChart data={radarData}  options={{responsive: true, scaleLineColor : "#707070"}}/>
+	//     </div>
+	//   </div>
+	//   <br/>
+	//   <br/>
+	//   <div className="scatter-plot-div">
+	//     <h4 className="chart-title"> Ratings vs Frequency Scatter Plot </h4>
+	//     <br/>
+	//     <ScatterPlot
+	//       data={scatterData}
+	//       xAxis={{label: "Frequency of Use"}}
+	//       yAxis={{label: "Rating"}}
+	//       width={600}
+	//       height={600}
+	//       margin={{top: 10, bottom: 50, left: 50, right: 10}}/>
+	//   </div>
 
 /***/ },
 /* 551 */
@@ -72505,9 +72505,14 @@
 	      'div',
 	      { className: 'subscription-index' },
 	      React.createElement(
-	        'h2',
+	        'h1',
+	        { className: 'green-text' },
+	        ' Services '
+	      ),
+	      React.createElement(
+	        'h3',
 	        null,
-	        'Services'
+	        ' All services you can review on the site'
 	      ),
 	      React.createElement(
 	        'div',
@@ -72529,16 +72534,6 @@
 	});
 	
 	module.exports = SubscriptionIndex;
-	
-	// <TransitionGroup transitionName="subscription-grid">
-	//   {this.state.subscriptions.sort(function(a, b) {
-	//     var textA = a.name.toUpperCase();
-	//     var textB = b.name.toUpperCase();
-	//     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-	//   }).map(function(subscription) {
-	//     return <SubscriptionGridComponent key={subscription.id} subscription={subscription}/>;
-	//   })}
-	// </TransitionGroup>
 
 /***/ },
 /* 584 */
@@ -75736,8 +75731,13 @@
 	          { className: 'container horizontal-bar-charts-container' },
 	          React.createElement(
 	            'h1',
+	            { className: 'green-text' },
+	            ' Statistics '
+	          ),
+	          React.createElement(
+	            'h3',
 	            null,
-	            ' Ratings and Usage Statistics '
+	            ' Ratings and usage charts for all users on the site '
 	          ),
 	          React.createElement(ReviewsRadarChart, { dailyUsageData: dailyUsageData, weeklyUsageData: weeklyUsageData,
 	            monthlyUsageData: monthlyUsageData, yearlyUsageData: yearlyUsageData,
@@ -75745,10 +75745,9 @@
 	          React.createElement(
 	            'div',
 	            { className: 'row' },
-	            React.createElement('br', null),
 	            React.createElement(
 	              'div',
-	              { className: 'col-md-6 col-sm-6' },
+	              { className: 'col-md-6 col-sm-6 col-lg-6' },
 	              React.createElement(
 	                'h4',
 	                null,
@@ -75758,7 +75757,7 @@
 	            ),
 	            React.createElement(
 	              'div',
-	              { className: 'col-md-6 col-sm-6' },
+	              { className: 'col-md-6 col-sm-6 col-lg-6' },
 	              React.createElement(
 	                'h4',
 	                null,
@@ -75772,7 +75771,7 @@
 	            { className: 'row' },
 	            React.createElement(
 	              'div',
-	              { className: 'col-md-6 col-sm-6' },
+	              { className: 'col-md-6 col-sm-6 col-lg-6' },
 	              React.createElement(
 	                'h4',
 	                null,
@@ -75782,7 +75781,7 @@
 	            ),
 	            React.createElement(
 	              'div',
-	              { className: 'col-md-6 col-sm-6' },
+	              { className: 'col-md-6 col-sm-6 col-lg-6' },
 	              React.createElement(
 	                'h4',
 	                null,
@@ -75929,13 +75928,18 @@
 	
 	    return React.createElement(
 	      'div',
-	      { className: 'col-md-10 col-md-offset-1 reviews-radar-chart' },
+	      { className: 'col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 reviews-radar-chart' },
 	      React.createElement('br', null),
 	      React.createElement('br', null),
 	      React.createElement(
-	        'h3',
+	        'h2',
 	        null,
 	        ' Frequency of Use '
+	      ),
+	      React.createElement(
+	        'h5',
+	        null,
+	        ' Percentage of each service\'s users who use it daily, weekly, monthly, etc. '
 	      ),
 	      React.createElement('br', null),
 	      React.createElement('br', null),
@@ -75944,46 +75948,46 @@
 	        { className: 'row' },
 	        React.createElement(
 	          'div',
-	          { className: 'col-md-10' },
+	          { className: 'col-sm-9 col-md-9 col-lg-10' },
 	          React.createElement(RadarChart, { redraw: true, data: chartData, options: chartOptions })
 	        ),
 	        React.createElement(
 	          'div',
-	          { className: 'col-md-2' },
+	          { className: 'col-sm-3 col-md-3 col-lg-2' },
 	          React.createElement(
 	            'form',
 	            { className: 'container-fluid reviews-radar-checkbox' },
 	            React.createElement(
 	              'label',
-	              { style: { color: data.datasets[0].strokeColor } },
+	              { className: 'checkbox-label', style: { color: data.datasets[0].strokeColor } },
 	              React.createElement('input', { type: 'checkbox', value: '5', checked: this.state.daily, onClick: this.handleClick }),
 	              'Daily'
 	            ),
 	            React.createElement('br', null),
 	            React.createElement(
 	              'label',
-	              { style: { color: data.datasets[1].strokeColor } },
+	              { className: 'checkbox-label', style: { color: data.datasets[1].strokeColor } },
 	              React.createElement('input', { type: 'checkbox', value: '4', checked: this.state.weekly, onClick: this.handleClick }),
 	              'Weekly'
 	            ),
 	            React.createElement('br', null),
 	            React.createElement(
 	              'label',
-	              { style: { color: data.datasets[2].strokeColor } },
+	              { className: 'checkbox-label', style: { color: data.datasets[2].strokeColor } },
 	              React.createElement('input', { type: 'checkbox', value: '3', checked: this.state.monthly, onClick: this.handleClick }),
 	              'Monthly'
 	            ),
 	            React.createElement('br', null),
 	            React.createElement(
 	              'label',
-	              { style: { color: data.datasets[3].strokeColor } },
+	              { className: 'checkbox-label', style: { color: data.datasets[3].strokeColor } },
 	              React.createElement('input', { type: 'checkbox', value: '2', checked: this.state.yearly, onClick: this.handleClick }),
 	              'Yearly'
 	            ),
 	            React.createElement('br', null),
 	            React.createElement(
 	              'label',
-	              { style: { color: data.datasets[4].strokeColor } },
+	              { className: 'checkbox-label', style: { color: data.datasets[4].strokeColor } },
 	              React.createElement('input', { type: 'checkbox', value: '1', checked: this.state.never, onClick: this.handleClick }),
 	              'Never'
 	            )

@@ -13,9 +13,6 @@ var UserEditPage = require('./components/userEditPage.jsx');
 var SubscriptionShowPage = require('./components/subscriptionShowPage.jsx');
 var ReviewFeed = require('./components/reviewFeed.jsx');
 var SubscriptionIndex = require('./components/subscriptionIndex.jsx');
-
-//test components
-var HeaderSearchComponent = require('./components/headerSearchComponent');
 var AnalyticsPage = require('./components/analyticsPage.jsx');
 
 var routes = (

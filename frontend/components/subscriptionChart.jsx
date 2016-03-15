@@ -27,11 +27,11 @@ function median(values) {
 
 function returnStyle(value) {
   if (value < 2) {
-    return {color:"red"};
+    return {color: "red"};
   } else if (value < 3) {
     return {color: "orange"};
   } else if (value < 4) {
-    return {color: "#ace600"};
+    return {color: "#67991c"};
   } else {
     return {color: "green"};
   }
@@ -170,50 +170,83 @@ var Chart = React.createClass({
 
       var xScale = d3.scale.ordinal().domain(["Never", "Yearly", "Monthly", "Weekly", "Daily"]).range([1,2,3,4,5]);
 
-      return <div className="col-md-8 col-md-offset-2 container-fluid">
+      return <div className="col-md-12 container">
         <br/>
-        <div className="row">
-          <h4 className="chart-title">{this.props.subscription.name} Ratings</h4>
-          <div className="col-md-3">
-            <h4>Average Rating:</h4><h2 style={returnStyle(avgRating)}>{avgRating}</h2>
-            <h4>Median Rating:</h4><h2 style={returnStyle(medianRating)}>{medianRating}</h2>
-            <h4>Most Common:</h4><h2 style={returnStyle(modeRating)}>{modeRating}</h2>
-          </div>
-          <div className="col-md-9">
+        <div className="row container-fluid">
+          <div className="col-md-4 col-lg-4 center-justify">
+            <h4>Ratings</h4>
             <DonutChart data={donutData}  options={{responsive: true,
                 tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>",
                 segmentStrokeColor : "#fff",
                 segmentStrokeWidth : 2}}/>
+              <h6>Average Rating:</h6><h6 style={returnStyle(avgRating)}>{avgRating}</h6>
+            <h6>Median Rating:</h6><h6 style={returnStyle(medianRating)}>{medianRating}</h6>
+            <h6>Most Common:</h6><h6 style={returnStyle(modeRating)}>{modeRating}</h6>
           </div>
-        </div>
-        <br/>
-        <br/>
-        <div className="row">
-          <h4 className="chart-title">{this.props.subscription.name} Usage Rate </h4>
-          <div className="col-md-3">
-            <h4>Average Usage:</h4><h2 style={returnStyle(avgUsage)}>{avgUsage}</h2>
-            <h4>Median Usage:</h4><h2 style={returnStyle(medianUsage)}>{medianUsage}</h2>
-            <h4>Most Common:</h4><h2 style={returnStyle(modeUsage)}>{modeUsage}</h2>
-          </div>
-          <div className="col-md-9">
+          <div className="col-md-4 col-lg-4 center-justify">
+            <h4>Usage Rate</h4>
             <RadarChart data={radarData}  options={{responsive: true, scaleLineColor : "#707070"}}/>
+            <h6>Average Usage:</h6><h6 style={returnStyle(avgUsage)}>{avgUsage}</h6>
+            <h6>Median Usage:</h6><h6 style={returnStyle(medianUsage)}>{medianUsage}</h6>
+            <h6>Most Common:</h6><h6 style={returnStyle(modeUsage)}>{modeUsage}</h6>
           </div>
-        </div>
-        <br/>
-        <br/>
-        <div className="scatter-plot-div">
-          <h4 className="chart-title"> Ratings vs Frequency Scatter Plot </h4>
-          <br/>
-          <ScatterPlot
-                data={scatterData}
-                xAxis={{label: "Frequency of Use"}}
-                yAxis={{label: "Rating"}}
-                width={600}
-                height={600}
-                margin={{top: 10, bottom: 50, left: 50, right: 10}}/>
+          <div className="col-md-4 col-lg-4 center-justify">
+            <h4>Ratings vs Frequency Scatterplot</h4>
+              <div className="scatter-plot-div">
+                <br/>
+                <ScatterPlot
+                      data={scatterData}
+                      xAxis={{label: "Frequency of Use"}}
+                      yAxis={{label: "Rating"}}
+                      width={300}
+                      height={300}
+                      margin={{top: 10, bottom: 50, left: 50, right: 10}}/>
+              </div>
+          </div>
         </div>
       </div>;
       }
   }
 });
 module.exports = Chart;
+
+// <div className="row">
+//   <h4 className="chart-title">{this.props.subscription.name} Ratings</h4>
+//   <div className="col-md-3">
+//     <h4>Average Rating:</h4><h2 style={returnStyle(avgRating)}>{avgRating}</h2>
+//     <h4>Median Rating:</h4><h2 style={returnStyle(medianRating)}>{medianRating}</h2>
+//     <h4>Most Common:</h4><h2 style={returnStyle(modeRating)}>{modeRating}</h2>
+//   </div>
+//   <div className="col-md-9">
+//     <DonutChart data={donutData}  options={{responsive: true,
+//         tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value + ' %' %>",
+//         segmentStrokeColor : "#fff",
+//         segmentStrokeWidth : 2}}/>
+//     </div>
+//   </div>
+//   <br/>
+//   <br/>
+//   <div className="row">
+//     <h4 className="chart-title">{this.props.subscription.name} Usage Rate </h4>
+//     <div className="col-md-3">
+//       <h4>Average Usage:</h4><h2 style={returnStyle(avgUsage)}>{avgUsage}</h2>
+//       <h4>Median Usage:</h4><h2 style={returnStyle(medianUsage)}>{medianUsage}</h2>
+//       <h4>Most Common:</h4><h2 style={returnStyle(modeUsage)}>{modeUsage}</h2>
+//     </div>
+//     <div className="col-md-9">
+//       <RadarChart data={radarData}  options={{responsive: true, scaleLineColor : "#707070"}}/>
+//     </div>
+//   </div>
+//   <br/>
+//   <br/>
+//   <div className="scatter-plot-div">
+//     <h4 className="chart-title"> Ratings vs Frequency Scatter Plot </h4>
+//     <br/>
+//     <ScatterPlot
+//       data={scatterData}
+//       xAxis={{label: "Frequency of Use"}}
+//       yAxis={{label: "Rating"}}
+//       width={600}
+//       height={600}
+//       margin={{top: 10, bottom: 50, left: 50, right: 10}}/>
+//   </div>

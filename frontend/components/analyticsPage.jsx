@@ -150,27 +150,27 @@ var AnalyticsPage = React.createClass({
 
       return <div>
         <div className="container horizontal-bar-charts-container">
-          <h1> Ratings and Usage Statistics </h1>
+          <h1 className="green-text"> Statistics </h1>
+          <h3> Ratings and usage charts for all users on the site </h3>
           <ReviewsRadarChart dailyUsageData={dailyUsageData} weeklyUsageData={weeklyUsageData}
             monthlyUsageData={monthlyUsageData} yearlyUsageData={yearlyUsageData}
             neverUsageData={neverUsageData} labels={labels}/>
           <div className="row">
-            <br/>
-            <div className="col-md-6 col-sm-6">
+            <div className="col-md-6 col-sm-6 col-lg-6">
               <h4> Highest Rated Services </h4>
               <HorizontalBarChart data={horizontalBarMostRatedData} labels={horizontalBarMostRatedLabels} colors={['#58CF6C']} horizontal={true} />
             </div>
-            <div className="col-md-6 col-sm-6">
+            <div className="col-md-6 col-sm-6 col-lg-6">
               <h4> Most Used Services </h4>
               <HorizontalBarChart data={horizontalBarMostUsedData} labels={horizontalBarMostUsedLabels} colors={['#58CF6C']} horizontal={true} />
             </div>
           </div>
           <div className="row">
-            <div className="col-md-6 col-sm-6">
+            <div className="col-md-6 col-sm-6 col-lg-6">
               <h4> Lowest Rated Services </h4>
               <HorizontalBarChart data={horizontalBarLeastRatedData} labels={horizontalBarLeastRatedLabels} colors={['#FF9824']} horizontal={true} />
             </div>
-            <div className="col-md-6 col-sm-6">
+            <div className="col-md-6 col-sm-6 col-lg-6">
               <h4> Least Used Services </h4>
               <HorizontalBarChart data={horizontalBarLeastUsedData} labels={horizontalBarLeastUsedLabels} colors={['#FF9824']} horizontal={true} />
             </div>

@@ -48,42 +48,6 @@ var UserShowPage = React.createClass({
     this.userListenerToken = UserStore.addListener(this.userChange);
     this.reviewListenerToken = ReviewStore.addListener(this.reviewChange);
     this.subscriptionListenerToken = SubscriptionStore.addListener(this.subscriptionChange);
-
-    // if (this.props.addSteps) {
-    //
-    //   this.props.addSteps([
-    //     {
-    //       title: 'Profile Page',
-    //       text: "This is your profile page.  You can write new reviews, edit your old reviews, or change your profile.",
-    //       selector: '.profile-name',
-    //       position: 'bottom-left',
-    //       type: 'hover',
-    //       style: {
-    //         backgroundColor: '#fff',
-    //         mainColor: '#9BBEA8',
-    //         color: '#000',
-    //         borderRadius: '1rem',
-    //         textAlign: 'center',
-    //         width: '40rem'
-    //       }
-    //     },
-    //     {
-    //       title: 'Services',
-    //       text: "On the services page you can browse services that people have rated.  You can click on any of the services to their information.  Let's check out Uber's page.",
-    //       selector: '.services-link',
-    //       position: 'bottom',
-    //       type: 'hover',
-    //       style: {
-    //         backgroundColor: '#fff',
-    //         mainColor: '#9BBEA8',
-    //         color: '#000',
-    //         borderRadius: '1rem',
-    //         textAlign: 'center',
-    //         width: '40rem'
-    //       }
-    //     }
-    //    ]);
-    // }
   },
   componentWillUnmount: function() {
     this.userListenerToken.remove();
@@ -151,24 +115,23 @@ var UserShowPage = React.createClass({
 
   render: function() {
     if (this.state.currentShowUser === undefined || this.state.currentShowUserReviews === undefined) {
-      // Insert Loading Symbol Here -- waiting for the userstore to update
       return <div className="loading-container">
         <div className="jawn"></div>
       </div>;
     } else {
       var self = this;
       return <div className="user-show-page">
-        <div className="col-md-3 col-md-offset-1 container-fluid">
+        <div className="col-md-4 col-md-offset-1 col-sm-5 col-sm-offset-1 col-lg-3 col-lg-offset-1 container-fluid">
           <img src={this.state.currentShowUser.image} className="profile-img"></img>
           <br/>
-          <ul><h3>Subscriptions</h3>
+          <ul><h3 className="green-text">Subscriptions</h3>
             {this.state.currentShowUserReviews.map(function(review) {
               return <li key={review.subscription_id}><Link className="subscription-name-link" to={"/subscriptions/" + review.subscription_id}>
                 {SubscriptionStore.findById(review.subscription_id).name}</Link></li>;
             })}
           </ul>
         </div>
-        <div className="col-md-7 container-fluid profile-info">
+        <div className="col-md-7 col-sm-6 col-lg-7 container-fluid profile-info">
           <div className="profile-name">{this.state.currentShowUser.first_name + " " + this.state.currentShowUser.last_name}
           </div>
             { parseInt(this.props.params.userId) === parseInt(this.props.currentUser.id) ?
@@ -196,7 +159,7 @@ var UserShowPage = React.createClass({
           <br/>
           <br/>
           <br/>
-          <h3>Reviews</h3>
+          <h3 className="green-text">Reviews</h3>
           <ul className="profile-reviews-ul container-fluid">
             { this.state.currentShowUserReviews.sort(function(a, b)
               {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(userReview) {

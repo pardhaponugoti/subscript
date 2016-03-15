@@ -167,7 +167,6 @@ var SubscriptionShowPage = React.createClass({
 
   render: function() {
     if(this.state.currentSubscription.name === undefined || this.props === undefined || this.state.reviews === undefined) {
-      // INSERT LOADING SYMBOL HERE
       return <div className="loading-container">
         <div className="jawn"></div>
       </div>;
@@ -178,22 +177,23 @@ var SubscriptionShowPage = React.createClass({
       } else if (this.state.showCharts) {
         input= <SubscriptionChart subscription={this.state.currentSubscription} reviews={this.state.reviews}/>;
       }
-      return <div className="container">
+      return <div className="container charts-container">
         <div className="row">
-          <div className="col-md-4"><h1><img className="subscription-logo" src={this.state.currentSubscription.logo} height="256"/></h1></div>
-          <div className="col-md-8">
+          <div className="col-md-4 col-lg-4"><h1><img className="subscription-logo" src={this.state.currentSubscription.logo} height="256"/></h1></div>
+          <div className="col-md-8 col-lg-8">
             <h1>{this.state.currentSubscription.name}</h1>
             { this.userButtons() }
             <h4><a href={"http://" + this.state.currentSubscription.url}>{this.state.currentSubscription.url}</a></h4>
             <h5>{this.state.currentSubscription.description}</h5>
           </div>
         </div>
-        <ul className="nav nav-tabs list-inline borderless" role="tablist">
-          <li key="1" className={this.state.showCharts ? "active" : ""}><a onClick={this.showCharts}>Charts</a></li>
-          <li key="2" className={this.state.showReviews ? "active" : ""}><a onClick={this.showReviews}>Reviews</a></li>
-        </ul>
-        <div className="subscription-show-container container">
-          {input}
+        <div className="row charts-div center-justify">
+          <h2 className="green-text">Charts</h2>
+          <SubscriptionChart subscription={this.state.currentSubscription} reviews={this.state.reviews}/>
+        </div>
+        <div className="row col-md-10 col-md-offset-1 center-justify">
+          <h2 className="green-text">Reviews</h2>
+          {this.reviewsUl()}
         </div>
       </div>;
     }
@@ -202,7 +202,14 @@ var SubscriptionShowPage = React.createClass({
 });
 
 module.exports = SubscriptionShowPage;
+// <ul className="nav nav-tabs list-inline borderless" role="tablist">
+//   <li key="1" className={this.state.showCharts ? "active" : ""}><a onClick={this.showCharts}>Charts</a></li>
+//   <li key="2" className={this.state.showReviews ? "active" : ""}><a onClick={this.showReviews}>Reviews</a></li>
+// </ul>
 
+// <div className="subscription-show-container container">
+//   {input}
+// </div>
 
 // {this.state.reviews.sort(function(a, b) {return new Date(b.updated_at) - new Date(a.updated_at);}).map(function(review) {
 //   return <ReviewShowComponent key={review.id} review={review} />;

@@ -10,6 +10,7 @@ var ReviewStore = require('../stores/review.js');
 
 var ReviewShowComponent = require('./reviewShowComponent.jsx');
 var SplashPage = require('./splashPage.jsx');
+var SubscriptionIndex = require('./subscriptionIndex.jsx');
 
 var NewReviewForm = require('./newReviewForm.jsx');
 
@@ -88,11 +89,13 @@ var ReviewFeed = React.createClass({
         return <div className="row review-feed">
           <div className="container">
             <br/>
-            <div className="col-md-5 col-sm-6 review-feed-title">
-              <h1>Recent Reviews</h1>
+            <h1 className="green-text"> Welcome to subscript!</h1>
+            <h4> This is a site for you to review your paid subscriptions and services, such as Uber, Netflix, and Spotify. </h4>
+            <div className="col-md-10 col-sm-6 review-feed-title">
+              <h3> Below are the most recent reviews from our users from around the universe </h3>
             </div>
-            {this.props.startTourCallback ? <div className="col-md-7 col-sm-6 right-justify">
-              <button onClick={this.props.startTourCallback} className="btn btn-default btn-lg tour-btn">Take a Quick Tour</button>
+            {this.props.startTourCallback ? <div className="col-md-2 col-sm-6 right-justify">
+              <button onClick={this.props.startTourCallback} className="btn-lg tour-btn">Take a Tour!</button>
             </div> : null }
           </div>
           <br/>
@@ -128,3 +131,9 @@ var ReviewFeed = React.createClass({
 });
 
 module.exports = ReviewFeed;
+
+// <h5> Be sure to check out the <a onClick={this.openStatistics}>Statistics</a> Page to see summary data about our users and the <a onClick={this.openServices}>Services</a> Page to see the services that you can review. </h5>
+
+// <div className="col-md-12 col-sm-12">
+//   <SubscriptionIndex/>
+// </div>

@@ -132,8 +132,8 @@ var App = React.createClass({
         "padding-top": "0px"
       });
       setTimeout(function() {
-        this.refs.joyride.start(false);
-      }.bind(this), 1500);
+        this.refs.joyride.start(true);
+      }.bind(this), 500);
       return <div id='App'>
         <Joyride  ref="joyride"
           debug={false}

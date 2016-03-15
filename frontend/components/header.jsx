@@ -26,7 +26,7 @@ var Header = React.createClass({
       setTimeout(function() {
         this.props.addSteps([
           { title: 'This is the Review Feed',
-                    text: "Check out user reviews from around the galaxy!",
+                    text: "Check out user reviews from galaxies far far away!",
                     selector: '.review-show',
                     position: 'top',
                     type: 'hover',
@@ -39,34 +39,34 @@ var Header = React.createClass({
                       width: '40rem'
                     }
                 } ,
-          { title: 'Profile',
-                    text: "Click here to see your profile, write new reviews, or edit your old reviews.",
-                    selector: '.open-profile',
-                    position: 'right',
-                    type: 'hover',
-                    style: {
-                      backgroundColor: '#fff',
-                      mainColor: '#9BBEA8',
-                      color: '#000',
-                      borderRadius: '1rem',
-                      textAlign: 'center',
-                      width: '40rem'
-                    }
-                } ,
-          { title: 'Write a new review',
-                    text: "Click here to write a new review!",
-                    selector: '.write-new-review',
-                    position: 'right',
-                    type: 'hover',
-                    style: {
-                      backgroundColor: '#fff',
-                      mainColor: '#9BBEA8',
-                      color: '#000',
-                      borderRadius: '1rem',
-                      textAlign: 'center',
-                      width: '40rem'
-                    }
-                } ,
+          // { title: 'Profile',
+          //           text: "Click here to see your profile, write new reviews, or edit your old reviews.",
+          //           selector: '.open-profile',
+          //           position: 'right',
+          //           type: 'hover',
+          //           style: {
+          //             backgroundColor: '#fff',
+          //             mainColor: '#9BBEA8',
+          //             color: '#000',
+          //             borderRadius: '1rem',
+          //             textAlign: 'center',
+          //             width: '40rem'
+          //           }
+          //       } ,
+          // { title: 'Write a new review',
+          //           text: "Click here to write a new review!",
+          //           selector: '.write-new-review',
+          //           position: 'right',
+          //           type: 'hover',
+          //           style: {
+          //             backgroundColor: '#fff',
+          //             mainColor: '#9BBEA8',
+          //             color: '#000',
+          //             borderRadius: '1rem',
+          //             textAlign: 'center',
+          //             width: '40rem'
+          //           }
+          //       } ,
           {
             title: 'Search Bar',
             text: "Search for companies or users",
@@ -112,24 +112,38 @@ var Header = React.createClass({
               width: '40rem'
             }
           },
-          {
-            title: 'subscript',
-            text: "Click here to go back to the review feed from anywhere in the site.  Enjoy!",
-            selector: '.title-centered',
-            position: 'bottom',
-            type: 'hover',
-            style: {
-              backgroundColor: '#fff',
-              mainColor: '#9BBEA8',
-              color: '#000',
-              borderRadius: '1rem',
-              textAlign: 'center',
-              width: '40rem'
-            }
-          }
+          { title: 'Profile',
+                    text: "Click here to view and edit your profile.",
+                    selector: '.header-dropdown',
+                    position: 'bottom-right',
+                    type: 'hover',
+                    style: {
+                      backgroundColor: '#fff',
+                      mainColor: '#9BBEA8',
+                      color: '#000',
+                      borderRadius: '1rem',
+                      textAlign: 'center',
+                      width: '40rem'
+                    }
+                } 
+          // {
+          //   title: 'subscript',
+          //   text: "Click here to go back to the review feed from anywhere in the site.  Enjoy!",
+          //   selector: '.title-centered',
+          //   position: 'bottom',
+          //   type: 'hover',
+          //   style: {
+          //     backgroundColor: '#fff',
+          //     mainColor: '#9BBEA8',
+          //     color: '#000',
+          //     borderRadius: '1rem',
+          //     textAlign: 'center',
+          //     width: '40rem'
+          //   }
+          // }
 
        ]);
-     }.bind(this), 250);
+     }.bind(this), 0);
    }
   },
 

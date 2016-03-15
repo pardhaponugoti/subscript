@@ -72,36 +72,13 @@ var SplashPage = React.createClass({
       BrowserHistory.push("/");
     }.bind(this);
     var errorCallback=function(error) {
-    };
-    // $("#App").css({
-    //   "-webkit-filter": "blur(0px)",
-    //   "filter": "blur(0px)",
-    //   "-o-filter": "blur(0px)",
-    //   "-moz-filter": "blur(0px)"
-    // });
+    }; 
     SessionBackendActions.signInUser(
       {user:
         {email: email,
          password: "password1"}},
       successCallback,
       errorCallback);
-    // console.log(email);
-    // this.setState({
-    //   modalIsOpen: true,
-    //   demo: false,
-    //   signInOpen: true
-    // },
-    //   function() {
-    //     setTimeout( function() {
-    //     console.log("should be setting email and password");
-    //     console.log($( "new-session-email" ).length);
-    //     console.log($( "new-session-password" ).length);
-    //
-    //     $("new-session-email").val(email);
-    //     $("new-session-password").val("password1");
-    //   }, 2000);
-    //   }
-    // );
   },
 
   demoOptions: function() {

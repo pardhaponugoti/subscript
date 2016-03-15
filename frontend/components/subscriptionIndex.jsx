@@ -34,7 +34,8 @@ var SubscriptionIndex = React.createClass({
 
   render: function() {
     return <div className="subscription-index">
-      <h2>Services</h2>
+      <h1 className="green-text"> Services </h1>
+      <h3> All services you can review on the site</h3>
       <div className="col-md-offset-1 col-md-10">
         <Masonry >
           {this.state.subscriptions.sort(function(a, b) {
@@ -51,13 +52,3 @@ var SubscriptionIndex = React.createClass({
 });
 
 module.exports = SubscriptionIndex;
-
-// <TransitionGroup transitionName="subscription-grid">
-//   {this.state.subscriptions.sort(function(a, b) {
-//     var textA = a.name.toUpperCase();
-//     var textB = b.name.toUpperCase();
-//     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-//   }).map(function(subscription) {
-//     return <SubscriptionGridComponent key={subscription.id} subscription={subscription}/>;
-//   })}
-// </TransitionGroup>

@@ -47,6 +47,10 @@ li a:hover {
   text-align: center;
 }
 
+.green-text {
+  color: #367D50;
+}
+
 .demo-btn {
   margin: 20px;
   transition: background-color 1s ease,
@@ -95,9 +99,31 @@ li a:hover {
   text-align: right;
 }
 
+.charts-container {
+  padding: 0;
+}
+
+.charts-div {
+  border-top: 1px black solid;
+  border-bottom: 1px black solid;
+}
+
+.center-justify {
+  text-align: center;
+  padding: 0 !important;
+}
+
 .tour-btn {
   border: 1px solid green !important;
+  /*font-size: 14px !important;*/
   margin-top: 20px;
+  font-weight: bold;
+  background-color: white;
+  transition: background-color 1.5s;
+}
+
+.tour-btn:hover {
+  background-color: #bdbdbd;
 }
 
 .fifty-pixels {
@@ -123,11 +149,16 @@ li a:hover {
 
 .reviews-radar-chart {
   text-align: center;
+  margin: 0 0 30px 0;
   /*background-color: #4E7482;*/
 }
 
 .reviews-radar-checkbox {
   text-align: left;
+}
+
+.checkbox-label {
+  font-size: 16px;
 }
 
 .center-block {
@@ -210,14 +241,11 @@ li a:hover {
 
 
 #sidebar {
-  top: 184px;
+  top: 276px;
   position: fixed;
   text-align: center;
-  /*background-color: #e6e6e6;*/
   font-size: 24px;
   border-radius: 4px;
-  /*box-shadow: 2px 2px;*/
-  color: #367d50;
 }
 
 .sidebar-div {
@@ -226,19 +254,25 @@ li a:hover {
 
 .sidebar-li {
   color: black;
-  background-color: #e6e6e6;
+  background-color: #d9d9d9;
   text-align: left;
   letter-spacing: 0.04em;
   font-size: 16px;
   padding: 10px;
-  margin: 5px 0;
+  margin: 10px 0;
   border-radius: 0 3px 3px 0;
+  width: 150px;
+  transition: background-color .75s,
+              color .75s,
+              width .75s;
 }
 
 .sidebar-li:hover {
   background-color: #367d50;
   color: white;
   cursor: pointer;
+  width: 200px;
+  font-weight: bold;
 }
 
 .profile-link-img {
@@ -257,8 +291,13 @@ li a:hover {
   border-top-style: inset;
   border-right-style: outset;
   border-bottom-style: outset;
+  border-radius: 4px;
   border-width: 2px;
   box-shadow: 2px 2px;
+}
+
+.profile-info {
+  padding: 20px;
 }
 
 .profile-reviews-ul {
@@ -381,8 +420,10 @@ li a:hover {
   margin: 10px;
   padding: 10px;
   box-shadow: 2px 2px #000;
+  text-align: left;
   /*border-bottom: 1px #bfbfbf solid;*/
   background-color: #d9d9d9;
+  border-radius: 5px;
   /*background-color: #A6C3B1;*/
   /*background-color: #9BBEA8;*/
   /*background-color:#ccffcc;*/
@@ -430,7 +471,7 @@ li a:hover {
   color: white;
 }
 
-.subscription-index h2{
+.subscription-index{
   text-align: center;
 }
 
