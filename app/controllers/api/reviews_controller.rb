@@ -20,9 +20,7 @@ class Api::ReviewsController < ApplicationController
       @reviews = Review.all
       render json: @reviews
     else
-      render json: {
-        status: 404
-      }
+      render json: @review.errors.full_messages, status: 422
     end
   end
 

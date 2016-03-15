@@ -23,8 +23,6 @@ var SubscriptionShowPage = React.createClass({
       currentSubscription: SubscriptionStore.findById(parseInt(this.props.params.subscriptionId)),
       reviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)),
       shownReviews: ReviewStore.findBySubscriptionId(parseInt(this.props.params.subscriptionId)).slice(0, 30),
-      showReviews: false,
-      showCharts: true,
       modalIsOpen: false
     };
   },
@@ -83,23 +81,6 @@ var SubscriptionShowPage = React.createClass({
     return <ul className="container-fluid subscription-review-ul" >
       {this.infiniteScrollComponent()}
     </ul>;
-  },
-
-  showReviews: function(e) {
-    e.preventDefault();
-    // e.target.toggleClass("active");
-    this.setState({
-      showReviews: true,
-      showCharts: false
-    });
-  },
-  showCharts: function(e) {
-    e.preventDefault();
-    // e.target.toggleClass("active");
-    this.setState({
-      showCharts: true,
-      showReviews: false
-    });
   },
 
   toggleModal: function() {
@@ -166,17 +147,15 @@ var SubscriptionShowPage = React.createClass({
   },
 
   render: function() {
-    if(this.state.currentSubscription.name === undefined || this.props === undefined || this.state.reviews === undefined) {
+    if(this.state.currentSubscription.name === undefined ||
+      this.props === undefined ||
+      this.state.reviews === undefined ||
+      this.state.shownReviews === undefined ||
+      this.state.reviews.length === 0) {
       return <div className="loading-container">
         <div className="jawn"></div>
       </div>;
     } else {
-      var input;
-      if (this.state.showReviews) {
-        input = this.reviewsUl();
-      } else if (this.state.showCharts) {
-        input= <SubscriptionChart subscription={this.state.currentSubscription} reviews={this.state.reviews}/>;
-      }
       return <div className="container charts-container">
         <div className="row">
           <div className="col-md-4 col-lg-4"><h1><img className="subscription-logo" src={this.state.currentSubscription.logo} height="256"/></h1></div>

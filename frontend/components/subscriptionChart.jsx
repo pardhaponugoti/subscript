@@ -19,7 +19,7 @@ function median(values) {
 
     var half = Math.floor(values.length/2);
 
-    if(values.length % 2)
+    if(values.length % 2 === 0)
         return values[half];
     else
         return (values[half-1] + values[half]) / 2.0;
@@ -152,6 +152,7 @@ var Chart = React.createClass({
         },
       ];
 
+
       var radarData = {
         labels: ["Daily", "Weekly", "Monthly", "Yearly", "Never"],
         datasets: [
@@ -180,27 +181,27 @@ var Chart = React.createClass({
                 segmentStrokeColor : "#fff",
                 segmentStrokeWidth : 2}}/>
               <h6>Average Rating:</h6><h6 style={returnStyle(avgRating)}>{avgRating}</h6>
-            <h6>Median Rating:</h6><h6 style={returnStyle(medianRating)}>{medianRating}</h6>
-            <h6>Most Common:</h6><h6 style={returnStyle(modeRating)}>{modeRating}</h6>
-          </div>
-          <div className="col-md-4 col-lg-4 center-justify">
-            <h4>Usage Rate</h4>
-            <RadarChart data={radarData}  options={{responsive: true, scaleLineColor : "#707070"}}/>
-            <h6>Average Usage:</h6><h6 style={returnStyle(avgUsage)}>{avgUsage}</h6>
-            <h6>Median Usage:</h6><h6 style={returnStyle(medianUsage)}>{medianUsage}</h6>
-            <h6>Most Common:</h6><h6 style={returnStyle(modeUsage)}>{modeUsage}</h6>
-          </div>
-          <div className="col-md-4 col-lg-4 center-justify">
-            <h4>Ratings vs Frequency Scatterplot</h4>
-              <div className="scatter-plot-div">
-                <br/>
-                <ScatterPlot
-                      data={scatterData}
-                      xAxis={{label: "Frequency of Use"}}
-                      yAxis={{label: "Rating"}}
-                      width={300}
-                      height={300}
-                      margin={{top: 10, bottom: 50, left: 50, right: 10}}/>
+              <h6>Median Rating:</h6><h6 style={returnStyle(medianRating)}>{medianRating}</h6>
+              <h6>Most Common:</h6><h6 style={returnStyle(modeRating)}>{modeRating}</h6>
+            </div>
+            <div className="col-md-4 col-lg-4 center-justify">
+              <h4>Usage Rate</h4>
+              <RadarChart data={radarData} redraw options={{responsive: true, scaleLineColor : "#707070"}}/>
+              <h6>Average Usage:</h6><h6 style={returnStyle(avgUsage)}>{avgUsage}</h6>
+              <h6>Median Usage:</h6><h6 style={returnStyle(medianUsage)}>{medianUsage}</h6>
+              <h6>Most Common:</h6><h6 style={returnStyle(modeUsage)}>{modeUsage}</h6>
+            </div>
+            <div className="col-md-4 col-lg-4 center-justify">
+              <h4>Ratings vs Frequency Scatterplot</h4>
+                <div className="scatter-plot-div">
+                  <br/>
+                  <ScatterPlot
+                        data={scatterData}
+                        xAxis={{label: "Frequency of Use"}}
+                        yAxis={{label: "Rating"}}
+                        width={300}
+                        height={300}
+                        margin={{top: 10, bottom: 50, left: 50, right: 10}}/>
               </div>
           </div>
         </div>
@@ -208,6 +209,7 @@ var Chart = React.createClass({
       }
   }
 });
+
 module.exports = Chart;
 
 // <div className="row">

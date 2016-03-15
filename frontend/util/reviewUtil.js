@@ -20,16 +20,19 @@ var ReviewUtil = {
   },
 
   //edit review
-  editReview: function(reviewParams, callback) {
+  editReview: function(reviewParams, successCallback, errorCallback) {
     $.ajax({
       url : "/api/reviews/"+reviewParams.id,
       type: "PATCH",
       data: reviewParams,
       success: function(data) {
-        if (callback) {
-          callback();
+        if (successCallback) {
+          successCallback();
         }
-        ReviewFrontendActions.updateReview(data);
+        ReviewFrontendActions.receiveAllReviews(data);
+      },
+      error: function(data) {
+        errorCallback(data.responseText);
       }
     });
   },

@@ -7,8 +7,8 @@ var ReviewBackendActions = {
   },
 
   // edit Review
-  editReview: function(reviewParams, callback) {
-    ReviewUtil.editReview(reviewParams, callback);
+  editReview: function(reviewParams, successCallback, errorCallback) {
+    ReviewUtil.editReview(reviewParams, successCallback, errorCallback);
   },
 
   // delete Review
