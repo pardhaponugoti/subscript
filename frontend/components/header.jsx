@@ -125,7 +125,7 @@ var Header = React.createClass({
                       textAlign: 'center',
                       width: '40rem'
                     }
-                } 
+                }
           // {
           //   title: 'subscript',
           //   text: "Click here to go back to the review feed from anywhere in the site.  Enjoy!",
@@ -269,8 +269,8 @@ var Header = React.createClass({
       <div id="navbarCollapse" className="collapse navbar-collapse">
         {this.userDropdown()}
         <div className="navbar-right">
-          <a onClick={this.openStatisticsPage} className="navbar-text white-text statistics-link">Statistics</a>
           <a onClick={this.openSubscriptionsIndex} className="navbar-text white-text services-link">Services</a>
+          <a onClick={this.openStatisticsPage} className="navbar-text white-text statistics-link">Statistics</a>
         </div>
       </div>
     </nav>;

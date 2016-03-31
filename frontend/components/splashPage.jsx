@@ -72,7 +72,7 @@ var SplashPage = React.createClass({
       BrowserHistory.push("/");
     }.bind(this);
     var errorCallback=function(error) {
-    }; 
+    };
     SessionBackendActions.signInUser(
       {user:
         {email: email,

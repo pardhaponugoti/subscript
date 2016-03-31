@@ -102,23 +102,23 @@ var ReviewFeed = React.createClass({
           <br/>
           <div className="col-md-2 col-sm-4 sidebar-div">
             <ul id="sidebar" className="nav nav-stacked">
-                <li className="sidebar-li open-profile" onClick={this.openProfile}>Profile</li>
-                <li className="sidebar-li" onClick={this.openStatistics}>Statistics</li>
-                <li className="sidebar-li" onClick={this.openServices}>Services</li>
-                <li className="sidebar-li write-new-review" onClick={this.openModal}>Write A Review</li>
-                  <Modal bsSize="lg"
-                    show={this.state.modalIsOpen}
-                    onHide={this.closeModal}>
-                    <Modal.Header closeButton>
-                      <Modal.Title>Write a New Review</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <NewReviewForm currentUser={this.props.currentUser} closeModalCallback={this.closeModal}/>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button onClick={this.closeModal}>Never Mind</Button>
-                    </Modal.Footer>
-                  </Modal>
+              <li className="sidebar-li open-profile" onClick={this.openProfile}>Profile</li>
+              <li className="sidebar-li" onClick={this.openStatistics}>Statistics</li>
+              <li className="sidebar-li" onClick={this.openServices}>Services</li>
+              <li className="sidebar-li write-new-review" onClick={this.openModal}>Write A Review</li>
+              <Modal bsSize="lg"
+                show={this.state.modalIsOpen}
+                onHide={this.closeModal}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Write a New Review</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <NewReviewForm currentUser={this.props.currentUser} closeModalCallback={this.closeModal}/>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button onClick={this.closeModal}>Never Mind</Button>
+                </Modal.Footer>
+              </Modal>
             </ul>
           </div>
           <div className="col-md-8 col-sm-7 col-md-offset-1">
@@ -137,3 +137,5 @@ module.exports = ReviewFeed;
 // <div className="col-md-12 col-sm-12">
 //   <SubscriptionIndex/>
 // </div>
+
+// return <SubscriptionIndex />;

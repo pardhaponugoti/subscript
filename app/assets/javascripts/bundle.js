@@ -26752,13 +26752,13 @@
 	          { className: 'navbar-right' },
 	          React.createElement(
 	            'a',
-	            { onClick: this.openStatisticsPage, className: 'navbar-text white-text statistics-link' },
-	            'Statistics'
+	            { onClick: this.openSubscriptionsIndex, className: 'navbar-text white-text services-link' },
+	            'Services'
 	          ),
 	          React.createElement(
 	            'a',
-	            { onClick: this.openSubscriptionsIndex, className: 'navbar-text white-text services-link' },
-	            'Services'
+	            { onClick: this.openStatisticsPage, className: 'navbar-text white-text statistics-link' },
+	            'Statistics'
 	          )
 	        )
 	      )
@@ -52396,6 +52396,8 @@
 	//   <SubscriptionIndex/>
 	// </div>
 
+	// return <SubscriptionIndex />;
+
 /***/ },
 /* 521 */
 /***/ function(module, exports, __webpack_require__) {
@@ -55038,7 +55040,7 @@
 	  signInUser: function signInUser(email) {
 	    var successCallback = function (id) {
 	      this.unblurBackground();
-	      BrowserHistory.push("/");
+	      BrowserHistory.push("/subscriptions");
 	    }.bind(this);
 	    var errorCallback = function errorCallback(error) {};
 	    SessionBackendActions.signInUser({ user: { email: email,

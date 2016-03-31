@@ -1,6 +1,6 @@
 # subscript
 
-Welcome to [subscript](http://www.pardhaponugoti.com)!  
+Welcome to [subscript](http://www.subscript.info)!  
 
 This is a site I created for you to rate your paid subscriptions and services
 and to see others' reviews of services as well.
